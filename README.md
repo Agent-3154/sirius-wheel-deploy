@@ -50,9 +50,9 @@ bash launch_lcm.sh
 
 ### Remote Controller:
 *After clicking the start in simulator*:
-STAND: LB + A
-SitDown: LB + Logitech
-Passive: LB + X
-RL MODEL: LB + START when stand
+STAND: LB + A \\
+SitDown: LB + Logitech \\
+Passive: LB + X \\
+RL MODEL: LB + START when stand \\
 
 
