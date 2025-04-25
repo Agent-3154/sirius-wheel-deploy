@@ -1,0 +1,6 @@
+struct sim_ground_truth_lcmt {
+    float p_w_[6];
+    float v_w_[6];
+    float q[12];
+    float qd[12];
+}

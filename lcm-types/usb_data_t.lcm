@@ -1,0 +1,20 @@
+struct usb_data_t
+{
+    float q_abad[4];
+    float q_hip[4];
+    float q_knee[4];
+    float qd_abad[4];
+    float qd_hip[4];
+    float qd_knee[4];
+    float tau_abad[4];
+    float tau_hip[4];
+    float tau_knee[4];
+    float uq_abad[4];
+    float uq_hip[4];
+    float uq_knee[4];
+    float ud_abad[4];
+    float ud_hip[4];
+    float ud_knee[4];
+    int32_t flags[2];
+    int64_t timestamp;
+}

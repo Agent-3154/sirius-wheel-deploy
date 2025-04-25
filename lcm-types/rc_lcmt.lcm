@@ -1,0 +1,10 @@
+struct rc_lcmt {
+  int32_t mode;
+  float p_des[2];
+  float height_variation;
+  float v_des[3];
+  float rpy_des[3];
+  float omega_des[3];
+  float variables[3];
+  float step_height;
+}

@@ -1,0 +1,10 @@
+struct ros_lowstate_lcmt
+{
+    float q[12];
+    float qd[12];
+    float tauIq[12];
+    float tauEst[12];
+    float quat[4];
+    float gyro[3];
+    float accelerometer[3];
+}

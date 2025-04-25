@@ -1,0 +1,24 @@
+cmake_minimum_required(VERSION 3.10)
+
+project(test_repo)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pthread")
+
+include_directories("../mujoco-3.1.3/include")
+include_directories("../third-party/qpOASES/include")
+link_directories("../mujoco-3.1.3/lib")
+link_directories("../utilities/src/")
+include_directories("../utilities/inc/")
+
+add_executable(test_hardware run_robot.cpp)
+target_link_libraries(test_hardware hardware_library robot_ctrl_library)
+
+add_executable(sim_test start_sim.cpp)
+target_link_libraries(sim_test simulation_library hardware_library robot_ctrl_library)
+
+add_executable(show_robot real_robot_show.cpp)
+target_link_libraries(show_robot simulation_library hardware_library robot_ctrl_library)
+
+add_executable(test_ros run_robot_ros.cpp)
+target_link_libraries(test_ros simulation_library hardware_library robot_ctrl_library)
+
+

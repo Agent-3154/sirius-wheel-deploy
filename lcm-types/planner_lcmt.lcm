@@ -1,0 +1,11 @@
+struct planner_lcmt {
+  float p_des[3];
+  float foot_pDes[4][3];
+  float pw_[3];
+  float foot_pw_[4][3];
+  float pf_init_[4][3];
+  float foot_vdes[4][3];
+  float rpy_des_[3];
+  float pf_rel[4][2];
+  float parse_data[3];
+}

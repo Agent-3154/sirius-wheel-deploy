@@ -1,0 +1,9 @@
+Motor_Control
+{
+loco_kp     50 ; range +-500
+loco_kd     0.5; range +-5
+stand_kp    100
+stand_kd    1
+passive_kp  0
+passive_kd  0
+}

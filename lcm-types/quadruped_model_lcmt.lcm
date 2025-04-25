@@ -1,0 +1,8 @@
+struct quadruped_model_lcmt {
+    float pGC[4][3];
+    float vGC[4][3];
+    float base_omega[3];
+    float base_vel[3];
+    float base_pos[3];
+    float base_rpy[3];
+}

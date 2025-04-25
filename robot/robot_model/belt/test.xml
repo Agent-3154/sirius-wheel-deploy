@@ -1,0 +1,81 @@
+<mujoco model="belt_urdf_aligned_axis_ok">
+  <compiler angle="radian" meshdir="assets"/>
+  <asset>
+    <mesh name="base_link" file="base_link.STL"/>
+    <mesh name="fr_abad_link" file="fr_abad_link.STL"/>
+    <mesh name="fr_hip_link" file="fr_hip_link.STL"/>
+    <mesh name="fr_knee_link" file="fr_knee_link.STL"/>
+    <mesh name="fl_abad_link" file="fl_abad_link.STL"/>
+    <mesh name="fl_hip_link" file="fl_hip_link.STL"/>
+    <mesh name="fl_knee_link" file="fl_knee_link.STL"/>
+    <mesh name="rr_abad_link" file="rr_abad_link.STL"/>
+    <mesh name="rr_hip_link" file="rr_hip_link.STL"/>
+    <mesh name="rr_knee_link" file="rr_knee_link.STL"/>
+    <mesh name="rl_abad_link" file="rl_abad_link.STL"/>
+    <mesh name="rl_hip_link" file="rl_hip_link.STL"/>
+    <mesh name="rl_knee_link" file="rl_knee_link.STL"/>
+  </asset>
+  <worldbody>
+    <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="base_link"/>
+    <body name="fr_abad_link" pos="0.241 -0.055 0">
+      <inertial pos="0.052428 -0.025819 7.2618e-08" quat="0.453148 0.54283 -0.453135 0.542827" mass="1.9747" diaginertia="0.0032013 0.00310579 0.00221631"/>
+      <joint name="fr_abad_joint" pos="0 0 0" axis="-1 0 0" limited="false"/>
+      <geom type="mesh" rgba="0.89804 0.91765 0.92941 1" mesh="fr_abad_link"/>
+      <body name="fr_hip_link" pos="0.0554994 -0.10045 0">
+        <inertial pos="-4.7268e-06 -0.0035029 -0.11665" quat="0.707131 0.00128766 -0.0013139 0.70708" mass="1.0489" diaginertia="0.0125462 0.012351 0.000606138"/>
+        <joint name="fr_hip_joint" pos="0 0 0" axis="0 1 0" limited="false"/>
+        <geom type="mesh" rgba="0.89804 0.91765 0.92941 1" mesh="fr_hip_link"/>
+        <body name="fr_knee_link" pos="0 0 -0.2695">
+          <inertial pos="-0.0112576 -3.13499e-08 -0.0631957" quat="0.70698 -0.0132108 -0.0132119 0.706987" mass="0.391062" diaginertia="0.00383396 0.00366268 0.000225956"/>
+          <joint name="fr_knee_joint" pos="0 0 0" axis="0 1 0" limited="false"/>
+          <geom type="mesh" rgba="0.658824 0.619608 0.560784 1" mesh="fr_knee_link"/>
+        </body>
+      </body>
+    </body>
+    <body name="fl_abad_link" pos="0.241 0.055 0">
+      <inertial pos="0.052428 0.025819 -7.2618e-08" quat="0.542827 0.453135 -0.54283 0.453148" mass="1.9747" diaginertia="0.0032013 0.00310579 0.00221631"/>
+      <joint name="fl_abad_joint" pos="0 0 0" axis="-1 0 0" limited="false"/>
+      <geom type="mesh" rgba="0.89804 0.91765 0.92941 1" mesh="fl_abad_link"/>
+      <body name="fl_hip_link" pos="0.055499 0.10045 0">
+        <inertial pos="4.7257e-06 0.0035029 -0.11665" quat="0.707131 -0.00128767 0.0013139 0.70708" mass="1.0489" diaginertia="0.0125462 0.012351 0.000606138"/>
+        <joint name="fl_hip_joint" pos="0 0 0" axis="0 -1 0" limited="false"/>
+        <geom type="mesh" rgba="0.89804 0.91765 0.92941 1" mesh="fl_hip_link"/>
+        <body name="fl_knee_link" pos="0 0 -0.2695">
+          <inertial pos="-0.011258 -3.135e-08 -0.063196" quat="0.70698 -0.0132108 -0.0132119 0.706987" mass="0.39106" diaginertia="0.003834 0.0036627 0.000225953"/>
+          <joint name="fl_knee_joint" pos="0 0 0" axis="0 -1 0" limited="false"/>
+          <geom type="mesh" rgba="0.65882 0.61961 0.56078 1" mesh="fl_knee_link"/>
+        </body>
+      </body>
+    </body>
+    <body name="rr_abad_link" pos="-0.241 -0.055 0">
+      <inertial pos="-0.052428 -0.025819 -7.2618e-08" quat="0.54283 0.453148 -0.542827 0.453135" mass="1.9747" diaginertia="0.0032013 0.00310579 0.00221631"/>
+      <joint name="rr_abad_joint" pos="0 0 0" axis="1 0 0" limited="false"/>
+      <geom type="mesh" rgba="0.89804 0.91765 0.92941 1" mesh="rr_abad_link"/>
+      <body name="rr_hip_link" pos="-0.055499 -0.10045 0">
+        <inertial pos="-4.72682e-06 -0.0035029 -0.116651" quat="0.707131 0.00128766 -0.0013139 0.70708" mass="1.04889" diaginertia="0.0125463 0.0123505 0.000606143"/>
+        <joint name="rr_hip_joint" pos="0 0 0" axis="0 1 0" limited="false"/>
+        <geom type="mesh" rgba="0.898039 0.917647 0.929412 1" mesh="rr_hip_link"/>
+        <body name="rr_knee_link" pos="0 0 -0.2695">
+          <inertial pos="-0.011258 -3.135e-08 -0.063196" quat="0.70698 -0.0132108 -0.0132119 0.706987" mass="0.39106" diaginertia="0.003834 0.0036627 0.000225953"/>
+          <joint name="rr_knee_joint" pos="0 0 0" axis="0 1 0" limited="false"/>
+          <geom type="mesh" rgba="0.65882 0.61961 0.56078 1" mesh="rr_knee_link"/>
+        </body>
+      </body>
+    </body>
+    <body name="rl_abad_link" pos="-0.241 0.055 0">
+      <inertial pos="-0.052428 0.025819 7.2618e-08" quat="0.453135 0.542827 -0.453148 0.54283" mass="1.9747" diaginertia="0.0032013 0.00310579 0.00221631"/>
+      <joint name="rl_abad_joint" pos="0 0 0" axis="1 0 0" limited="false"/>
+      <geom type="mesh" rgba="0.89804 0.91765 0.92941 1" mesh="rl_abad_link"/>
+      <body name="rl_hip_link" pos="-0.055499 0.10045 0">
+        <inertial pos="4.7257e-06 0.0035029 -0.11665" quat="0.707131 -0.00128767 0.0013139 0.70708" mass="1.0489" diaginertia="0.0125462 0.012351 0.000606138"/>
+        <joint name="rl_hip_joint" pos="0 0 0" axis="0 -1 0" limited="false"/>
+        <geom type="mesh" rgba="0.89804 0.91765 0.92941 1" mesh="rl_hip_link"/>
+        <body name="rl_knee_link" pos="0 0 -0.2695">
+          <inertial pos="-0.011258 -3.135e-08 -0.063196" quat="0.70698 -0.0132108 -0.0132119 0.706987" mass="0.39106" diaginertia="0.003834 0.0036627 0.000225953"/>
+          <joint name="rl_knee_joint" pos="0 0 0" axis="0 -1 0" limited="false"/>
+          <geom type="mesh" rgba="0.65882 0.61961 0.56078 1" mesh="rl_knee_link"/>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+</mujoco>

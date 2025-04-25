@@ -1,0 +1,201 @@
+//
+// Created by lingwei on 4/24/24.
+//
+
+#include "KalmanFilterEstimator.h"
+#include <boost/property_tree/info_parser.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include "../../utilities/inc/LoadData.h"
+#include "../../utilities/inc/debug_tools.h"
+#include <iostream>
+//#include <filesystem>
+
+namespace Estimators {
+    template<typename T>
+    LinearKFPositionVelocityEsitmator<T>::LinearKFPositionVelocityEsitmator(const std::string &file) {
+//        std::cout << std::filesystem::current_path() << std::endl;
+//        this->GetSettings(file, "LinearKalmanFilter_1000");
+        this->GetSettings(file, "LinearKalmanFilter_500");
+        T dt = this->paras_.control_dt_;
+        // initialize paramters
+        _xhat.setZero();
+        _ps.setZero();
+        _vs.setZero();
+        _A.setZero();
+        _A.block(0, 0, 3, 3) = Eigen::Matrix<T, 3, 3>::Identity();
+        _A.block(0, 3, 3, 3) = dt * Eigen::Matrix<T, 3, 3>::Identity();
+        _A.block(3, 3, 3, 3) = Eigen::Matrix<T, 3, 3>::Identity();
+        _A.block(6, 6, 12, 12) = Eigen::Matrix<T, 12, 12>::Identity();
+        _B.setZero();
+        _B.block(3, 0, 3, 3) = dt * Eigen::Matrix<T, 3, 3>::Identity();
+        Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> C1(3, 6);
+        C1 << Eigen::Matrix<T, 3, 3>::Identity(), Eigen::Matrix<T, 3, 3>::Zero();
+        Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> C2(3, 6);
+        C2 << Eigen::Matrix<T, 3, 3>::Zero(), Eigen::Matrix<T, 3, 3>::Identity();
+        _C.setZero();
+        _C.block(0, 0, 3, 6) = C1;
+        _C.block(3, 0, 3, 6) = C1;
+        _C.block(6, 0, 3, 6) = C1;
+        _C.block(9, 0, 3, 6) = C1;
+        _C.block(0, 6, 12, 12) = T(-1) * Eigen::Matrix<T, 12, 12>::Identity();
+        _C.block(12, 0, 3, 6) = C2;
+        _C.block(15, 0, 3, 6) = C2;
+        _C.block(18, 0, 3, 6) = C2;
+        _C.block(21, 0, 3, 6) = C2;
+        _C(27, 17) = T(1);
+        _C(26, 14) = T(1);
+        _C(25, 11) = T(1);
+        _C(24, 8) = T(1);
+        _P.setIdentity();
+        _P = T(100) * _P;
+        _Q0.setIdentity();
+        _Q0.block(0, 0, 3, 3) = (dt / 20.f) * Eigen::Matrix<T, 3, 3>::Identity();
+        _Q0.block(3, 3, 3, 3) = (dt * 9.8f / 20.f) * Eigen::Matrix<T, 3, 3>::Identity();
+        _Q0.block(6, 6, 12, 12) = dt * Eigen::Matrix<T, 12, 12>::Identity();
+        _R0.setIdentity();
+    }
+
+    template<typename T>
+    void
+    LinearKFPositionVelocityEsitmator<T>::GetSettings(const std::string &filename, const std::string &setting_name) {
+        boost::property_tree::ptree pt;
+        boost::property_tree::read_info(filename, pt);
+        loadData::loadPtreeValue(pt, paras_.foot_height_sensor_noise_, setting_name + ".foot_height_sensor_noise",
+                                 true);
+        loadData::loadPtreeValue(pt, paras_.foot_process_noise_position_, setting_name + ".foot_process_noise_position",
+                                 true);
+        loadData::loadPtreeValue(pt, paras_.foot_sensor_noise_position_, setting_name + ".foot_sensor_noise_position",
+                                 true);
+        loadData::loadPtreeValue(pt, paras_.foot_sensor_noise_velocity_, setting_name + ".foot_sensor_noise_velocity",
+                                 true);
+        loadData::loadPtreeValue(pt, paras_.imu_process_noise_position_, setting_name + ".imu_process_noise_position",
+                                 true);
+        loadData::loadPtreeValue(pt, paras_.imu_process_noise_velocity_, setting_name + ".imu_process_noise_velocity",
+                                 true);
+        loadData::loadPtreeValue(pt, paras_.control_dt_, setting_name + ".control_dt", true);
+    }
+
+    template<typename T>
+    void LinearKFPositionVelocityEsitmator<T>::setup() {
+
+    }
+
+    /**
+     * @note consumming time 40us
+     * @tparam T
+     */
+    template<typename T>
+    void LinearKFPositionVelocityEsitmator<T>::run() {
+//        Debugging::test_timer timer_1(1);
+        Eigen::Matrix<T, 18, 18> Q = Eigen::Matrix<T, 18, 18>::Identity();
+        Q.block(0, 0, 3, 3) = _Q0.block(0, 0, 3, 3) * paras_.imu_process_noise_position_;
+        Q.block(3, 3, 3, 3) = _Q0.block(3, 3, 3, 3) * paras_.imu_process_noise_velocity_;
+        Q.block(6, 6, 12, 12) = _Q0.block(6, 6, 12, 12) * paras_.foot_process_noise_position_;
+
+        Eigen::Matrix<T, 28, 28> R = Eigen::Matrix<T, 28, 28>::Identity();
+        R.block(0, 0, 12, 12) = _R0.block(0, 0, 12, 12) * paras_.foot_sensor_noise_position_;
+        R.block(12, 12, 12, 12) = _R0.block(12, 12, 12, 12) * paras_.foot_sensor_noise_velocity_;
+        R.block(24, 24, 4, 4) = _R0.block(24, 24, 4, 4) * paras_.foot_height_sensor_noise_;
+//        timer_1.timer_exit();
+
+//        Debugging::test_timer timer_2(2);
+        int qindex = 0;
+        int rindex1 = 0;
+        int rindex2 = 0;
+        int rindex3 = 0;
+
+        Vec3<T> g(0, 0, T(-9.81));
+        Mat3<T> Rbod = this->stateEstimateData_.result_->r_b_.transpose();
+        Vec3<T> a = this->stateEstimateData_.result_->a_w_ + g;
+        Vec4<T> pzs = Vec4<T>::Zero();
+        Vec4<T> trusts = Vec4<T>::Zero();
+        Vec3<T> p0, v0;
+        p0 << _xhat[0], _xhat[1], _xhat[2];
+        v0 << _xhat[3], _xhat[4], _xhat[5];
+        for (int i = 0; i < 4; i++) {
+            int i1 = 3 * i;
+            // ph check ok
+            Vec3<T> ph = this->stateEstimateData_.p_quadrup->getHipLocation(i);
+//            std::cout << "ph id: " << i << ph.transpose() << std::endl;
+            Vec3<T> p_rel = ph + this->stateEstimateData_.legControlData_[i].p;
+            Vec3<T> dp_rel = this->stateEstimateData_.legControlData_[i].v;
+            // 换算到世界系，但是没有body_pos
+            Vec3<T> p_f = Rbod * p_rel;
+            Vec3<T> dp_f =
+                    Rbod * (this->stateEstimateData_.result_->omega_b_.cross(p_rel) + dp_rel);
+//            std::cout << dp_f.transpose() << std::endl;
+            qindex = 6 + i1;
+            rindex1 = i1;
+            rindex2 = 12 + i1;
+            rindex3 = 24 + i;
+            T trust = T(1);
+            //获取是否是摆动腿
+            T phase = fmin(this->stateEstimateData_.result_->contactEstimate_(i), T(1));
+
+//    T trust_window = T(0.25);
+            T trust_window = T(0.2);
+            if (phase < trust_window) {
+                trust = phase / trust_window;
+            } else if (phase > (T(1) - trust_window)) {
+                trust = (T(1) - phase) / trust_window;
+            }
+//            std::cout << "Trust id: " << i << " | " << trust << "\n";
+            //T high_suspect_number(1000);
+            T high_suspect_number(100);
+
+            // printf("Trust %d: %.3f\n", i, trust);
+            Q.block(qindex, qindex, 3, 3) =
+                    (T(1) + (T(1) - trust) * high_suspect_number) * Q.block(qindex, qindex, 3, 3);
+            R.block(rindex1, rindex1, 3, 3) = 1 * R.block(rindex1, rindex1, 3, 3);
+            R.block(rindex2, rindex2, 3, 3) =
+                    (T(1) + (T(1) - trust) * high_suspect_number) * R.block(rindex2, rindex2, 3, 3);
+            R(rindex3, rindex3) =
+                    (T(1) + (T(1) - trust) * high_suspect_number) * R(rindex3, rindex3);
+
+            trusts(i) = trust;
+
+            _ps.segment(i1, 3) = -p_f;
+            _vs.segment(i1, 3) = (1.0f - trust) * v0 + trust * (-dp_f);
+//            std::cout << "Id: " << i << " | " << _vs.transpose() << std::endl;
+            pzs(i) = (1.0f - trust) * (p0(2) + p_f(2));
+        }
+
+        Eigen::Matrix<T, 28, 1> y;
+        y << _ps, _vs, pzs;
+        _xhat = _A * _xhat + _B * a;
+        Eigen::Matrix<T, 18, 18> At = _A.transpose();
+        Eigen::Matrix<T, 18, 18> Pm = _A * _P * At + Q;
+        Eigen::Matrix<T, 18, 28> Ct = _C.transpose();
+        Eigen::Matrix<T, 28, 1> yModel = _C * _xhat;
+        Eigen::Matrix<T, 28, 1> ey = y - yModel;
+        Eigen::Matrix<T, 28, 28> S = _C * Pm * Ct + R;
+
+        // todo compute LU only once
+        Eigen::Matrix<T, 28, 1> S_ey = S.lu().solve(ey);
+        _xhat += Pm * Ct * S_ey;
+
+        Eigen::Matrix<T, 28, 18> S_C = S.lu().solve(_C);
+        _P = (Eigen::Matrix<T, 18, 18>::Identity() - Pm * Ct * S_C) * Pm;
+
+        Eigen::Matrix<T, 18, 18> Pt = _P.transpose();
+        _P = (_P + Pt) / T(2);
+
+        if (_P.block(0, 0, 2, 2).determinant() > T(0.000001)) {
+            _P.block(0, 2, 2, 16).setZero();
+            _P.block(2, 0, 16, 2).setZero();
+            _P.block(0, 0, 2, 2) /= T(10);
+        }
+
+        this->stateEstimateData_.result_->p_w_ = _xhat.block(0, 0, 3, 1);
+        this->stateEstimateData_.result_->v_w_ = _xhat.block(3, 0, 3, 1);
+        this->stateEstimateData_.result_->v_b_ =
+                this->stateEstimateData_.result_->r_b_ *
+                this->stateEstimateData_.result_->v_w_;
+        for (int i = 0; i < 4; i++) {
+            this->stateEstimateData_.result_->pFoot_[i] = _xhat.block((i + 2) * 3, 0, 3, 1);
+        }
+    }
+
+    template
+    class LinearKFPositionVelocityEsitmator<double>;
+}

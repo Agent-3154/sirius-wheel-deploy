@@ -1,0 +1,263 @@
+<!--Please note the -->
+<mujoco model="belt">
+    <compiler angle="radian" meshdir="assets" autolimits="true" eulerseq="ZYX"/>
+    <!--    <option cone="elliptic" impratio="100" gravity="0 0 0"/>-->
+    <option cone="elliptic" impratio="100" integrator="implicitfast" timestep="0.002" />
+    <!--    mujoco default properties-->
+    <default>
+        <default class="belt">
+            <geom friction="0.6" margin="0.00001" condim="1"/>
+            <!--            armature: inertia of rotors; joint global axis 0.0000097913844*gr^2-->
+            <joint axis="0 1 0" damping="0.01" armature="0.01" frictionloss="0.01" actuatorfrcrange="-100 100"/>
+<!--            <position kp="200" forcerange="-45 45"/>-->
+            <default class="abad">
+                <!--                joint range-->
+                <joint pos="0 0 0" axis="1 0 0" range="-1.0472 1.0472"/>
+                <!--                control position -->
+<!--                <position ctrlrange="-0.863 0.863"/>-->
+                <motor ctrlrange="-45 45"/>
+            </default>
+            <default class="hip_right">
+                <joint range="-3.1415926 3.1415926"/>
+                <motor ctrlrange="-45 45"/>
+            </default>
+            <default class="hip_left">
+                <joint range="-3.1415926 3.1415926"/>
+                <motor ctrlrange="-45 45"/>
+            </default>
+            <default class="knee_right">
+                <joint range="-2.890247 0"/>
+                <!--                output torque range, knees with larger gear ratio-->
+                <motor forcerange="-80 80" ctrlrange="-80 80"/>
+            </default>
+            <default class="knee_left">
+                <joint range="-2.890247 0"/>
+                <!--                output torque range, knees with larger gear ratio-->
+                <motor forcerange="-80 80" ctrlrange="-80 80"/>
+            </default>
+            <!--            visual mesh for sensors and markers-->
+            <default class="visual">
+                <geom type="mesh" contype="0" conaffinity="0" group="2"/>
+            </default>
+            <!--            build collision model-->
+            <default class="collision">
+                <geom group="3" type="capsule"/>
+                <default class="foot">
+                    <geom type="sphere" size="0.0224" priority="1" solimp="0.015 1 0.031" condim="6" friction="0.5 0.02 0.01"
+                          pos="0 0 -0.257515"/>
+                </default>
+                <!--                body is based on local frame-->
+                <default class="hip_front_left1">
+                    <geom size="0.053 0.028" pos="0.0555 0 0" quat="1 1 0 0" type="cylinder"/>
+                </default>
+                <default class="hip_front_left2">
+                    <geom size="0.047 0.0264" pos="0.0555 0.05455 0" quat="1 1 0 0" type="cylinder"/>
+                </default>
+                <default class="hip_front_left3">
+                    <geom size="0.044 0.022" pos="0.0555 0.10045 0" quat="1 1 0 0 " type="cylinder"/>
+                </default>
+                <default class="hip_front_right1">
+                    <geom size="0.053 0.028" pos="0.0555 0 0" quat="1 1 0 0" type="cylinder"/>
+                </default>
+                <default class="hip_front_right2">
+                    <geom size="0.047 0.0264" pos="0.0555 -0.05455 0 " quat="1 1 0 0" type="cylinder"/>
+                </default>
+                <default class="hip_front_right3">
+                    <geom size="0.044 0.022" pos="0.0555 -0.10045 0" quat="1 1 0 0" type="cylinder"/>
+                </default>
+                <default class="hip_rear_left1">
+                    <geom size="0.053 0.028" pos="-0.0555 0 0" quat="1 1 0 0" type="cylinder"/>
+                </default>
+                <default class="hip_rear_left2">
+                    <geom size="0.047 0.0264" pos="-0.0555 0.05455 0" quat="1 1 0 0" type="cylinder"/>
+                </default>
+                <default class="hip_rear_left3">
+                    <geom size="0.044 0.022" pos="-0.0555 0.10045 0" quat="1 1 0 0 " type="cylinder"/>
+                </default>
+                <default class="hip_rear_right1">
+                    <geom size="0.053 0.028" pos="-0.0555 0 0" quat="1 1 0 0" type="cylinder"/>
+                </default>
+                <default class="hip_rear_right2">
+                    <geom size="0.047 0.0264" pos="-0.0555 -0.05455 0 " quat="1 1 0 0" type="cylinder"/>
+                </default>
+                <default class="hip_rear_right3">
+                    <geom size="0.044 0.022" pos="-0.0555 -0.10045 0" quat="1 1 0 0" type="cylinder"/>
+                </default>
+
+                <default class="thigh_1">
+                    <geom type="box" size="0.028 0.0195 0.13475" pos="0 0 -0.13475" quat="1 0 0 0"/>
+                </default>
+                <default class="thigh_2">
+                    <geom type="cylinder" size="0.04 0.022" pos="0 0 -0.2695" quat="1 1 0 0"/>
+                </default>
+                <default class="calf_1">
+                    <geom size="0.0125" fromto="0 0 0 -0.05046 0 -0.01258"/>
+                </default>
+                <default class="calf_2">
+                    <geom size="0.0125" fromto="-0.05046 0 -0.01258 0 0 -0.257515"/>
+                </default>
+            </default>
+        </default>
+    </default>
+
+    <asset>
+        <material name="dark" rgba="0.1 0.1 0.1 1"/>
+        <mesh class="belt" file="base_link.STL"/>
+        <mesh class="belt" file="fl_abad_link.STL"/>
+        <mesh class="belt" file="fl_hip_link.STL"/>
+        <mesh class="belt" file="fl_knee_link.STL"/>
+        <mesh class="belt" file="fr_abad_link.STL"/>
+        <mesh class="belt" file="fr_hip_link.STL"/>
+        <mesh class="belt" file="fr_knee_link.STL"/>
+        <mesh class="belt" file="rl_abad_link.STL"/>
+        <mesh class="belt" file="rl_hip_link.STL"/>
+        <mesh class="belt" file="rl_knee_link.STL"/>
+        <mesh class="belt" file="rr_abad_link.STL"/>
+        <mesh class="belt" file="rr_hip_link.STL"/>
+        <mesh class="belt" file="rr_knee_link.STL"/>
+    </asset>
+
+    <worldbody>
+        <light name="spotlight" mode="targetbodycom" target="base" pos="0 -1 2"/>
+        <body name="base" pos="0 0 0.5" childclass="belt">
+            <camera name="tracking" mode="trackcom" pos="0 -1 0.8" xyaxes="1 0 0 0 1 1"/>
+            <!--            type of the site is sphere by default-->
+            <site name="head" pos="0.3 0 0" rgba="1 0 0 1" size="0.02" group="0"/>
+            <inertial pos="0.00 0.000 -0.00069" quat="1 0 0 0" mass="13.32985"
+                      diaginertia="0.04311 0.19241 0.21611"/>
+            <freejoint/>
+            <geom class="visual" mesh="base_link" rgba="0.847058824 0.643137255 0.498039216 1"/>
+            <!--            main box-->
+            <geom class="collision" type="box" size="0.194 0.0808 0.056"/>
+            <!--            build four abad motors-->
+            <geom class="collision" type="cylinder" pos="0 0.055 0" quat="1 0 1 0" size="0.04695 0.2322"/>
+            <geom class="collision" type="cylinder" pos="0 -0.055 0" quat="1 0 1 0" size="0.04695 0.2322"/>
+            <site name="imu" pos="0 0 0"/>
+            <body name="fr_abad" pos="0.241 -0.055 0" quat="1 0 0 0">
+                <inertial pos="0.052428 -0.025819 7.2618e-08" quat="0.453148 0.54283 -0.453135 0.542827" mass="1.9747" diaginertia="0.0032013 0.00310579 0.00221631"/>
+                <joint class="abad" name="fr_abad_joint"/>
+                <geom class="visual" mesh="fr_abad_link" quat="1 0 0 0" rgba="0.152941176 0.160784314 0.196078431 1"/>
+                <geom class="hip_front_right1"/>
+                <geom class="hip_front_right2"/>
+                <geom class="hip_front_right3"/>
+                <body name="fr_hip" pos="0.0554994 -0.10045 0" quat="1 0 0 0">
+                    <inertial pos="-4.7268e-06 -0.0035029 -0.11665" quat="0.707131 0.00128766 -0.0013139 0.70708" mass="1.0489" diaginertia="0.0125462 0.012351 0.000606138"/>
+                    <joint class="hip_right" name="fr_hip_joint"/>
+                    <geom class="visual" mesh="fr_hip_link" rgba="0.905882353 0.925490196 0.937254902 1"/>
+                    <geom class="thigh_1"/>
+                    <geom class="thigh_2"/>
+                    <body name="fr_knee" pos="0 0 -0.2695">
+                        <inertial pos="-0.0112576 -3.13499e-08 -0.0631957" quat="0.70698 -0.0132108 -0.0132119 0.706987" mass="0.391062" diaginertia="0.00383396 0.00366268 0.000225956"/>
+                        <joint class="knee_right" name="fr_knee_joint"/>
+                        <geom class="visual" mesh="fr_knee_link" rgba="0.058823529 0.443137255 0.450980392 1"/>
+                        <geom class="calf_1"/>
+                        <geom class="calf_2"/>
+                        <geom name="fr_foot" class="foot"/>
+                        <site name="fr_foot_site" rgba="0.941176471 0.364705882 0.368627451 1" pos="0 0 -0.257515" type="sphere" size="0.0224" group="0"/>
+                    </body>
+                </body>
+            </body>
+            <body name="fl_abad" pos="0.241 0.055 0" quat="1 0 0 0">
+                <inertial pos="0.052428 0.025819 -7.2618e-08" quat="0.542827 0.453135 -0.54283 0.453148" mass="1.9747" diaginertia="0.0032013 0.00310579 0.00221631"/>
+                <joint class="abad" name="fl_abad_joint"/>
+                <geom class="visual" mesh="fl_abad_link" quat="1 0 0 0" rgba="0.152941176 0.160784314 0.196078431 1"/>
+                <geom class="hip_front_left1"/>
+                <geom class="hip_front_left2"/>
+                <geom class="hip_front_left3"/>
+                <body name="fl_hip" pos="0.055499 0.10045 0" quat="1 0 0 0">
+                    <inertial pos="4.7257e-06 0.0035029 -0.11665" quat="0.707131 -0.00128767 0.0013139 0.70708" mass="1.0489" diaginertia="0.0125462 0.012351 0.000606138"/>
+                    <joint class="hip_left" name="fl_hip_joint"/>
+                    <geom class="visual" mesh="fl_hip_link" rgba="0.905882353 0.925490196 0.937254902 1"/>
+                    <geom class="thigh_1"/>
+                    <geom class="thigh_2"/>
+                    <body name="fl_knee" pos="0 0 -0.2695">
+                        <inertial pos="-0.011258 -3.135e-08 -0.063196" quat="0.70698 -0.0132108 -0.0132119 0.706987" mass="0.39106" diaginertia="0.003834 0.0036627 0.000225953"/>
+                        <joint class="knee_left" name="fl_knee_joint"/>
+                        <geom class="visual" mesh="fl_knee_link" rgba="0.058823529 0.443137255 0.450980392 1"/>
+                        <geom class="calf_1"/>
+                        <geom class="calf_2"/>
+                        <geom name="fl_foot" class="foot"/>
+                        <site name="fl_foot_site" rgba="0.941176471 0.364705882 0.368627451 1" pos="0 0 -0.257515 " type="sphere" size="0.0224" group="0"/>
+                    </body>
+                </body>
+            </body>
+
+            <body name="rr_abad" pos="-0.241 -0.055 0" quat="1 0 0 0">
+                <inertial pos="-0.052428 -0.025819 -7.2618e-08" quat="0.54283 0.453148 -0.542827 0.453135" mass="1.9747" diaginertia="0.0032013 0.00310579 0.00221631"/>
+                <joint class="abad" name="rr_abad_joint"/>
+                <geom class="visual" mesh="rr_abad_link" quat="1 0 0 0" rgba="0.152941176 0.160784314 0.196078431 1"/>
+                <geom class="hip_rear_right1"/>
+                <geom class="hip_rear_right2"/>
+                <geom class="hip_rear_right3"/>
+                <body name="rr_hip" pos="-0.055499 -0.10045 0">
+                    <inertial pos="-4.72682e-06 -0.0035029 -0.116651" quat="0.707131 0.00128766 -0.0013139 0.70708" mass="1.0489" diaginertia="0.0125463 0.0123505 0.000606143"/>
+                    <joint class="hip_right" name="rr_hip_joint"/>
+                    <geom class="visual" mesh="rr_hip_link" rgba="0.905882353 0.925490196 0.937254902 1"/>
+                    <geom class="thigh_1"/>
+                    <geom class="thigh_2"/>
+                    <body name="rr_knee" pos="0 0 -0.2695">
+                        <inertial pos="-0.011258 -3.135e-08 -0.063196" quat="0.70698 -0.0132108 -0.0132119 0.706987" mass="0.39106" diaginertia="0.003834 0.0036627 0.000225953"/>
+                        <joint class="knee_right" name="rr_knee_joint"/>
+                        <geom class="visual" mesh="rr_knee_link" rgba="0.058823529 0.443137255 0.450980392 1"/>
+                        <geom class="calf_1"/>
+                        <geom class="calf_2"/>
+                        <geom name="rr_foot" class="foot"/>
+                        <site name="rr_foot_site" rgba="0.941176471 0.364705882 0.368627451 1" pos="0 0 -0.257515" type="sphere" size="0.0224" group="0"/>
+                    </body>
+                </body>
+            </body>
+
+            <body name="rl_abad" pos="-0.241 0.055 0" quat="1 0 0 0">
+                <inertial pos="-0.052428 0.025819 7.2618e-08" quat="0.453135 0.542827 -0.453148 0.54283" mass="1.9747" diaginertia="0.0032013 0.00310579 0.00221631"/>
+                <joint class="abad" name="rl_abad_joint"/>
+                <geom class="visual" mesh="rl_abad_link" quat="1 0 0 0" rgba="0.152941176 0.160784314 0.196078431 1"/>
+                <geom class="hip_rear_left1"/>
+                <geom class="hip_rear_left2"/>
+                <geom class="hip_rear_left3"/>
+                <body name="rl_hip" pos="-0.055499 0.10045 0" quat="1 0 0 0">
+                    <inertial pos="4.7257e-06 0.0035029 -0.11665" quat="0.707131 -0.00128767 0.0013139 0.70708" mass="1.0489" diaginertia="0.0125462 0.012351 0.000606138"/>
+                    <joint class="hip_left" name="rl_hip_joint"/>
+                    <geom class="visual" mesh="rl_hip_link" rgba="0.905882353 0.925490196 0.937254902 1"/>
+                    <geom class="thigh_1"/>
+                    <geom class="thigh_2"/>
+                    <body name="rl_knee" pos="0 0 -0.2695 ">
+                        <inertial pos="-0.011258 -3.135e-08 -0.063196" quat="0.70698 -0.0132108 -0.0132119 0.706987" mass="0.39106" diaginertia="0.003834 0.0036627 0.000225953"/>
+                        <joint class="knee_left" name="rl_knee_joint"/>
+                        <geom class="visual" mesh="rl_knee_link" rgba="0.058823529 0.443137255 0.450980392 1"/>
+                        <geom class="calf_1"/>
+                        <geom class="calf_2"/>
+                        <geom name="rl_foot" class="foot"/>
+                        <site name="rl_foot_site" rgba="0.941176471 0.364705882 0.368627451 1" pos="0 0 -0.257515" type="sphere" size="0.0224" group="0"/>
+                    </body>
+                </body>
+            </body>
+        </body>
+    </worldbody>
+
+    <actuator>
+        <motor class="abad" name="FR_ABAD" joint="fr_abad_joint"/>
+        <motor class="hip_right" name="FR_HIP" joint="fr_hip_joint"/>
+        <motor class="knee_right" name="FR_KNEE" joint="fr_knee_joint"/>
+        <motor class="abad" name="FL_ABAD" joint="fl_abad_joint"/>
+        <motor class="hip_left" name="FL_HIP" joint="fl_hip_joint"/>
+        <motor class="knee_left" name="FL_KNEE" joint="fl_knee_joint"/>
+        <motor class="abad" name="RR_ABAD" joint="rr_abad_joint"/>
+        <motor class="hip_right" name="RR_HIP" joint="rr_hip_joint"/>
+        <motor class="knee_right" name="RR_KNEE" joint="rr_knee_joint"/>
+        <motor class="abad" name="RL_ABAD" joint="rl_abad_joint"/>
+        <motor class="hip_left" name="RL_HIP" joint="rl_hip_joint"/>
+        <motor class="knee_left" name="RL_KNEE" joint="rl_knee_joint"/>
+    </actuator>
+    <sensor>
+        <gyro name="body_gyro" site="imu"/>
+        <framequat name="body_quat" objtype="site" objname="imu" />
+        <accelerometer name="body_acc" site="imu"/>
+    </sensor>
+
+    <keyframe>
+<!--        <key name="home" qpos="0 0 0.41 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"/>-->
+        <key name="home" qpos="0 0 0.41 1 0 0 0 0 0.7086 -1.4172 0 0.7086 -1.4172 0 0.7086 -1.4172 0 0.7086 -1.4172"/>
+<!--             ctrl="0 0.7086 -1.4172 0 -0.7086 1.4172 0 0.7086 -1.4172 0 -0.7086 1.4172"/>-->
+    </keyframe>
+</mujoco>
+
