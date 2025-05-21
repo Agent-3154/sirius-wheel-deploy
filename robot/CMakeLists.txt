@@ -25,6 +25,12 @@ file(GLOB_RECURSE hardware_sources "hardwares/usb/src/*.cpp" "hardwares/fdsc_uti
         "estimators/*.cpp" "leg_controller/*.cpp" "thread_tasks/src/*.cpp" "thread_tasks/*.cpp" "robot_model/*.cpp"
         "hardwares/usb/src/*.cpp" "robot_runner/*.cpp")
 
+include(GNUInstallDirs)
+
+find_package(iceoryx_platform REQUIRED)
+find_package(iceoryx_posh CONFIG REQUIRED)
+find_package(iceoryx_hoofs CONFIG REQUIRED)
+
 add_library(hardware_library SHARED ${hardware_sources}
         thread_tasks/inc/thread_usb_hardware.h
         hardwares/usb/include/rt_usb_base.h
@@ -37,8 +43,9 @@ add_library(hardware_library SHARED ${hardware_sources}
         hardwares/fdsc_utils/my_fdsc.h
         hardwares/fdsc_utils/my_fdsc.cpp
         thread_tasks/src/thread_fdsc.cpp
-#        ../utilities/src/easylogging++.cc
+        #        ../utilities/src/easylogging++.cc
 )
 
 target_link_libraries(hardware_library
-        lcm libusb-1.0.so libmujoco.so)
+        lcm libusb-1.0.so libmujoco.so
+        iceoryx_posh::iceoryx_posh)

@@ -9,9 +9,10 @@
  * @note components initiate in robot runner
  * @param model_name
  * @param robot_controller
+ * @param type_
  */
 HardwareBridge::My_HardwareBridge::My_HardwareBridge(std::string &model_name, Robot_Controller_Base *robot_controller,
-                                                     run_type type_) {
+                                                     Config::run_type type_) {
     usb_cmd_ = new USB_Command_t();
     usb_data_ = new USB_Data_t();
     usb_imu_ = new USB_Imu_t();
@@ -100,35 +101,41 @@ HardwareBridge::My_HardwareBridge::setup_HardwareBridge(const bool real_imu, con
     }
     // create robot runner thread only if all flags true
     //TODO Robot runner thread can also be created by simulation
-    if ((real_imu & real_usb2can & real_rc) || (real_rc & unitree_) || ((robot_runner_->sim_ == real_ros_ctrl) & real_imu & real_usb2can)) {
+    if (robot_runner_->sim_ == Config::real_usb) {
         robot_runner_->init_robotrunner();
-        t_robot_runner_ = std::make_shared<Thread::thread_robot_runner>("Robot Runner Thread",Config::real_control_thread_fre);
+        t_robot_runner_ = std::make_shared<Thread::thread_robot_runner>(
+            "Robot Runner Thread", Config::real_control_thread_fre);
         // tp_robot_runner_ = std::make_shared<Utilities::ThreadPool>(1);
         for (;;) {
             t_robot_runner_->thread_enter_task();
             robot_runner_->run();
             t_robot_runner_->thread_finish_task();
         } //unlimited
-    }else {
-        for (;;){}
+    } else if (robot_runner_->sim_ == Config::sim_mj) {
+        robot_runner_->init_robotrunner();
+        t_robot_runner_ = std::make_shared<Thread::thread_robot_runner>(
+            "Robot Runner Thread", Config::sim_robot_runner_task_fre);
+        for (;;) {
+            t_robot_runner_->thread_enter_task();
+            robot_runner_->run();
+            t_robot_runner_->thread_finish_task();
+        } //unlimited
     }
 }
 
 void HardwareBridge::My_HardwareBridge::thread_usb_function() {
     struct timeval timestruc{};
     timestruc.tv_sec = 0;
-    timestruc.tv_usec = 500; // return immediately
+    timestruc.tv_usec = 0; // return immediately
     int compelte = 0;
 
-    for(auto usb_device : usb_container_->usb_container_)
-    {
+    for (auto usb_device: usb_container_->usb_container_) {
         usb_device->start_transfer();
     }
 
     std::cout << GREEN << "[Thread USB hardware OK]: " << RESET << "Initialize usb hardware thread!\n";
     while (true) {
-        for(auto usb_device : usb_container_->usb_container_)
-        {
+        for (auto usb_device: usb_container_->usb_container_) {
             libusb_handle_events_timeout_completed(usb_device->ctx, &timestruc, &compelte);
         }
     }

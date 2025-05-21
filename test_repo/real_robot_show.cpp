@@ -18,17 +18,14 @@ int main(int argc, char **argv) {
     std::string model_name = "../robot/robot_model/chaojigou/scene.xml";
 #elif defined GO1
     std::string model_name = "../robot/robot_model/unitree_go1/scene.xml";
-#elif defined DG_ENGINEER
-    std::string model_name = "../robot/robot_model/dg_engineer/scene.xml";
 #endif
     auto *robot_ctrl = new My_Controller();
-    bool use_rc = false;
     bool b_sub_real_imu = true;
     bool b_sub_usb2can = true;
 
-    Simulation::SimulationBridge real_robot_show("Thread Show Robot", Config::sim_task_fre, model_name, robot_ctrl, sim_show);
+    // Simulation::SimulationBridge real_robot_show("Thread Show Robot", Config::sim_task_fre, model_name, robot_ctrl, Config::sim_show);
     // start simulation UI loop (blocking call)
-    real_robot_show.setup_simulation_bridge(use_rc, b_sub_real_imu, b_sub_usb2can);
+    // real_robot_show.setup_simulation_bridge(b_sub_real_imu, b_sub_usb2can);
 
     return 0;
 }

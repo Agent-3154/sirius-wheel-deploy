@@ -124,3 +124,9 @@ WARNING: Nan, Inf or huge value in CTRL at ACTUATOR 0. The simulation is unstabl
 Fri Jun 28 15:10:39 2024
 WARNING: Nan, Inf or huge value in CTRL at ACTUATOR 0. The simulation is unstable. Time = 3.1300.
 
+Fri May 16 20:31:16 2025
+ERROR: Headers and library have different versions
+
+Fri May 16 20:32:15 2025
+ERROR: Headers and library have different versions
+

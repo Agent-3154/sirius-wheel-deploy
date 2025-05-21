@@ -44,8 +44,6 @@ namespace mujoco {
         mjtNum to_pos_[3 * Config::drawing_geom_number_pw];
         size_t active_geoms_pos_;
 
-        mjvGeom geom_mpc_fr[4];
-        mjtNum mpc_fr_dir_[4][3];
     } user_geoms_t;
 
     // recursive_mutex在同一个线程能够锁多次
@@ -147,7 +145,6 @@ namespace mujoco {
             std::optional<std::string> print_model;
             std::optional<std::string> print_data;
             bool print_dynamic;
-            bool start_runner;
             bool reset;
             bool align;
             bool copy_pose;
@@ -164,7 +161,6 @@ namespace mujoco {
             bool ui_update_joint;
             bool ui_update_ctrl;
             bool ui_remake_ctrl;
-            bool lcm_publish_;
         } pending_ = {};
 
         SimulateMutex mtx;
@@ -192,6 +188,7 @@ namespace mujoco {
         int busywait = 0;
 
         int lcm_pub_ = 0;
+        int draw_traject = 0;
 
         // keyframe index
         int key = 0;

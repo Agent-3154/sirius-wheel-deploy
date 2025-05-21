@@ -18,23 +18,23 @@ namespace usb_controller {
 #define XBOX_BUTTON_Y       0x03
 #define XBOX_BUTTON_LB      0x04
 #define XBOX_BUTTON_RB      0x05
-    // MOCUTE
-    // #define XBOX_BUTTON_START   0x06
-    // #define XBOX_BUTTON_BACK    0x07
+// MOCUTE
+// #define XBOX_BUTTON_START   0x06
+// #define XBOX_BUTTON_BACK    0x07
 #define XBOX_BUTTON_START   0x07
 #define XBOX_BUTTON_SELECT  0x06
 
-    // #define XBOX_BUTTON_HOME    0x08
+// #define XBOX_BUTTON_HOME    0x08
 
 #define XBOX_BUTTON_LO      0x08    // 左侧控制下压
 #define XBOX_BUTTON_RO      0x09    //右侧下压
 
 #define XBOX_BUTTON_ON      0x01
 #define XBOX_BUTTON_OFF     0x00
-    //      /\ y
-    // x    |
-    // <-----
-    //
+//      /\ y
+// x    |
+// <-----
+//
 #define XBOX_AXIS_LX        0x00    /* 左摇杆X轴 */
 #define XBOX_AXIS_LY        0x01    /* 左摇杆Y轴 */
 #define XBOX_AXIS_RX        0x03    /* 右摇杆X轴 */
@@ -61,8 +61,7 @@ namespace usb_controller {
         LOCOMOTION,
         RECOVER_STAND,
         SITDOWN,
-        DAMPING,
-        EXTERNAL,
+        DAMPING
     } RC_MODE_t;
 
     typedef struct xbox_map {
@@ -88,6 +87,7 @@ namespace usb_controller {
         int rt;
         int xx;
         int yy;
+
     } xbox_map_t;
 
     class logic_remote_controller {

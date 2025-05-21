@@ -1,12 +1,13 @@
 ### Introduction
-This is a simple FSM based on Mujoco Simulator
+This is a simple project based on Mujoco Simulator/Gazebo Simulator and ROS.
 
-### Dependency
-* Eigen 3.4.0
-* LCM 1.5.0
-* libusb
 ### Installation
 First, setup the enviroment.
+* Denpendencies
+  * Eigen 3.4.0
+  * LCM 1.5.0
+  * libusb
+
 * Libraries
 ```bash
 sudo apt-get install libglfw3-dev libboost-all-dev
@@ -23,6 +24,17 @@ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 60 --slave /
 ---
 
 ### Running the project
+#### If you run the project in Gazebo Simulator, you can run the following command:
+* Go to the ros workspace.
+```bash
+bash source devel/setup.bash
+roslaunch ergo_gazebo normal.launch rname:=chaojigo wname:=earth
+rosrun ergo_controller ergo_ctrl   
+```
+##### Pls note that if you want to change the robot(For now BELT, chaojigo, Go1). You need to follow the following steps:
+* Change the robot name in the launch command: rname:=chaojigo/belt/Go1
+* Change the definitions in ergo_controller/CMakeLists.txt.
+* Catkin_make the workspace.
 
 #### If you run the project in Mujoco Simulator, you can run the following command:
 * Go to the ergo_controller/mj_ctrl folder.
@@ -47,12 +59,4 @@ Go to the mj_ctrl/scripts folder.
 bash launch_lcm.sh
 ```
 * Plot data in Mujoco Simulator: Press _Back_ button while simulation is running.
-
-### Remote Controller:
-*After clicking the start in simulator*:
-* STAND: LB + A
-* SitDown: LB + Logitech
-* Passive: LB + X
-* RL MODE: LB + START when stand
-
 

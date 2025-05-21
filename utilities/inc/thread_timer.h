@@ -19,8 +19,8 @@ namespace Thread{
         virtual void thread_finish_task();
     private:
         // unit: microseconds
-        std::chrono::steady_clock::time_point thread_enter_tp;
-        std::chrono::steady_clock::time_point thread_task_finish_tp;
+        std::chrono::high_resolution_clock::time_point thread_enter_tp;
+        std::chrono::high_resolution_clock::time_point thread_task_finish_tp;
         int thread_sleep_du{};
         int thread_total_t;
         std::string task_name_;

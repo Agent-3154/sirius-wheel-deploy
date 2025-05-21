@@ -13,12 +13,15 @@ add_executable(test_hardware run_robot.cpp)
 target_link_libraries(test_hardware hardware_library robot_ctrl_library)
 
 add_executable(sim_test start_sim.cpp)
-target_link_libraries(sim_test simulation_library hardware_library robot_ctrl_library)
+target_link_libraries(sim_test simulation_library)
 
-add_executable(show_robot real_robot_show.cpp)
-target_link_libraries(show_robot simulation_library hardware_library robot_ctrl_library)
+add_executable(sim_ctrl run_sim_ctrl.cpp)
+target_link_libraries(sim_ctrl hardware_library robot_ctrl_library)
 
-add_executable(test_ros run_robot_ros.cpp)
-target_link_libraries(test_ros simulation_library hardware_library robot_ctrl_library)
+#add_executable(show_robot real_robot_show.cpp)
+#target_link_libraries(show_robot simulation_library hardware_library robot_ctrl_library)
+
+#add_executable(test_ros run_robot_ros.cpp)
+#target_link_libraries(test_ros simulation_library hardware_library robot_ctrl_library)
 
 

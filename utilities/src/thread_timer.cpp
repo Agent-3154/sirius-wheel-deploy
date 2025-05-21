@@ -28,17 +28,17 @@ namespace Thread {
     }
 
     void thread_timer::thread_enter_task() {
-        thread_enter_tp = std::chrono::steady_clock::now();
+        thread_enter_tp = std::chrono::high_resolution_clock::now();
     }
 
     void thread_timer::thread_finish_task() {
-        thread_task_finish_tp = std::chrono::steady_clock::now();
+        thread_task_finish_tp = std::chrono::high_resolution_clock::now();
         std::chrono::duration<int, std::micro> task_period = std::chrono::duration_cast<std::chrono::duration<int, std::micro>>(
                 thread_task_finish_tp - thread_enter_tp);
         thread_sleep_du = thread_total_t - task_period.count();
         if (thread_sleep_du < 0 & print_info_) {
-            LOG(WARNING) << "[Task Run Error]: " << task_name_
-                         << " Consuming time " << thread_sleep_du << " us is longer than given schedule period!";
+            std::cout << "[Task Run Error]: " << task_name_
+                         << " Consuming time " << thread_sleep_du << " us is longer than given schedule period!\n";
             // std::cout << BOLDRED << "[Task Run Error]: " << RESET << task_name_
             //           << " Consuming time "<< thread_sleep_du <<" us is longer than given schedule period!\n";
 //        } else {

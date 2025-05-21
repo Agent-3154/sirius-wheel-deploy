@@ -25,7 +25,6 @@ ControlFSM::ControlFSM(usb_controller::logic_remote_controller *rc, Quadruped_Ba
     state_list_.s_bs = new FSM_State_BS(&control_data_, &control_para_);
     state_list_.s_locomotion = new FSM_State_Locomotion(&control_data_, &control_para_);
     state_list_.s_damping = new FSM_State_Damping(&control_data_, &control_para_);
-    state_list_.s_extern = new FSM_State_Extern(&control_data_, &control_para_);
     //    std::cout << "ok\n";
 
     state_current_ = state_list_.s_passive;
@@ -34,85 +33,72 @@ ControlFSM::ControlFSM(usb_controller::logic_remote_controller *rc, Quadruped_Ba
 }
 
 void ControlFSM::ControlFSM_run() {
-    switch (state_current_->fsm_name_) {
-        case PASSIVE:
-            if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::RECOVER_STAND) {
-                state_next_ = state_list_.s_standup;
-            } else { control_data_.rc_->rc_control_.mode = usb_controller::RC_MODE::PASSIVE; }
-            break;
-        case STAND_UP:
-            if (state_current_->is_busy()) {
-                control_data_.rc_->rc_control_.mode = usb_controller::RC_MODE::RECOVER_STAND;
+    if (state_next_ == state_current_) {
+        switch (state_current_->fsm_name_) {
+            case PASSIVE:
+                if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::RECOVER_STAND) {
+                    state_next_ = state_list_.s_standup;
+                } else { control_data_.rc_->rc_control_.mode = usb_controller::RC_MODE::PASSIVE; }
                 break;
-            }
-        // std::cout << state_current_->state_iter_ << " | stand\n";
-            if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::SITDOWN) {
-                state_next_ = state_list_.s_sitdown;
-            } else if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::EXTERNAL) {
-                state_next_ = state_list_.s_extern;
-            } else {
-                control_data_.rc_->rc_control_.mode = usb_controller::RC_MODE::RECOVER_STAND;
-            }
-            break;
-        case SIT_DOWN:
-            if (state_current_->is_busy()) {
-                control_data_.rc_->rc_control_.mode = usb_controller::RC_MODE::SITDOWN;
+            case STAND_UP:
+                if (state_current_->is_busy()) break;
+                if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::SITDOWN) {
+                    state_next_ = state_list_.s_sitdown;
+                } else if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::BANLANCE_STAND) {
+                    state_next_ = state_list_.s_bs;
+                } else if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::LOCOMOTION) {
+                    state_next_ = state_list_.s_locomotion;
+                } else if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::DAMPING) {
+                    state_next_ = state_list_.s_damping;
+                } else {
+                    control_data_.rc_->rc_control_.mode = usb_controller::RC_MODE::RECOVER_STAND;
+                }
                 break;
-            }
-            if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::PASSIVE) {
-                state_next_ = state_list_.s_passive;
-            } else if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::RECOVER_STAND) {
-                state_next_ = state_list_.s_standup;
-            } else {
-                control_data_.rc_->rc_control_.mode = usb_controller::RC_MODE::SITDOWN;
-            }
-            break;
-        case BALANCE_STAND:
-            if (state_current_->is_busy()) break;
-            if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::RECOVER_STAND) {
-                state_next_ = state_list_.s_standup;
-            } else if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::LOCOMOTION) {
-                state_next_ = state_list_.s_locomotion;
-            } else {
-                control_data_.rc_->rc_control_.mode = usb_controller::RC_MODE::BANLANCE_STAND;
-            }
-            break;
-        case LOCOMOTION:
-            if (state_current_->is_busy()) break;
-            if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::RECOVER_STAND) {
-                state_next_ = state_list_.s_standup;
-            } else if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::BANLANCE_STAND) {
-                state_next_ = state_list_.s_bs;
-            } else if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::DAMPING) {
-                state_next_ = state_list_.s_damping;
-            } else {
-                control_data_.rc_->rc_control_.mode = usb_controller::RC_MODE::LOCOMOTION;
-            }
-            break;
-        case DAMPING:
-            if (state_current_->is_busy()) break;
-            if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::RECOVER_STAND) {
-                state_next_ = state_list_.s_standup;
-            } else {
-                control_data_.rc_->rc_control_.mode = usb_controller::RC_MODE::DAMPING;
-            }
-            break;
-        case EXTERNAL:
-            if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::RECOVER_STAND) {
-                state_next_ = state_list_.s_standup;
-            } else if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::SITDOWN) {
-                state_next_ = state_list_.s_sitdown;
-            } else {
-                control_data_.rc_->rc_control_.mode = usb_controller::RC_MODE::EXTERNAL;
-            }
-            break;
-        default:
-            break;
+            case SIT_DOWN:
+                if (state_current_->is_busy()) break;
+                if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::PASSIVE) {
+                    state_next_ = state_list_.s_passive;
+                } else {
+                    control_data_.rc_->rc_control_.mode = usb_controller::RC_MODE::SITDOWN;
+                }
+                break;
+            case BALANCE_STAND:
+                if (state_current_->is_busy()) break;
+                if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::RECOVER_STAND) {
+                    state_next_ = state_list_.s_standup;
+                } else if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::LOCOMOTION) {
+                    state_next_ = state_list_.s_locomotion;
+                } else {
+                    control_data_.rc_->rc_control_.mode = usb_controller::RC_MODE::BANLANCE_STAND;
+                }
+                break;
+            case LOCOMOTION:
+                if (state_current_->is_busy()) break;
+                if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::RECOVER_STAND) {
+                    state_next_ = state_list_.s_standup;
+                } else if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::BANLANCE_STAND) {
+                    state_next_ = state_list_.s_bs;
+                } else if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::DAMPING) {
+                    state_next_ = state_list_.s_damping;
+                } else {
+                    control_data_.rc_->rc_control_.mode = usb_controller::RC_MODE::LOCOMOTION;
+                }
+                break;
+            case DAMPING:
+                if (state_current_->is_busy()) break;
+                if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::RECOVER_STAND) {
+                    state_next_ = state_list_.s_standup;
+                } else {
+                    control_data_.rc_->rc_control_.mode = usb_controller::RC_MODE::DAMPING;
+                }
+                break;
+            default:
+                break;
+        }
     }
-    // std::cout << "Next State: " << state_next_->fsm_name_ << " | " << "Current State: " << state_current_->fsm_name_ << std::endl;
 
     // safety check
-    for (auto &i: control_data_.leg_controller_->leg_data) {
+    for (auto & i : control_data_.leg_controller_->leg_data) {
         for (int j = 0; j < 3; j++) {
             if (i.qd(j) > Config::qd_danger) {
                 danger_times_++;
@@ -120,7 +106,7 @@ void ControlFSM::ControlFSM_run() {
         }
     }
 
-    if (danger_times_ > 10) {
+    if(danger_times_ > 10) {
         LOG(WARNING) << "Reach the danger velocity!";
         state_next_ = state_list_.s_damping;
         danger_times_ = 0;

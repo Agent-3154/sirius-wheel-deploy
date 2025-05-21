@@ -12,6 +12,19 @@
 #include "../../config/robots_config.h"
 #include "../../lcm-types/cpp/planner_lcmt.hpp"
 #include <condition_variable>
+#if defined (WORK_COMPUTOR)
+#include "iceoryx/v2.95.4/iceoryx_posh/popo/publisher.hpp"
+#include "iceoryx/v2.95.4/iceoryx_posh/popo/subscriber.hpp"
+#include "iceoryx/v2.95.4/iceoryx_posh/runtime/posh_runtime.hpp"
+#include "iceoryx/v2.95.4/iox/signal_watcher.hpp"
+#include "sim_memory_share_data.h"
+#elif defined(LapTop)
+#include "iceoryx/v/iceoryx_posh/popo/publisher.hpp"
+#include "iceoryx/v/iceoryx_posh/popo/subscriber.hpp"
+#include "iceoryx/v/iceoryx_posh/runtime/posh_runtime.hpp"
+#include "iceoryx/v/iox/signal_watcher.hpp"
+#endif
+#include "../../simulator/sim_memory_share_data.h"
 
 template<typename T>
 struct planner_desire {
@@ -64,6 +77,8 @@ public:
 
     virtual void set_lcm() = 0;
 
+    virtual void publish_trajectory_memory() = 0;
+
     bool use_wbc_{};
     planner_desire<T> desired_;
     // std::atomic_bool first_schedule_{};
@@ -111,6 +126,7 @@ protected:
     long iterCounter_{};
     lcm::LCM planner_lcm_;
     planner_lcmt lcm_data_{};
+    iox::popo::Publisher<Sim_Plot> plot_publisher;
 };
 
 template<typename T>
@@ -125,7 +141,8 @@ Planner_Base<T>::Planner_Base(double dt, int swing_segment) : dt_(dt), swing_seg
                                                               running_(Config::trot_running_horizonLength,
                                                                        Config::trot_running_offset,
                                                                        Config::trot_running_duration, "Running"),
-                                                              planner_lcm_(getLcmUrl(255)) {
+                                                              planner_lcm_(getLcmUrl(255)),
+                                                              plot_publisher({"Robot", "Plot", "State"}) {
     dtFoot_ = dt * swing_segment;
     default_dtFoot_ = swing_segment;
     // TODO add the solver setup_problem

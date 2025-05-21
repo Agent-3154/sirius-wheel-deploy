@@ -15,7 +15,7 @@ namespace Config {
 
     constexpr bool thread_time_spy = true; // thread task frequency warning
     constexpr int drawing_geom_number_feets = 600;
-    constexpr int drawing_geom_number_pw = 5000;
+    constexpr int drawing_geom_number_pw = 6000;
 
     enum Joint_Axis {
         Joint_Axis_X = 0,
@@ -30,14 +30,25 @@ namespace Config {
         Joint_Axis_X, Joint_Axis_Y, Joint_Axis_Y,
     };
 
+    enum run_type {
+        nothing = 0,
+        real_usb = 1, // real_ctrl_byusb
+        real_unitree, //real_ctrl_go1
+        real_ros_ctrl,
+        sim_show, // syn imu and motor datas with real robot
+        sim_mj, // sim in mujoco
+        sim_lcm,
+        sim_embedded_in_other// sim in ros or cheetah
+    };
+
     // TODO: Is the abad axis inverse?
     constexpr double damping_kd = 3;
     constexpr double qd_danger = 25.;
     // Task frequency
     constexpr int sim_remote_controller_task_fre = 200;
     constexpr int sim_robot_runner_task_fre = 500;
-    constexpr int sim_task_fre = 500;
-    constexpr bool mj_sim_time_spy = false;
+    constexpr int sim_task_fre = 1000;
+    constexpr bool mj_sim_time_spy = true;
     constexpr int real_control_thread_fre = 500;
     constexpr double bs_rpy_filter = 0.1;
     constexpr double loco_vel_filter = 0.01;

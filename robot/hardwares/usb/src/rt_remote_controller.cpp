@@ -130,15 +130,15 @@ namespace usb_controller {
             if (rc_map_.lb && rc_map_.x) {
                 rc_control_.mode = PASSIVE;
             }
-            if (rc_map_.lb && rc_map_.start) {
-                rc_control_.mode = EXTERNAL;
+            if (rc_map_.lb && rc_map_.rb) {
+                rc_control_.mode = DAMPING;
             }
-            // if (rc_map_.lb && rc_map_.b)
-            //     rc_control_.mode = BANLANCE_STAND;
-            //
-            // if (rc_map_.lb && rc_map_.y)
-            //     rc_control_.mode = LOCOMOTION;
-            //
+            if (rc_map_.lb && rc_map_.b)
+                rc_control_.mode = BANLANCE_STAND;
+
+            if (rc_map_.lb && rc_map_.y)
+                rc_control_.mode = LOCOMOTION;
+
             // draw lines in simulation
             if (rc_map_.select) {
                 delay_count++;
@@ -154,55 +154,55 @@ namespace usb_controller {
             }
 
 
-            // if (rc_control_.mode == BANLANCE_STAND) {
-            //     rc_control_.rpy_des[0] = static_cast<float>(rc_map_.lx) / 32768 / 3.F;
-            //     rc_control_.rpy_des[1] = -static_cast<float>(rc_map_.ly) / 32768 / 3.F;
-            //     rc_control_.rpy_des[2] = -static_cast<float>(rc_map_.rx) / 32768 / 3.F;
-            //     rc_control_.height_variation = -static_cast<float>(rc_map_.ly) / 32768;
-            //     rc_control_.omega_des[0] = 0;
-            //     rc_control_.omega_des[1] = 0;
-            //     rc_control_.omega_des[2] = 0;
-            // }
+            if (rc_control_.mode == BANLANCE_STAND) {
+                rc_control_.rpy_des[0] = static_cast<float>(rc_map_.lx) / 32768 / 3.F;
+                rc_control_.rpy_des[1] = -static_cast<float>(rc_map_.ly) / 32768 / 3.F;
+                rc_control_.rpy_des[2] = -static_cast<float>(rc_map_.rx) / 32768 / 3.F;
+                rc_control_.height_variation = -static_cast<float>(rc_map_.ly) / 32768;
+                rc_control_.omega_des[0] = 0;
+                rc_control_.omega_des[1] = 0;
+                rc_control_.omega_des[2] = 0;
+            }
         }
-        // if (rc_control_.mode == LOCOMOTION) {
-        //     if (rc_map_.y) { rc_control_.variables[0] = 1; } //trot
-        //     else if (rc_map_.x) { rc_control_.variables[0] = 0; } //stand
-        //     else if (rc_map_.a) { rc_control_.variables[0] = 3; } //walk
-        //     else if (rc_map_.b) { rc_control_.variables[0] = 4; } // running
-        //     //
-        //     // //            if (rc_map_.rt > 30000 && rc_map_.start) joystick_gait = 4;
-        //     //             rc_control_.variables[0] = joystick_gait;
-        //     if (rc_control_.variables[0] == 4) {
-        //         // rc_control_.v_des[0] = -static_cast<float>(rc_map_.ly) / 32768.f * 3.f;
-        //         // rc_control_.v_des[1] = 0;
-        //         rc_control_.v_des[0] = -static_cast<float>(rc_map_.ly) / 32768.f;
-        //         rc_control_.v_des[1] = -1.f * static_cast<float>(rc_map_.lx) / 32768.f;
-        //         rc_control_.v_des[2] = 0;
-        //         rc_control_.omega_des[0] = 0;
-        //         rc_control_.omega_des[1] = 0; //(float)map.ry/32768;//pitch
-        //         rc_control_.omega_des[2] = static_cast<float>(rc_map_.rx) / 32768.f / 2.f;
-        //         rc_control_.rpy_des[0] = 0;
-        //     } else if (rc_control_.variables[0] == 3) {
-        //         rc_control_.v_des[0] = -static_cast<float>(rc_map_.ly) / 32768.f / 4.f;
-        //         rc_control_.v_des[1] = 0;
-        //         rc_control_.v_des[2] = 0;
-        //         rc_control_.omega_des[0] = 0;
-        //         rc_control_.omega_des[1] = 0; //(float)map.ry/32768;//pitch
-        //         rc_control_.omega_des[2] = static_cast<float>(rc_map_.rx) / 32768.f / 2.f;
-        //         rc_control_.rpy_des[0] = 0;
-        //     } else if (rc_control_.variables[0] == 1) {
-        //         rc_control_.v_des[0] = -static_cast<float>(rc_map_.ly) / 32768.f / 1.f;
-        //         rc_control_.v_des[1] = -1.f * static_cast<float>(rc_map_.lx) / 32768.f / 2.5f;
-        //         rc_control_.v_des[2] = 0;
-        //         rc_control_.omega_des[0] = 0;
-        //         rc_control_.omega_des[1] = 0; //(float)map.ry/32768;//pitch
-        //         rc_control_.omega_des[2] = static_cast<float>(rc_map_.rx) / 32768.f / 2.f;
-        //         rc_control_.rpy_des[0] = 0;
-        //     }
-        //     //             rc_control_.height_variation = (float) rc_map_.ry / 32768;
-        //     //             if (rc_map_.xx < -30000) rc_control_.step_height -= 0.3;
-        //     //             if (rc_map_.xx > 30000) rc_control_.step_height += 0.3;   //dm
-        // }
+        if (rc_control_.mode == LOCOMOTION) {
+            if (rc_map_.y) { rc_control_.variables[0] = 1; } //trot
+            else if (rc_map_.x) { rc_control_.variables[0] = 0; } //stand
+            else if (rc_map_.a) { rc_control_.variables[0] = 3; } //walk
+            else if (rc_map_.b) { rc_control_.variables[0] = 4; } // running
+            //
+            // //            if (rc_map_.rt > 30000 && rc_map_.start) joystick_gait = 4;
+            //             rc_control_.variables[0] = joystick_gait;
+            if (rc_control_.variables[0] == 4) {
+                // rc_control_.v_des[0] = -static_cast<float>(rc_map_.ly) / 32768.f * 3.f;
+                // rc_control_.v_des[1] = 0;
+                rc_control_.v_des[0] = -static_cast<float>(rc_map_.ly) / 32768.f;
+                rc_control_.v_des[1] = -1.f * static_cast<float>(rc_map_.lx) / 32768.f;
+                rc_control_.v_des[2] = 0;
+                rc_control_.omega_des[0] = 0;
+                rc_control_.omega_des[1] = 0; //(float)map.ry/32768;//pitch
+                rc_control_.omega_des[2] = static_cast<float>(rc_map_.rx) / 32768.f / 2.f;
+                rc_control_.rpy_des[0] = 0;
+            } else if (rc_control_.variables[0] == 3) {
+                rc_control_.v_des[0] = -static_cast<float>(rc_map_.ly) / 32768.f / 4.f;
+                rc_control_.v_des[1] = 0;
+                rc_control_.v_des[2] = 0;
+                rc_control_.omega_des[0] = 0;
+                rc_control_.omega_des[1] = 0; //(float)map.ry/32768;//pitch
+                rc_control_.omega_des[2] = static_cast<float>(rc_map_.rx) / 32768.f / 2.f;
+                rc_control_.rpy_des[0] = 0;
+            } else if (rc_control_.variables[0] == 1) {
+                rc_control_.v_des[0] = -static_cast<float>(rc_map_.ly) / 32768.f / 1.f;
+                rc_control_.v_des[1] = -1.f * static_cast<float>(rc_map_.lx) / 32768.f / 3.f;
+                rc_control_.v_des[2] = 0;
+                rc_control_.omega_des[0] = 0;
+                rc_control_.omega_des[1] = 0; //(float)map.ry/32768;//pitch
+                rc_control_.omega_des[2] = static_cast<float>(rc_map_.rx) / 32768.f / 2.f;
+                rc_control_.rpy_des[0] = 0;
+            }
+            //             rc_control_.height_variation = (float) rc_map_.ry / 32768;
+            //             if (rc_map_.xx < -30000) rc_control_.step_height -= 0.3;
+            //             if (rc_map_.xx > 30000) rc_control_.step_height += 0.3;   //dm
+        }
         memcpy(&rc_lcmdata, &rc_control_, sizeof(rc_lcmt));
         rc_LCM.publish("RC_CHANNEL", &rc_lcmdata);
     }

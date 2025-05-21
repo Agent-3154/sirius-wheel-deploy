@@ -1,0 +1,366 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1,
+						3,
+						4,
+						5,
+						9,
+						10
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Release-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.5"
+					},
+					"projectIndex" : 0,
+					"source" : "."
+				},
+				{
+					"build" : "third-party",
+					"childIndexes" : 
+					[
+						2
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-third-party-Release-7183733e04eb08534624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.5"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "third-party"
+				},
+				{
+					"build" : "third-party/qpOASES",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-third-party.qpOASES-Release-4de18cbc58b869fb14c3.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "2.6"
+					},
+					"parentIndex" : 1,
+					"projectIndex" : 1,
+					"source" : "third-party/qpOASES",
+					"targetIndexes" : 
+					[
+						3
+					]
+				},
+				{
+					"build" : "simulator",
+					"jsonFile" : "directory-simulator-Release-d347a3e50d992050a4de.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.10"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 2,
+					"source" : "simulator",
+					"targetIndexes" : 
+					[
+						7
+					]
+				},
+				{
+					"build" : "robot",
+					"jsonFile" : "directory-robot-Release-82275796e1fedbe03909.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.5"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "robot",
+					"targetIndexes" : 
+					[
+						1
+					]
+				},
+				{
+					"build" : "robot_ctrl",
+					"childIndexes" : 
+					[
+						6,
+						8
+					],
+					"jsonFile" : "directory-robot_ctrl-Release-046ddf46ff1cad4e8a39.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.5"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "robot_ctrl",
+					"targetIndexes" : 
+					[
+						4
+					]
+				},
+				{
+					"build" : "robot_ctrl/wbc",
+					"childIndexes" : 
+					[
+						7
+					],
+					"jsonFile" : "directory-robot_ctrl.wbc-Release-75941a1b2a9b3af960a0.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.5"
+					},
+					"parentIndex" : 5,
+					"projectIndex" : 0,
+					"source" : "robot_ctrl/wbc",
+					"targetIndexes" : 
+					[
+						10
+					]
+				},
+				{
+					"build" : "robot_ctrl/wbc/QuadProg++",
+					"jsonFile" : "directory-robot_ctrl.wbc.QuadProg++-Release-8ded33bcec530076578b.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.5"
+					},
+					"parentIndex" : 6,
+					"projectIndex" : 0,
+					"source" : "robot_ctrl/wbc/QuadProg++",
+					"targetIndexes" : 
+					[
+						0
+					]
+				},
+				{
+					"build" : "robot_ctrl/solver",
+					"jsonFile" : "directory-robot_ctrl.solver-Release-16bbb81fe0f2f4264d10.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.5"
+					},
+					"parentIndex" : 5,
+					"projectIndex" : 0,
+					"source" : "robot_ctrl/solver",
+					"targetIndexes" : 
+					[
+						8
+					]
+				},
+				{
+					"build" : "test_repo",
+					"jsonFile" : "directory-test_repo-Release-b2909e26679da94a9ada.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.10"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 3,
+					"source" : "test_repo",
+					"targetIndexes" : 
+					[
+						5,
+						6,
+						9
+					]
+				},
+				{
+					"build" : "lcm_convert",
+					"jsonFile" : "directory-lcm_convert-Release-9b780543d4e0a2dea82e.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.10"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 4,
+					"source" : "lcm_convert",
+					"targetIndexes" : 
+					[
+						2
+					]
+				}
+			],
+			"name" : "Release",
+			"projects" : 
+			[
+				{
+					"childIndexes" : 
+					[
+						1,
+						2,
+						3,
+						4
+					],
+					"directoryIndexes" : 
+					[
+						0,
+						1,
+						4,
+						5,
+						6,
+						7,
+						8
+					],
+					"name" : "My_Mujoco_Simulator",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						4,
+						8,
+						10
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						2
+					],
+					"name" : "qpOASES",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						3
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						3
+					],
+					"name" : "my_simulator",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						7
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						9
+					],
+					"name" : "test_repo",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						5,
+						6,
+						9
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						10
+					],
+					"name" : "lcm_reader",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 7,
+					"id" : "Goldfarb_Optimizer::@bf6d8032cfa97685609a",
+					"jsonFile" : "target-Goldfarb_Optimizer-Release-7441bff61dcd5a6f2da5.json",
+					"name" : "Goldfarb_Optimizer",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 4,
+					"id" : "hardware_library::@c6d49de7a9922ca274e0",
+					"jsonFile" : "target-hardware_library-Release-5220a136dba169c7c5f6.json",
+					"name" : "hardware_library",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 10,
+					"id" : "lcm_reader::@a48e95bdc0e0b155e4f5",
+					"jsonFile" : "target-lcm_reader-Release-a19929277ae8c939a0a2.json",
+					"name" : "lcm_reader",
+					"projectIndex" : 4
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "qpOASES::@6e40666ebebd1f2ca41b",
+					"jsonFile" : "target-qpOASES-Release-4d847e76907d780f731a.json",
+					"name" : "qpOASES",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "robot_ctrl_library::@57b8b45a52099543c178",
+					"jsonFile" : "target-robot_ctrl_library-Release-6ead32d681219560134b.json",
+					"name" : "robot_ctrl_library",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 9,
+					"id" : "sim_ctrl::@be00a092e35eb2c170d8",
+					"jsonFile" : "target-sim_ctrl-Release-ab5cb1215a5cb9dc723d.json",
+					"name" : "sim_ctrl",
+					"projectIndex" : 3
+				},
+				{
+					"directoryIndex" : 9,
+					"id" : "sim_test::@be00a092e35eb2c170d8",
+					"jsonFile" : "target-sim_test-Release-b42b4b4ddf8587ebf9f5.json",
+					"name" : "sim_test",
+					"projectIndex" : 3
+				},
+				{
+					"directoryIndex" : 3,
+					"id" : "simulation_library::@f1f3e991e10b5af6b966",
+					"jsonFile" : "target-simulation_library-Release-13dc4a76be81b125b681.json",
+					"name" : "simulation_library",
+					"projectIndex" : 2
+				},
+				{
+					"directoryIndex" : 8,
+					"id" : "solver_library::@d4abd97a7565962868f7",
+					"jsonFile" : "target-solver_library-Release-2e75de503446c28ba1aa.json",
+					"name" : "solver_library",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 9,
+					"id" : "test_hardware::@be00a092e35eb2c170d8",
+					"jsonFile" : "target-test_hardware-Release-2c044b86d1f61f45011f.json",
+					"name" : "test_hardware",
+					"projectIndex" : 3
+				},
+				{
+					"directoryIndex" : 6,
+					"id" : "wbc_library::@aadb0aa28c52304cd8f0",
+					"jsonFile" : "target-wbc_library-Release-020d1fc46d570e77b634.json",
+					"name" : "wbc_library",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/lingwei/github_repo/dg_fsm/cmake-build-debug",
+		"source" : "/home/lingwei/github_repo/dg_fsm"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 7
+	}
+}

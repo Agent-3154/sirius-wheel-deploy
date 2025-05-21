@@ -10,10 +10,9 @@
 namespace Config {
     // MPC Variables: not adjust often
     // control frequency: 500
-    constexpr int horizonLength = 10;
+    constexpr int horizonLength = 14;
     constexpr int HatAPowerIndex = horizonLength + 1;
 
-    // The gait horizon length is not necessarily equal to the horizon length of the MPC.
     constexpr int trot_horizonLength = 14;
     const Vec4<int> trot_offset = {0, trot_horizonLength / 2, trot_horizonLength / 2, 0};
     const Vec4<int> trot_duration = {
@@ -23,13 +22,13 @@ namespace Config {
     const Vec4<int> stand_offset = {0, 0, 0, 0};
     const Vec4<int> stand_duration = {14, 14, 14, 14};
 
-    constexpr int walk_horizonLength = 20;
-    const Vec4<int> walk_offset = {0, 20, 5, 15};
-    const Vec4<int> walk_duration = {15, 15, 15, 15};
+    constexpr int walk_horizonLength = 24;
+    const Vec4<int> walk_offset = {0, 12, 6, 18};
+    const Vec4<int> walk_duration = {18, 18, 18, 18};
 
-    constexpr int trot_running_horizonLength = 12;
-    const Vec4<int> trot_running_offset = {0, 5, 5, 0};
-    const Vec4<int> trot_running_duration = {6, 6, 6, 6};
+    constexpr int trot_running_horizonLength = 10;
+    const Vec4<int> trot_running_offset = {0, 4, 4, 0};
+    const Vec4<int> trot_running_duration = {5, 5, 5, 5};
 
     // **********************************************************************************************************
     // control frequency: 1000
@@ -55,7 +54,7 @@ namespace Config {
 
     // *********************************************************************************************************
 
-    constexpr int mpc_thread_fre = 90;
+    constexpr int mpc_thread_fre = 100;
     // dtMPC = mpc_iteration_segment * control_dt
     // total_horizon = horizonLength * dtMPC
     constexpr int mpc_iteration_segment = 25;
@@ -107,16 +106,16 @@ namespace Config {
     constexpr double kp_cartesian_z = 150;
     constexpr double kd_cartesian = 10;
 
-    constexpr double step_height = 0.12;
+    constexpr double step_height = 0.08;
     constexpr double foot_reference_max = 0.3;
-    constexpr double mpc_bonus_swing_x = 0.05;
+    constexpr double mpc_bonus_swing_x = 0.0;
     constexpr double gain_comp_3 = 0.08; // k_p(v - v_d)
     constexpr double gain_comp_4 = 0.5; // k_p(p[2]/g)*v x w
 
     //TODO Add these file to info, and add tunnel with simulation.
     constexpr double pf_z = -0.001;
     constexpr double f_max = 2500;
-    constexpr double mu = 0.6;
+    constexpr double mu = 0.5;
     constexpr double x_drag = 0;
     constexpr double wbc_weight_base = 1000.0;
 }

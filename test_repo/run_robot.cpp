@@ -19,7 +19,7 @@ int main(int argc, char **argv) {
     bool launch_usb2can = true;
     bool launch_rc = true;
     bool unitree = false;
-    run_type type_ = real_usb;
+    Config::run_type type_ = Config::real_usb;
 #elif defined GO1
     std::string model_name = "../robot/robot_model/unitree_go1/scene.xml";
     bool launch_imu = false;
@@ -33,8 +33,9 @@ int main(int argc, char **argv) {
     bool launch_usb2can = true;
     bool launch_rc = false;
     bool unitree = false;
-    run_type type_ = real_usb;
+    Config::run_type type_ = Config::real_usb;
 #endif
+
     auto *robot_ctrl = new My_Controller();
     Eigen::setNbThreads(1);
 

@@ -774,8 +774,8 @@ namespace {
             {mjITEM_EDITNUM, "LS Tol", 2, &(opt->ls_tolerance), "1 0 0.1"},
             {mjITEM_EDITINT, "Noslip Iter", 2, &(opt->noslip_iterations), "1 0 1000"},
             {mjITEM_EDITNUM, "Noslip Tol", 2, &(opt->noslip_tolerance), "1 0 1"},
-            {mjITEM_EDITINT, "MPR Iter", 2, &(opt->mpr_iterations), "1 0 1000"},
-            {mjITEM_EDITNUM, "MPR Tol", 2, &(opt->mpr_tolerance), "1 0 1"},
+            {mjITEM_EDITINT, "MPR Iter", 2, &(opt->ls_iterations), "1 0 1000"},
+            {mjITEM_EDITNUM, "MPR Tol", 2, &(opt->ls_tolerance), "1 0 1"},
             {mjITEM_EDITNUM, "API Rate", 2, &(opt->apirate), "1 0 1000"},
             {mjITEM_EDITINT, "SDF Iter", 2, &(opt->sdf_iterations), "1 1 20"},
             {mjITEM_EDITINT, "SDF Init", 2, &(opt->sdf_initpoints), "1 1 100"},
@@ -1415,15 +1415,16 @@ namespace {
                         sim->screenshotrequest.store(true);
                         break;
                 }
-            } else if (it && it->sectionid == SECT_USR) {
-                switch (it->itemid) {
-                    case 0:
-                        sim->pending_.start_runner = true;
-                        break;
-                    default:
-                        break;
-                }
             }
+            // else if (it && it->sectionid == SECT_USR) {
+            //     switch (it->itemid) {
+            //         case 0:
+            //             sim->pending_.draw_traject = true;
+            //             break;
+            //         default:
+            //             break;
+            //     }
+            // }
 
             // option section
             else if (it && it->sectionid == SECT_OPTION) {
@@ -1908,7 +1909,7 @@ namespace mujoco {
 
         const mjuiDef defUsr[] = {
             {mjITEM_SECTION, "My_Sect", 1, nullptr, "AF"},
-            {mjITEM_BUTTON, "Start_Runner", 2, nullptr, "CR"},
+            {mjITEM_CHECKINT, "Draw_Traject", 2, &this->draw_traject, ""},
             {mjITEM_CHECKINT, "LCM_PUB", 2, &this->lcm_pub_, ""},
             {mjITEM_END}
         };
@@ -1916,24 +1917,19 @@ namespace mujoco {
             def_usr[i] = defUsr[i];
         }
 
-        constexpr float rbga_foot_d[4] = {0.12549, 0.698039, 0.66667, 1};
         constexpr float rbga_foot[4] = {0.97647, 0.83137, 0.137255, 1};
         constexpr float rbga_pos_d[4] = {0.9568627, 0.262745098, 0.2117647059, 1};
         constexpr float rbga_pos_[4] = {0.1294117647, 0.5882352941, 0.9529411765, 1};
         constexpr mjtNum size[3] = {1, 0, 0};
-        constexpr mjtNum size_pf[3] = {2, 0, 0};
         for (int i = 0; i < Config::drawing_geom_number_feets; i++) {
             for (int j = 0; j < 4; j++) {
-                mjv_initGeom(&user_geoms.geom_foot_d_[j][i], mjGEOM_SPHERE, size, nullptr, nullptr, rbga_foot_d);
+                mjv_initGeom(&user_geoms.geom_foot_d_[j][i], mjGEOM_SPHERE, size, nullptr, nullptr, rbga_pos_d);
                 mjv_initGeom(&user_geoms.geom_foot_[j][i], mjGEOM_SPHERE, size, nullptr, nullptr, rbga_foot);
             }
         }
         for (int i = 0; i < Config::drawing_geom_number_pw; i++) {
             mjv_initGeom(&user_geoms.pos_d_[i], mjGEOM_SPHERE, size, nullptr, nullptr, rbga_pos_d);
             mjv_initGeom(&user_geoms.pos_[i], mjGEOM_SPHERE, size, nullptr, nullptr, rbga_pos_);
-        }
-        for (auto &i: user_geoms.geom_mpc_fr) {
-            mjv_initGeom(&i, mjGEOM_SPHERE, size_pf, nullptr, nullptr, rbga_pos_d);
         }
     }
 
@@ -2013,7 +2009,7 @@ namespace mujoco {
             X(impratio);
             X(tolerance);
             X(noslip_tolerance);
-            X(mpr_tolerance);
+            X(ls_tolerance);
             X(gravity);
             X(wind);
             X(magnetic);
@@ -2029,7 +2025,7 @@ namespace mujoco {
             X(solver);
             X(iterations);
             X(noslip_iterations);
-            X(mpr_iterations);
+            X(ls_iterations);
             X(disableflags);
             X(enableflags);
             X(disableactuator);
@@ -2919,12 +2915,6 @@ namespace mujoco {
         }
     }
 
-    void Simulate::set_mpc_force(const mjtNum fr[3], int leg_id) {
-        for (int i = 0; i < 3; i++) {
-            double normal_fr = fr[i] / (Config::total_mass * Config::G / 4.) / Config::draw_force_scale;
-            user_geoms.mpc_fr_dir_[leg_id][i] = normal_fr;
-        }
-    }
 
     void Simulate::set_foot_trajectory_des(const mjtNum from[3], const mjtNum to[3], int leg_id) {
         for (int i = 0; i < 3; i++) {
@@ -2942,6 +2932,27 @@ namespace mujoco {
     }
 
     void Simulate::draw_user_geoms() {
+        for (int i = 0; i < Config::drawing_geom_number_pw; i++) {
+            const mjtNum *pos_from_temp = &user_geoms.from_pos_d_[3 * i];
+            const mjtNum *pos_to_temp = &user_geoms.to_pos_d_[3 * i];
+            mjv_connector(&user_geoms.pos_d_[i], mjGEOM_LINE, 4, pos_from_temp, pos_to_temp);
+        }
+        for (int i = 0; i < Config::drawing_geom_number_pw; i++) {
+            const mjtNum *pos_from_temp = &user_geoms.from_pos_[3 * i];
+            const mjtNum *pos_to_temp = &user_geoms.to_pos_[3 * i];
+            mjv_connector(&user_geoms.pos_[i], mjGEOM_LINE, 4, pos_from_temp, pos_to_temp);
+        }
+
+        std::memcpy(scn.geoms + scn.ngeom,
+                    &user_geoms.pos_d_,
+                    sizeof(mjvGeom) * Config::drawing_geom_number_pw);
+        scn.ngeom += static_cast<int>(Config::drawing_geom_number_pw);
+
+        std::memcpy(scn.geoms + scn.ngeom,
+                    &user_geoms.pos_,
+                    sizeof(mjvGeom) * Config::drawing_geom_number_pw);
+        scn.ngeom += static_cast<int>(Config::drawing_geom_number_pw);
+
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < Config::drawing_geom_number_feets; j++) {
                 const mjtNum *from_temp = &user_geoms.from_foot_d_[i][3 * j];
@@ -2964,41 +2975,6 @@ namespace mujoco {
                         &user_geoms.geom_foot_[i],
                         sizeof(mjvGeom) * Config::drawing_geom_number_feets);
             scn.ngeom += static_cast<int>(Config::drawing_geom_number_feets);
-
-            // const int ind = 3 * (geom_iter_[i] - 1);
-            // const mjtNum mpc_force_from[3] = {
-            //     user_geoms.to_foot_[i][ind], user_geoms.to_foot_[i][ind + 1],
-            //     user_geoms.to_foot_[i][ind + 2]
-            // };
-            // const mjtNum mpc_force_to[3] = {
-            //     mpc_force_from[0] + user_geoms.mpc_fr_dir_[i][0],
-            //     mpc_force_from[1] + user_geoms.mpc_fr_dir_[i][1],
-            //     mpc_force_from[2] + user_geoms.mpc_fr_dir_[i][2]
-            // };
-            // mjv_connector(&user_geoms.geom_mpc_fr[i], mjGEOM_ARROW, 0.01, mpc_force_from, mpc_force_to);
-            // std::memcpy(scn.geoms + scn.ngeom, &user_geoms.geom_mpc_fr[i], sizeof(mjvGeom) * 1);
-            // scn.ngeom += 1;
         }
-
-        for (int i = 0; i < Config::drawing_geom_number_pw; i++) {
-            const mjtNum *pos_from_temp = &user_geoms.from_pos_d_[3 * i];
-            const mjtNum *pos_to_temp = &user_geoms.to_pos_d_[3 * i];
-            mjv_connector(&user_geoms.pos_d_[i], mjGEOM_LINE, 4, pos_from_temp, pos_to_temp);
-        }
-        for (int i = 0; i < Config::drawing_geom_number_pw; i++) {
-            const mjtNum *pos_from_temp = &user_geoms.from_pos_[3 * i];
-            const mjtNum *pos_to_temp = &user_geoms.to_pos_[3 * i];
-            mjv_connector(&user_geoms.pos_[i], mjGEOM_LINE, 4, pos_from_temp, pos_to_temp);
-        }
-
-        std::memcpy(scn.geoms + scn.ngeom,
-                    &user_geoms.pos_d_,
-                    sizeof(mjvGeom) * Config::drawing_geom_number_pw);
-        scn.ngeom += static_cast<int>(Config::drawing_geom_number_pw);
-
-        std::memcpy(scn.geoms + scn.ngeom,
-                    &user_geoms.pos_,
-                    sizeof(mjvGeom) * Config::drawing_geom_number_pw);
-        scn.ngeom += static_cast<int>(Config::drawing_geom_number_pw);
     }
 } // namespace mujoco

@@ -13,11 +13,12 @@
 #include "../utilities/types/hardware_types.h"
 #include "robot_runner/Robot_Runner.h"
 #include "thread_tasks/inc/thread_robot_runner.h"
+#include "../config/Config.h"
 
 namespace HardwareBridge {
     class My_HardwareBridge {
     public:
-        explicit My_HardwareBridge(std::string &model_name, Robot_Controller_Base *robot_controller, run_type type_);
+        explicit My_HardwareBridge(std::string &model_name, Robot_Controller_Base *robot_controller, Config::run_type type_);
 
         ~My_HardwareBridge();
 
@@ -52,6 +53,7 @@ namespace HardwareBridge {
         USB_Command_t *usb_cmd_;
         USB_Data_t *usb_data_;
         USB_Imu_t *usb_imu_;
+
     };
 }
 

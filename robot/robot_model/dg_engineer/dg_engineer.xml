@@ -98,7 +98,7 @@
     </asset>
 
     <worldbody>
-        <light name="spotlight" mode="targetbodycom" target="base" pos="0 -1 2"/>
+<!--        <light name="spotlight" mode="targetbodycom" target="base" pos="0 -1 2"/>-->
         <body name="base" pos="0 0 1.0" childclass="dg_engineer">
             <camera name="tracking" mode="trackcom" pos="0 -1 0.8" xyaxes="1 0 0 0 1 1"/>
             <!--            type of the site is sphere by default-->

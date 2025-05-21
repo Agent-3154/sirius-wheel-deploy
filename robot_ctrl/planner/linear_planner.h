@@ -28,6 +28,8 @@ public:
 
     void set_lcm() override;
 
+    void publish_trajectory_memory() override;
+
     void set_start_rpy(Vec3<double> start_rpy) { rpy_des_w_ = std::move(start_rpy); }
 
     [[nodiscard]] const int *get_contact_table() const { return contact_table_; }

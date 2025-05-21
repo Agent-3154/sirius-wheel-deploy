@@ -3,7 +3,6 @@
 #include "../simulator/SimulationBridge.h"
 #include "../robot_ctrl/my_controller.h"
 #include "../config/Config.h"
-#include "../utilities/inc/easylogging++.h"
 
 int main(int argc, char **argv) {
     // print version, check compatibility
@@ -17,18 +16,14 @@ int main(int argc, char **argv) {
 #elif defined DG_ENGINEER
     std::string model_name = "../robot/robot_model/dg_engineer/scene.xml";
 #endif
-    auto *robot_ctrl = new My_Controller();
-    bool use_rc = true;
     bool b_sub_real_imu = false;
     bool b_sub_usb2can = false;
 
-    // el::Configurations conf("my_conf.conf");
-    // el::Loggers::reconfigureAllLoggers(conf);
-    el::Loggers::addFlag(el::LoggingFlag::ColoredTerminalOutput);
-
-    Simulation::SimulationBridge sim_test("Thread Sim", Config::sim_task_fre, model_name, robot_ctrl, sim_mj);
+    iox::runtime::PoshRuntime::initRuntime("Simulation_Node");
+    Simulation::SimulationBridge sim_test("Thread Sim", Config::sim_task_fre, model_name, Config::sim_mj);
     // start simulation UI loop (blocking call)
-    sim_test.setup_simulation_bridge(use_rc, b_sub_real_imu, b_sub_usb2can);
+    std::cout << "run here\n";
+    sim_test.setup_simulation_bridge(b_sub_real_imu, b_sub_usb2can);
 
     return 0;
 }

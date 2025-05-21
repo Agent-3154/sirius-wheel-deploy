@@ -16,7 +16,6 @@ enum FSM_StateName {
     LOCOMOTION,
     BALANCE_STAND,
     DAMPING,
-    EXTERNAL,
 };
 
 class FSM_State {

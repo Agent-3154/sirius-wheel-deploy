@@ -7,11 +7,8 @@
 
 #include "../simulator/my_simulator.h"
 #include "include/array_safety.h"
-#include "../robot/robot_runner/Robot_Runner.h"
-#include "../robot/thread_tasks/inc/thread_rc.h"
 #include "../utilities/types/hardware_types.h"
 #include "../utilities/inc/thread_timer.h"
-#include "../robot/thread_tasks/inc/thread_robot_runner.h"
 #include "motor_control/my_motor_model.h"
 #include "lcm/lcm-cpp.hpp"
 #include "../lcm-types/cpp/sim_ground_truth_lcmt.hpp"
@@ -19,6 +16,18 @@
 
 #include "../lcm-types/cpp/mpc_lcmt.hpp"
 #include "../lcm-types/cpp/planner_lcmt.hpp"
+#if defined (WORK_COMPUTOR)
+#include "iceoryx/v2.95.4/iceoryx_posh/popo/publisher.hpp"
+#include "iceoryx/v2.95.4/iceoryx_posh/popo/subscriber.hpp"
+#include "iceoryx/v2.95.4/iceoryx_posh/runtime/posh_runtime.hpp"
+#include "iceoryx/v2.95.4/iox/signal_watcher.hpp"
+#elif defined(LapTop)
+#include "iceoryx/v/iceoryx_posh/popo/publisher.hpp"
+#include "iceoryx/v/iceoryx_posh/popo/subscriber.hpp"
+#include "iceoryx/v/iceoryx_posh/runtime/posh_runtime.hpp"
+#include "iceoryx/v/iox/signal_watcher.hpp"
+#endif
+#include "sim_memory_share_data.h"
 
 namespace Simulation {
     namespace mj = ::mujoco;
@@ -33,11 +42,11 @@ namespace Simulation {
     class SimulationBridge : public Thread::thread_timer {
     public:
         SimulationBridge(const std::string &task_name, int task_frequency, std::string &model_name,
-                         Robot_Controller_Base *robot_controller, run_type _sim_type);
+                         Config::run_type _sim_type);
 
         ~SimulationBridge() override;
 
-        void setup_simulation_bridge(bool real_rc, bool real_imu, bool real_control);
+        void setup_simulation_bridge(bool real_imu, bool real_control);
 
         mjModel *LoadModel();
 
@@ -51,9 +60,6 @@ namespace Simulation {
 
         void sim_show_step();
 
-        void sim_show_other();
-
-        RobotRunner *robot_runner_ = nullptr;
     private:
         void set_lcm();
 
@@ -64,11 +70,12 @@ namespace Simulation {
         mjtNum *ctrlnoise = nullptr;
         std::unique_ptr<mj::Simulate> sim_handle_;
 
-        USB_Command_t *usb_cmd_;
         USB_Command_t *motor_cmd_;
         USB_Data_t *motor_data_;
-        USB_Data_t *usb_data_;
         USB_Imu_t *usb_imu_;
+        Vec4<double> noise_quat;
+        Vec3<double> gyro_;
+        Vec3<double> acc_;
 
         // parameter for sim control
         bool runner_started = false;
@@ -79,16 +86,11 @@ namespace Simulation {
         std::thread thread_robot_runner_;
         std::thread thread_rc_;
 
-        void thread_robot_runner_function();
-        void thread_rc_function();
-
         // std::shared_ptr<Utilities::ThreadPool> tp_rc_;
         // std::shared_ptr<Utilities::ThreadPool> tp_robot_runner_;
         std::thread physics_handle_;
-        std::shared_ptr<Thread::thread_rc> t_rc_;
-        std::shared_ptr<Thread::thread_robot_runner> t_robot_runner_;
         std::string model_name_;
-        usb_controller::logic_remote_controller *rc_handle_ = nullptr;
+
         Motor_Control::Motor_Model *motors_{};
 
         lcm::LCM lcm_;
@@ -114,10 +116,7 @@ namespace Simulation {
         mjtNum pos_[3]{};
         mjtNum pos_last_[3]{};
         mjtNum pf_init_[4][3]{};
-        lcm::LCM traject_lcm_;
 
-        mjtNum mpc_force[4][3]{};
-        lcm::LCM sim_mpc_lcm_;
 
         void foot_traject_lcm_handle(const lcm::ReceiveBuffer *rbuf,
                                      const std::string &chan,
@@ -137,7 +136,11 @@ namespace Simulation {
 
         void USB_IMU_LCM_HANDLE(const lcm::ReceiveBuffer *rbuf, const std::string &chan, const imu_lcmt *msg);
 
-        run_type sim_;
+        Config::run_type sim_;
+
+        iox::popo::Subscriber<Robot_Control_Motor_Cmd> subscriber;
+        iox::popo::Publisher<Robot_State> publisher;
+        iox::popo::Subscriber<Sim_Plot> plot_subscriber_;
     };
 }
 

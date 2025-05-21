@@ -24,6 +24,7 @@ bool FSM_State_Stand_Up::state_on_enter() {
     double end_theta_hind = -end_theta1;
     double end_theta_hind2 = -end_theta2;
 #endif
+
     //求趴下时，hip与knee
     h = Config::Sit_Down_Height;
     double mid_theta1 = acos((l1 * l1 + h * h - l2 * l2) / (2 * l1 * h));
@@ -32,6 +33,7 @@ bool FSM_State_Stand_Up::state_on_enter() {
     double mid_theta_hind = -mid_theta1;
     double mid_theta_hind2 = -mid_theta2;
 #endif
+
     for (size_t leg(0); leg < 4; ++leg) {
         joint_pos_ini_[leg] = this->fsm_data_->leg_controller_->leg_data[leg].q;
         joint_pos_fold_[leg][0] = 0;
@@ -54,6 +56,7 @@ bool FSM_State_Stand_Up::state_on_enter() {
         //        std::cout << "Initial Pos: " << leg  << " " <<joint_pos_ini_[leg].transpose() << std::endl;
     }
 #endif
+
     if (fsm_data_->estimators_->get_result_world_position()(2) < 0.2) {
         fold_flag_ = true;
     }

@@ -19,6 +19,9 @@ link_directories("../mujoco-3.1.3/lib")
 link_directories(${LINK_DIR})
 
 file(GLOB_RECURSE robot_ctrl_sources "*.cpp" "FSM/*.cpp")
+find_package(iceoryx_platform REQUIRED)
+find_package(iceoryx_posh CONFIG REQUIRED)
+find_package(iceoryx_hoofs CONFIG REQUIRED)
 
 add_library(robot_ctrl_library SHARED ${robot_ctrl_sources}
         mpc/thread_mpc.cpp
@@ -36,7 +39,7 @@ target_link_libraries(robot_ctrl_library
 #        absl::span
 #        absl::flags
 #        absl::flags_parse
-        lcm libmujoco.so wbc_library solver_library)
+        lcm libmujoco.so wbc_library solver_library iceoryx_posh::iceoryx_posh)
 
 add_subdirectory(wbc)
 add_subdirectory(solver)

@@ -164,7 +164,7 @@ void Linear_Planner::run(Control_FSM_Data &data) {
             swingTimeRemained_[i] -= dt_;
         }
 
-        footSwingTrajectories_[i].setHeight(Config::step_height);
+        footSwingTrajectories_[i].setHeight(step_height_);
 
         Vec3<double> offset_hip(0, side_sign[i] * abad_link_length, 0);
         // Foot Next Point Scheduler
@@ -196,7 +196,8 @@ void Linear_Planner::run(Control_FSM_Data &data) {
         if (i == 3) {
             lcm_data_.parse_data[0] = static_cast<float>(v_w[1] * 0.5 * stance_time);
             lcm_data_.parse_data[1] = static_cast<float>(Config::gain_comp_3 * (v_w[1] - v_w_des[1]));
-            lcm_data_.parse_data[2] = static_cast<float>((Config::gain_comp_4 * p_w[2] / Config::G) * (-v_w[0] * rpy_vel_des_w_(2)));
+            lcm_data_.parse_data[2] = static_cast<float>(
+                (Config::gain_comp_4 * p_w[2] / Config::G) * (-v_w[0] * rpy_vel_des_w_(2)));
         }
         pfx_rel = fmin(fmax(pfx_rel, -p_rel_max), p_rel_max);
         pfy_rel = fmin(fmax(pfy_rel, -p_rel_max), p_rel_max);
@@ -353,6 +354,7 @@ void Linear_Planner::run(Control_FSM_Data &data) {
     }
     iterCounter_++;
     set_lcm();
+    publish_trajectory_memory();
     update_.store(true);
 }
 
@@ -361,6 +363,7 @@ void Linear_Planner::SetupCommand(const Control_FSM_Data &data) {
     rpy_vel_des_b_(2) = -data.rc_->rc_control_.omega_des[2];
     const double x_vel_cmd = data.rc_->rc_control_.v_des[0];
     const double y_vel_cmd = data.rc_->rc_control_.v_des[1];
+    step_height_ = data.rc_->rc_control_.step_height * 0.1;
 
     // TODO add gait number
     // set cmd to controller
@@ -382,4 +385,24 @@ void Linear_Planner::set_lcm() {
         lcm_data_.rpy_des_[i] = static_cast<float>(desired_.pBody_RPY_des_(i));
     }
     planner_lcm_.publish("Planner_Channel", &lcm_data_);
+}
+
+void Linear_Planner::publish_trajectory_memory() {
+    plot_publisher.loan()
+            .and_then([this](auto &sample) {
+                for (int i = 0; i < 3; i++) {
+                    for (int j = 0; j < 4; j++) {
+                        sample->foot_pos_des_[j][i] = desired_.pFoot_des_[j](i);
+                        sample->foot_pos_[j][i] = desired_.pFoot_[j][i];
+                    }
+                    sample->pos_des_[i] = desired_.pBody_des_(i);
+                    sample->pos_[i] = world_pos_(i);
+                }
+                sample->pos_des_[2] = 0.1;
+                sample->pos_[2] = 0.1;
+                sample.publish();
+            })
+            .or_else([](auto &result) {
+                std::cerr << "Unable to loan sample, error: " << result << std::endl;
+            });
 }

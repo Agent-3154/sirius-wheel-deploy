@@ -1,19 +1,20 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.5)
 
-set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
-set(CMAKE_DISABLE_SOURCE_CHANGES ON)
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #set(CMAKE_C_COMPILER "/usr/bin/clang-12")
 #set(CMAKE_CXX_COMPILER "/usr/bin/clang++-12")
 
 # choose make definition
 # *********************************************************************************************************************
 
-if (ROS_BUILD_OPT)
-    message(WARNING "\nUse ros path\n")
-else ()
+if (NOT DEFINED ROS_BUILD)
     add_compile_definitions(DG_ENGINEER)   # choose the robot type: {CHAOJI_GO  BELT  GO1 DG_ENGINEER}
-    message(WARNING "\n Use local path\n")
+    add_compile_definitions(LapTop)
+    message(WARNING "\n\nsub robot define included! Use local path\n\n")
+else ()
+    message(WARNING "\n\nSub robot define not included! Use ros path\n\n")
 endif ()
 # *********************************************************************************************************************
 
@@ -29,10 +30,8 @@ set(CMAKE_C_FLAGS "-O3  -ggdb -std=gnu99 -march=native -I.")
 set(BUILD_TYPE_RELEASE TRUE)
 add_definitions(-DEIGEN_STACK_ALLOCATION_LIMIT=0)
 add_definitions(-DEIGEN_FAST_MATH=1)
-#add_definitions(-DMATRIX_DIM=24)
 add_subdirectory(third-party)
 add_subdirectory(simulator)
-#add_subdirectory(absl_repo)
 add_subdirectory(robot)
 add_subdirectory(robot_ctrl)
 add_subdirectory(test_repo)

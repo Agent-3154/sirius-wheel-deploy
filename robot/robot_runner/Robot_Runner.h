@@ -18,23 +18,27 @@
 #include "../../lcm-types/cpp/ros_lowstate_lcmt.hpp"
 #include "../../robot_ctrl/robot_ctrl_base.h"
 #include <atomic>
+#include "../../config/Config.h"
 
 #include "../../utilities/inc/debug_tools.h"
 #include "../hardwares/fdsc_utils/my_fdsc.h"
-
-enum run_type {
-    real_usb = 0, // real_ctrl_byusb
-    real_unitree, //real_ctrl_go1
-    real_ros_ctrl,
-    sim_show, // syn imu and motor datas with real robot
-    sim_mj, // sim in mujoco
-    sim_lcm,
-    sim_embedded_in_other// sim in ros or cheetah
-};
+#if defined (WORK_COMPUTOR)
+#include "iceoryx/v2.95.4/iceoryx_posh/popo/publisher.hpp"
+#include "iceoryx/v2.95.4/iceoryx_posh/popo/subscriber.hpp"
+#include "iceoryx/v2.95.4/iceoryx_posh/runtime/posh_runtime.hpp"
+#include "iceoryx/v2.95.4/iox/signal_watcher.hpp"
+#include "sim_memory_share_data.h"
+#elif defined(LapTop)
+#include "iceoryx/v/iceoryx_posh/popo/publisher.hpp"
+#include "iceoryx/v/iceoryx_posh/popo/subscriber.hpp"
+#include "iceoryx/v/iceoryx_posh/runtime/posh_runtime.hpp"
+#include "iceoryx/v/iox/signal_watcher.hpp"
+#endif
+#include "../../simulator/sim_memory_share_data.h"
 
 class RobotRunner {
 public:
-    explicit RobotRunner(std::string &model_name, Robot_Controller_Base *control_base, run_type sim_real);
+    explicit RobotRunner(std::string &model_name, Robot_Controller_Base *control_base, Config::run_type sim_real);
 
     void lcm_handle_func();
 
@@ -77,7 +81,7 @@ public:
     state_estimator_lcmt lcm_state_estimate{};
     leg_control_command_lcmt lcm_leg_control_cmd{};
     leg_control_data_lcmt lcm_leg_control_data{};
-    run_type sim_;
+    Config::run_type sim_;
     lcm::LCM lcm_leg_cmd_;
     lcm::LCM lcm_leg_data_;
     lcm::LCM lcm_leg_esti_;
@@ -87,10 +91,15 @@ public:
 
     lcm::LCM lcm_cmd_receive_;
     lcm::LCM lcm_data_publish_;
-    ros_lowstate_lcmt low_state_data_;
-    ros_lowcmd_lcmt low_cmd_;
+    ros_lowstate_lcmt low_state_data_{};
+    ros_lowcmd_lcmt low_cmd_{};
 
     void handleRosCMD(const lcm::ReceiveBuffer *rbuf, const std::string &chan, const ros_lowcmd_lcmt *msg);
+
+    iox::popo::Subscriber<Robot_State> subscriber;
+    iox::popo::Publisher<Robot_Control_Motor_Cmd> publisher;
+    std::thread thread_subscriber_;
+    void thread_subscriber_function();
 };
 
 #endif //MY_MUJOCO_SIMULATOR_ROBOT_RUNNER_H

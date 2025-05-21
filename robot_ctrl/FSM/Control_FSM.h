@@ -12,7 +12,6 @@
 #include "Control_FSM_Data.h"
 #include "FSM_State_bs.h"
 #include "FSM_State_damping.h"
-#include "FSM_State_external.h"
 
 struct FSM_StateList {
     FSM_State_Stand_Up *s_standup;
@@ -21,7 +20,6 @@ struct FSM_StateList {
     FSM_State_BS *s_bs;
     FSM_State_Locomotion *s_locomotion;
     FSM_State_Damping* s_damping;
-    FSM_State_Extern* s_extern;
 };
 
 class ControlFSM {
