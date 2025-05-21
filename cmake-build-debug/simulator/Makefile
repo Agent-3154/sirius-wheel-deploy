@@ -85,51 +85,6 @@ rebuild_cache:
 rebuild_cache/fast: rebuild_cache
 .PHONY : rebuild_cache/fast
 
-# Special rule for the target list_install_components
-list_install_components:
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Available install components are: \"Unspecified\""
-.PHONY : list_install_components
-
-# Special rule for the target list_install_components
-list_install_components/fast: list_install_components
-.PHONY : list_install_components/fast
-
-# Special rule for the target install
-install: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Install the project..."
-	/home/lingwei/Applications/clion-2024.3.4/bin/cmake/linux/x64/bin/cmake -P cmake_install.cmake
-.PHONY : install
-
-# Special rule for the target install
-install/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Install the project..."
-	/home/lingwei/Applications/clion-2024.3.4/bin/cmake/linux/x64/bin/cmake -P cmake_install.cmake
-.PHONY : install/fast
-
-# Special rule for the target install/local
-install/local: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing only the local directory..."
-	/home/lingwei/Applications/clion-2024.3.4/bin/cmake/linux/x64/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
-.PHONY : install/local
-
-# Special rule for the target install/local
-install/local/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing only the local directory..."
-	/home/lingwei/Applications/clion-2024.3.4/bin/cmake/linux/x64/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
-.PHONY : install/local/fast
-
-# Special rule for the target install/strip
-install/strip: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing the project stripped..."
-	/home/lingwei/Applications/clion-2024.3.4/bin/cmake/linux/x64/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
-.PHONY : install/strip
-
-# Special rule for the target install/strip
-install/strip/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing the project stripped..."
-	/home/lingwei/Applications/clion-2024.3.4/bin/cmake/linux/x64/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
-.PHONY : install/strip/fast
-
 # The main all target
 all: cmake_check_build_system
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_progress_start /home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles /home/lingwei/github_repo/dg_fsm/cmake-build-debug/simulator//CMakeFiles/progress.marks
@@ -198,30 +153,6 @@ SimulationBridge.s: SimulationBridge.cpp.s
 SimulationBridge.cpp.s:
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f simulator/CMakeFiles/simulation_library.dir/build.make simulator/CMakeFiles/simulation_library.dir/SimulationBridge.cpp.s
 .PHONY : SimulationBridge.cpp.s
-
-__/robot/robot_model/Quadruped_Model_Base.o: __/robot/robot_model/Quadruped_Model_Base.cpp.o
-.PHONY : __/robot/robot_model/Quadruped_Model_Base.o
-
-# target to build an object file
-__/robot/robot_model/Quadruped_Model_Base.cpp.o:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f simulator/CMakeFiles/simulation_library.dir/build.make simulator/CMakeFiles/simulation_library.dir/__/robot/robot_model/Quadruped_Model_Base.cpp.o
-.PHONY : __/robot/robot_model/Quadruped_Model_Base.cpp.o
-
-__/robot/robot_model/Quadruped_Model_Base.i: __/robot/robot_model/Quadruped_Model_Base.cpp.i
-.PHONY : __/robot/robot_model/Quadruped_Model_Base.i
-
-# target to preprocess a source file
-__/robot/robot_model/Quadruped_Model_Base.cpp.i:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f simulator/CMakeFiles/simulation_library.dir/build.make simulator/CMakeFiles/simulation_library.dir/__/robot/robot_model/Quadruped_Model_Base.cpp.i
-.PHONY : __/robot/robot_model/Quadruped_Model_Base.cpp.i
-
-__/robot/robot_model/Quadruped_Model_Base.s: __/robot/robot_model/Quadruped_Model_Base.cpp.s
-.PHONY : __/robot/robot_model/Quadruped_Model_Base.s
-
-# target to generate assembly for a file
-__/robot/robot_model/Quadruped_Model_Base.cpp.s:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f simulator/CMakeFiles/simulation_library.dir/build.make simulator/CMakeFiles/simulation_library.dir/__/robot/robot_model/Quadruped_Model_Base.cpp.s
-.PHONY : __/robot/robot_model/Quadruped_Model_Base.cpp.s
 
 __/utilities/src/debug_tools.o: __/utilities/src/debug_tools.cpp.o
 .PHONY : __/utilities/src/debug_tools.o
@@ -470,18 +401,11 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... edit_cache"
-	@echo "... install"
-	@echo "... install/local"
-	@echo "... install/strip"
-	@echo "... list_install_components"
 	@echo "... rebuild_cache"
 	@echo "... simulation_library"
 	@echo "... SimulationBridge.o"
 	@echo "... SimulationBridge.i"
 	@echo "... SimulationBridge.s"
-	@echo "... __/robot/robot_model/Quadruped_Model_Base.o"
-	@echo "... __/robot/robot_model/Quadruped_Model_Base.i"
-	@echo "... __/robot/robot_model/Quadruped_Model_Base.s"
 	@echo "... __/utilities/src/debug_tools.o"
 	@echo "... __/utilities/src/debug_tools.i"
 	@echo "... __/utilities/src/debug_tools.s"

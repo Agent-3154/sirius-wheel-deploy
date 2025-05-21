@@ -85,51 +85,6 @@ rebuild_cache:
 rebuild_cache/fast: rebuild_cache
 .PHONY : rebuild_cache/fast
 
-# Special rule for the target list_install_components
-list_install_components:
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Available install components are: \"Unspecified\""
-.PHONY : list_install_components
-
-# Special rule for the target list_install_components
-list_install_components/fast: list_install_components
-.PHONY : list_install_components/fast
-
-# Special rule for the target install
-install: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Install the project..."
-	/home/lingwei/Applications/clion-2024.3.4/bin/cmake/linux/x64/bin/cmake -P cmake_install.cmake
-.PHONY : install
-
-# Special rule for the target install
-install/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Install the project..."
-	/home/lingwei/Applications/clion-2024.3.4/bin/cmake/linux/x64/bin/cmake -P cmake_install.cmake
-.PHONY : install/fast
-
-# Special rule for the target install/local
-install/local: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing only the local directory..."
-	/home/lingwei/Applications/clion-2024.3.4/bin/cmake/linux/x64/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
-.PHONY : install/local
-
-# Special rule for the target install/local
-install/local/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing only the local directory..."
-	/home/lingwei/Applications/clion-2024.3.4/bin/cmake/linux/x64/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
-.PHONY : install/local/fast
-
-# Special rule for the target install/strip
-install/strip: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing the project stripped..."
-	/home/lingwei/Applications/clion-2024.3.4/bin/cmake/linux/x64/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
-.PHONY : install/strip
-
-# Special rule for the target install/strip
-install/strip/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing the project stripped..."
-	/home/lingwei/Applications/clion-2024.3.4/bin/cmake/linux/x64/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
-.PHONY : install/strip/fast
-
 # The main all target
 all: cmake_check_build_system
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_progress_start /home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl//CMakeFiles/progress.marks
@@ -223,29 +178,29 @@ FSM/FSM_State.cpp.s:
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State.cpp.s
 .PHONY : FSM/FSM_State.cpp.s
 
-FSM/FSM_State_bs.o: FSM/FSM_State_bs.cpp.o
-.PHONY : FSM/FSM_State_bs.o
+FSM/FSM_State_RL_Walk.o: FSM/FSM_State_RL_Walk.cpp.o
+.PHONY : FSM/FSM_State_RL_Walk.o
 
 # target to build an object file
-FSM/FSM_State_bs.cpp.o:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_bs.cpp.o
-.PHONY : FSM/FSM_State_bs.cpp.o
+FSM/FSM_State_RL_Walk.cpp.o:
+	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_RL_Walk.cpp.o
+.PHONY : FSM/FSM_State_RL_Walk.cpp.o
 
-FSM/FSM_State_bs.i: FSM/FSM_State_bs.cpp.i
-.PHONY : FSM/FSM_State_bs.i
+FSM/FSM_State_RL_Walk.i: FSM/FSM_State_RL_Walk.cpp.i
+.PHONY : FSM/FSM_State_RL_Walk.i
 
 # target to preprocess a source file
-FSM/FSM_State_bs.cpp.i:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_bs.cpp.i
-.PHONY : FSM/FSM_State_bs.cpp.i
+FSM/FSM_State_RL_Walk.cpp.i:
+	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_RL_Walk.cpp.i
+.PHONY : FSM/FSM_State_RL_Walk.cpp.i
 
-FSM/FSM_State_bs.s: FSM/FSM_State_bs.cpp.s
-.PHONY : FSM/FSM_State_bs.s
+FSM/FSM_State_RL_Walk.s: FSM/FSM_State_RL_Walk.cpp.s
+.PHONY : FSM/FSM_State_RL_Walk.s
 
 # target to generate assembly for a file
-FSM/FSM_State_bs.cpp.s:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_bs.cpp.s
-.PHONY : FSM/FSM_State_bs.cpp.s
+FSM/FSM_State_RL_Walk.cpp.s:
+	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_RL_Walk.cpp.s
+.PHONY : FSM/FSM_State_RL_Walk.cpp.s
 
 FSM/FSM_State_damping.o: FSM/FSM_State_damping.cpp.o
 .PHONY : FSM/FSM_State_damping.o
@@ -270,30 +225,6 @@ FSM/FSM_State_damping.s: FSM/FSM_State_damping.cpp.s
 FSM/FSM_State_damping.cpp.s:
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_damping.cpp.s
 .PHONY : FSM/FSM_State_damping.cpp.s
-
-FSM/FSM_State_locomotion.o: FSM/FSM_State_locomotion.cpp.o
-.PHONY : FSM/FSM_State_locomotion.o
-
-# target to build an object file
-FSM/FSM_State_locomotion.cpp.o:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_locomotion.cpp.o
-.PHONY : FSM/FSM_State_locomotion.cpp.o
-
-FSM/FSM_State_locomotion.i: FSM/FSM_State_locomotion.cpp.i
-.PHONY : FSM/FSM_State_locomotion.i
-
-# target to preprocess a source file
-FSM/FSM_State_locomotion.cpp.i:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_locomotion.cpp.i
-.PHONY : FSM/FSM_State_locomotion.cpp.i
-
-FSM/FSM_State_locomotion.s: FSM/FSM_State_locomotion.cpp.s
-.PHONY : FSM/FSM_State_locomotion.s
-
-# target to generate assembly for a file
-FSM/FSM_State_locomotion.cpp.s:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_locomotion.cpp.s
-.PHONY : FSM/FSM_State_locomotion.cpp.s
 
 FSM/FSM_State_passive.o: FSM/FSM_State_passive.cpp.o
 .PHONY : FSM/FSM_State_passive.o
@@ -391,78 +322,6 @@ __/utilities/src/easylogging++.cc.s:
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/__/utilities/src/easylogging++.cc.s
 .PHONY : __/utilities/src/easylogging++.cc.s
 
-gait_scheduler/offset_duration_gait.o: gait_scheduler/offset_duration_gait.cpp.o
-.PHONY : gait_scheduler/offset_duration_gait.o
-
-# target to build an object file
-gait_scheduler/offset_duration_gait.cpp.o:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/gait_scheduler/offset_duration_gait.cpp.o
-.PHONY : gait_scheduler/offset_duration_gait.cpp.o
-
-gait_scheduler/offset_duration_gait.i: gait_scheduler/offset_duration_gait.cpp.i
-.PHONY : gait_scheduler/offset_duration_gait.i
-
-# target to preprocess a source file
-gait_scheduler/offset_duration_gait.cpp.i:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/gait_scheduler/offset_duration_gait.cpp.i
-.PHONY : gait_scheduler/offset_duration_gait.cpp.i
-
-gait_scheduler/offset_duration_gait.s: gait_scheduler/offset_duration_gait.cpp.s
-.PHONY : gait_scheduler/offset_duration_gait.s
-
-# target to generate assembly for a file
-gait_scheduler/offset_duration_gait.cpp.s:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/gait_scheduler/offset_duration_gait.cpp.s
-.PHONY : gait_scheduler/offset_duration_gait.cpp.s
-
-mpc/linear_mpc.o: mpc/linear_mpc.cpp.o
-.PHONY : mpc/linear_mpc.o
-
-# target to build an object file
-mpc/linear_mpc.cpp.o:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/mpc/linear_mpc.cpp.o
-.PHONY : mpc/linear_mpc.cpp.o
-
-mpc/linear_mpc.i: mpc/linear_mpc.cpp.i
-.PHONY : mpc/linear_mpc.i
-
-# target to preprocess a source file
-mpc/linear_mpc.cpp.i:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/mpc/linear_mpc.cpp.i
-.PHONY : mpc/linear_mpc.cpp.i
-
-mpc/linear_mpc.s: mpc/linear_mpc.cpp.s
-.PHONY : mpc/linear_mpc.s
-
-# target to generate assembly for a file
-mpc/linear_mpc.cpp.s:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/mpc/linear_mpc.cpp.s
-.PHONY : mpc/linear_mpc.cpp.s
-
-mpc/thread_mpc.o: mpc/thread_mpc.cpp.o
-.PHONY : mpc/thread_mpc.o
-
-# target to build an object file
-mpc/thread_mpc.cpp.o:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/mpc/thread_mpc.cpp.o
-.PHONY : mpc/thread_mpc.cpp.o
-
-mpc/thread_mpc.i: mpc/thread_mpc.cpp.i
-.PHONY : mpc/thread_mpc.i
-
-# target to preprocess a source file
-mpc/thread_mpc.cpp.i:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/mpc/thread_mpc.cpp.i
-.PHONY : mpc/thread_mpc.cpp.i
-
-mpc/thread_mpc.s: mpc/thread_mpc.cpp.s
-.PHONY : mpc/thread_mpc.s
-
-# target to generate assembly for a file
-mpc/thread_mpc.cpp.s:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/mpc/thread_mpc.cpp.s
-.PHONY : mpc/thread_mpc.cpp.s
-
 my_controller.o: my_controller.cpp.o
 .PHONY : my_controller.o
 
@@ -487,294 +346,6 @@ my_controller.cpp.s:
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/my_controller.cpp.s
 .PHONY : my_controller.cpp.s
 
-planner/linear_planner.o: planner/linear_planner.cpp.o
-.PHONY : planner/linear_planner.o
-
-# target to build an object file
-planner/linear_planner.cpp.o:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/planner/linear_planner.cpp.o
-.PHONY : planner/linear_planner.cpp.o
-
-planner/linear_planner.i: planner/linear_planner.cpp.i
-.PHONY : planner/linear_planner.i
-
-# target to preprocess a source file
-planner/linear_planner.cpp.i:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/planner/linear_planner.cpp.i
-.PHONY : planner/linear_planner.cpp.i
-
-planner/linear_planner.s: planner/linear_planner.cpp.s
-.PHONY : planner/linear_planner.s
-
-# target to generate assembly for a file
-planner/linear_planner.cpp.s:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/planner/linear_planner.cpp.s
-.PHONY : planner/linear_planner.cpp.s
-
-planner/thread_planner.o: planner/thread_planner.cpp.o
-.PHONY : planner/thread_planner.o
-
-# target to build an object file
-planner/thread_planner.cpp.o:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/planner/thread_planner.cpp.o
-.PHONY : planner/thread_planner.cpp.o
-
-planner/thread_planner.i: planner/thread_planner.cpp.i
-.PHONY : planner/thread_planner.i
-
-# target to preprocess a source file
-planner/thread_planner.cpp.i:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/planner/thread_planner.cpp.i
-.PHONY : planner/thread_planner.cpp.i
-
-planner/thread_planner.s: planner/thread_planner.cpp.s
-.PHONY : planner/thread_planner.s
-
-# target to generate assembly for a file
-planner/thread_planner.cpp.s:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/planner/thread_planner.cpp.s
-.PHONY : planner/thread_planner.cpp.s
-
-solver/src/Linear_QP_Solver.o: solver/src/Linear_QP_Solver.cpp.o
-.PHONY : solver/src/Linear_QP_Solver.o
-
-# target to build an object file
-solver/src/Linear_QP_Solver.cpp.o:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/solver/src/Linear_QP_Solver.cpp.o
-.PHONY : solver/src/Linear_QP_Solver.cpp.o
-
-solver/src/Linear_QP_Solver.i: solver/src/Linear_QP_Solver.cpp.i
-.PHONY : solver/src/Linear_QP_Solver.i
-
-# target to preprocess a source file
-solver/src/Linear_QP_Solver.cpp.i:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/solver/src/Linear_QP_Solver.cpp.i
-.PHONY : solver/src/Linear_QP_Solver.cpp.i
-
-solver/src/Linear_QP_Solver.s: solver/src/Linear_QP_Solver.cpp.s
-.PHONY : solver/src/Linear_QP_Solver.s
-
-# target to generate assembly for a file
-solver/src/Linear_QP_Solver.cpp.s:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/solver/src/Linear_QP_Solver.cpp.s
-.PHONY : solver/src/Linear_QP_Solver.cpp.s
-
-solver/src/Solver_Base.o: solver/src/Solver_Base.cpp.o
-.PHONY : solver/src/Solver_Base.o
-
-# target to build an object file
-solver/src/Solver_Base.cpp.o:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/solver/src/Solver_Base.cpp.o
-.PHONY : solver/src/Solver_Base.cpp.o
-
-solver/src/Solver_Base.i: solver/src/Solver_Base.cpp.i
-.PHONY : solver/src/Solver_Base.i
-
-# target to preprocess a source file
-solver/src/Solver_Base.cpp.i:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/solver/src/Solver_Base.cpp.i
-.PHONY : solver/src/Solver_Base.cpp.i
-
-solver/src/Solver_Base.s: solver/src/Solver_Base.cpp.s
-.PHONY : solver/src/Solver_Base.s
-
-# target to generate assembly for a file
-solver/src/Solver_Base.cpp.s:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/solver/src/Solver_Base.cpp.s
-.PHONY : solver/src/Solver_Base.cpp.s
-
-wbc/tasks/BodyOriTask.o: wbc/tasks/BodyOriTask.cpp.o
-.PHONY : wbc/tasks/BodyOriTask.o
-
-# target to build an object file
-wbc/tasks/BodyOriTask.cpp.o:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/BodyOriTask.cpp.o
-.PHONY : wbc/tasks/BodyOriTask.cpp.o
-
-wbc/tasks/BodyOriTask.i: wbc/tasks/BodyOriTask.cpp.i
-.PHONY : wbc/tasks/BodyOriTask.i
-
-# target to preprocess a source file
-wbc/tasks/BodyOriTask.cpp.i:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/BodyOriTask.cpp.i
-.PHONY : wbc/tasks/BodyOriTask.cpp.i
-
-wbc/tasks/BodyOriTask.s: wbc/tasks/BodyOriTask.cpp.s
-.PHONY : wbc/tasks/BodyOriTask.s
-
-# target to generate assembly for a file
-wbc/tasks/BodyOriTask.cpp.s:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/BodyOriTask.cpp.s
-.PHONY : wbc/tasks/BodyOriTask.cpp.s
-
-wbc/tasks/BodyPosTask.o: wbc/tasks/BodyPosTask.cpp.o
-.PHONY : wbc/tasks/BodyPosTask.o
-
-# target to build an object file
-wbc/tasks/BodyPosTask.cpp.o:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/BodyPosTask.cpp.o
-.PHONY : wbc/tasks/BodyPosTask.cpp.o
-
-wbc/tasks/BodyPosTask.i: wbc/tasks/BodyPosTask.cpp.i
-.PHONY : wbc/tasks/BodyPosTask.i
-
-# target to preprocess a source file
-wbc/tasks/BodyPosTask.cpp.i:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/BodyPosTask.cpp.i
-.PHONY : wbc/tasks/BodyPosTask.cpp.i
-
-wbc/tasks/BodyPosTask.s: wbc/tasks/BodyPosTask.cpp.s
-.PHONY : wbc/tasks/BodyPosTask.s
-
-# target to generate assembly for a file
-wbc/tasks/BodyPosTask.cpp.s:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/BodyPosTask.cpp.s
-.PHONY : wbc/tasks/BodyPosTask.cpp.s
-
-wbc/tasks/ContactTask.o: wbc/tasks/ContactTask.cpp.o
-.PHONY : wbc/tasks/ContactTask.o
-
-# target to build an object file
-wbc/tasks/ContactTask.cpp.o:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/ContactTask.cpp.o
-.PHONY : wbc/tasks/ContactTask.cpp.o
-
-wbc/tasks/ContactTask.i: wbc/tasks/ContactTask.cpp.i
-.PHONY : wbc/tasks/ContactTask.i
-
-# target to preprocess a source file
-wbc/tasks/ContactTask.cpp.i:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/ContactTask.cpp.i
-.PHONY : wbc/tasks/ContactTask.cpp.i
-
-wbc/tasks/ContactTask.s: wbc/tasks/ContactTask.cpp.s
-.PHONY : wbc/tasks/ContactTask.s
-
-# target to generate assembly for a file
-wbc/tasks/ContactTask.cpp.s:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/ContactTask.cpp.s
-.PHONY : wbc/tasks/ContactTask.cpp.s
-
-wbc/tasks/LinkPosTask.o: wbc/tasks/LinkPosTask.cpp.o
-.PHONY : wbc/tasks/LinkPosTask.o
-
-# target to build an object file
-wbc/tasks/LinkPosTask.cpp.o:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/LinkPosTask.cpp.o
-.PHONY : wbc/tasks/LinkPosTask.cpp.o
-
-wbc/tasks/LinkPosTask.i: wbc/tasks/LinkPosTask.cpp.i
-.PHONY : wbc/tasks/LinkPosTask.i
-
-# target to preprocess a source file
-wbc/tasks/LinkPosTask.cpp.i:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/LinkPosTask.cpp.i
-.PHONY : wbc/tasks/LinkPosTask.cpp.i
-
-wbc/tasks/LinkPosTask.s: wbc/tasks/LinkPosTask.cpp.s
-.PHONY : wbc/tasks/LinkPosTask.s
-
-# target to generate assembly for a file
-wbc/tasks/LinkPosTask.cpp.s:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/LinkPosTask.cpp.s
-.PHONY : wbc/tasks/LinkPosTask.cpp.s
-
-wbc/wbc_ctrl/WBC_Ctrl_Base.o: wbc/wbc_ctrl/WBC_Ctrl_Base.cpp.o
-.PHONY : wbc/wbc_ctrl/WBC_Ctrl_Base.o
-
-# target to build an object file
-wbc/wbc_ctrl/WBC_Ctrl_Base.cpp.o:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbc_ctrl/WBC_Ctrl_Base.cpp.o
-.PHONY : wbc/wbc_ctrl/WBC_Ctrl_Base.cpp.o
-
-wbc/wbc_ctrl/WBC_Ctrl_Base.i: wbc/wbc_ctrl/WBC_Ctrl_Base.cpp.i
-.PHONY : wbc/wbc_ctrl/WBC_Ctrl_Base.i
-
-# target to preprocess a source file
-wbc/wbc_ctrl/WBC_Ctrl_Base.cpp.i:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbc_ctrl/WBC_Ctrl_Base.cpp.i
-.PHONY : wbc/wbc_ctrl/WBC_Ctrl_Base.cpp.i
-
-wbc/wbc_ctrl/WBC_Ctrl_Base.s: wbc/wbc_ctrl/WBC_Ctrl_Base.cpp.s
-.PHONY : wbc/wbc_ctrl/WBC_Ctrl_Base.s
-
-# target to generate assembly for a file
-wbc/wbc_ctrl/WBC_Ctrl_Base.cpp.s:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbc_ctrl/WBC_Ctrl_Base.cpp.s
-.PHONY : wbc/wbc_ctrl/WBC_Ctrl_Base.cpp.s
-
-wbc/wbc_ctrl/WBC_Locomotion_Ctrl.o: wbc/wbc_ctrl/WBC_Locomotion_Ctrl.cpp.o
-.PHONY : wbc/wbc_ctrl/WBC_Locomotion_Ctrl.o
-
-# target to build an object file
-wbc/wbc_ctrl/WBC_Locomotion_Ctrl.cpp.o:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbc_ctrl/WBC_Locomotion_Ctrl.cpp.o
-.PHONY : wbc/wbc_ctrl/WBC_Locomotion_Ctrl.cpp.o
-
-wbc/wbc_ctrl/WBC_Locomotion_Ctrl.i: wbc/wbc_ctrl/WBC_Locomotion_Ctrl.cpp.i
-.PHONY : wbc/wbc_ctrl/WBC_Locomotion_Ctrl.i
-
-# target to preprocess a source file
-wbc/wbc_ctrl/WBC_Locomotion_Ctrl.cpp.i:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbc_ctrl/WBC_Locomotion_Ctrl.cpp.i
-.PHONY : wbc/wbc_ctrl/WBC_Locomotion_Ctrl.cpp.i
-
-wbc/wbc_ctrl/WBC_Locomotion_Ctrl.s: wbc/wbc_ctrl/WBC_Locomotion_Ctrl.cpp.s
-.PHONY : wbc/wbc_ctrl/WBC_Locomotion_Ctrl.s
-
-# target to generate assembly for a file
-wbc/wbc_ctrl/WBC_Locomotion_Ctrl.cpp.s:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbc_ctrl/WBC_Locomotion_Ctrl.cpp.s
-.PHONY : wbc/wbc_ctrl/WBC_Locomotion_Ctrl.cpp.s
-
-wbc/wbic/KinWBC.o: wbc/wbic/KinWBC.cpp.o
-.PHONY : wbc/wbic/KinWBC.o
-
-# target to build an object file
-wbc/wbic/KinWBC.cpp.o:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbic/KinWBC.cpp.o
-.PHONY : wbc/wbic/KinWBC.cpp.o
-
-wbc/wbic/KinWBC.i: wbc/wbic/KinWBC.cpp.i
-.PHONY : wbc/wbic/KinWBC.i
-
-# target to preprocess a source file
-wbc/wbic/KinWBC.cpp.i:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbic/KinWBC.cpp.i
-.PHONY : wbc/wbic/KinWBC.cpp.i
-
-wbc/wbic/KinWBC.s: wbc/wbic/KinWBC.cpp.s
-.PHONY : wbc/wbic/KinWBC.s
-
-# target to generate assembly for a file
-wbc/wbic/KinWBC.cpp.s:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbic/KinWBC.cpp.s
-.PHONY : wbc/wbic/KinWBC.cpp.s
-
-wbc/wbic/WBIC.o: wbc/wbic/WBIC.cpp.o
-.PHONY : wbc/wbic/WBIC.o
-
-# target to build an object file
-wbc/wbic/WBIC.cpp.o:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbic/WBIC.cpp.o
-.PHONY : wbc/wbic/WBIC.cpp.o
-
-wbc/wbic/WBIC.i: wbc/wbic/WBIC.cpp.i
-.PHONY : wbc/wbic/WBIC.i
-
-# target to preprocess a source file
-wbc/wbic/WBIC.cpp.i:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbic/WBIC.cpp.i
-.PHONY : wbc/wbic/WBIC.cpp.i
-
-wbc/wbic/WBIC.s: wbc/wbic/WBIC.cpp.s
-.PHONY : wbc/wbic/WBIC.s
-
-# target to generate assembly for a file
-wbc/wbic/WBIC.cpp.s:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbic/WBIC.cpp.s
-.PHONY : wbc/wbic/WBIC.cpp.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -782,10 +353,6 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... edit_cache"
-	@echo "... install"
-	@echo "... install/local"
-	@echo "... install/strip"
-	@echo "... list_install_components"
 	@echo "... rebuild_cache"
 	@echo "... robot_ctrl_library"
 	@echo "... FSM/Control_FSM.o"
@@ -794,15 +361,12 @@ help:
 	@echo "... FSM/FSM_State.o"
 	@echo "... FSM/FSM_State.i"
 	@echo "... FSM/FSM_State.s"
-	@echo "... FSM/FSM_State_bs.o"
-	@echo "... FSM/FSM_State_bs.i"
-	@echo "... FSM/FSM_State_bs.s"
+	@echo "... FSM/FSM_State_RL_Walk.o"
+	@echo "... FSM/FSM_State_RL_Walk.i"
+	@echo "... FSM/FSM_State_RL_Walk.s"
 	@echo "... FSM/FSM_State_damping.o"
 	@echo "... FSM/FSM_State_damping.i"
 	@echo "... FSM/FSM_State_damping.s"
-	@echo "... FSM/FSM_State_locomotion.o"
-	@echo "... FSM/FSM_State_locomotion.i"
-	@echo "... FSM/FSM_State_locomotion.s"
 	@echo "... FSM/FSM_State_passive.o"
 	@echo "... FSM/FSM_State_passive.i"
 	@echo "... FSM/FSM_State_passive.s"
@@ -815,54 +379,9 @@ help:
 	@echo "... __/utilities/src/easylogging++.o"
 	@echo "... __/utilities/src/easylogging++.i"
 	@echo "... __/utilities/src/easylogging++.s"
-	@echo "... gait_scheduler/offset_duration_gait.o"
-	@echo "... gait_scheduler/offset_duration_gait.i"
-	@echo "... gait_scheduler/offset_duration_gait.s"
-	@echo "... mpc/linear_mpc.o"
-	@echo "... mpc/linear_mpc.i"
-	@echo "... mpc/linear_mpc.s"
-	@echo "... mpc/thread_mpc.o"
-	@echo "... mpc/thread_mpc.i"
-	@echo "... mpc/thread_mpc.s"
 	@echo "... my_controller.o"
 	@echo "... my_controller.i"
 	@echo "... my_controller.s"
-	@echo "... planner/linear_planner.o"
-	@echo "... planner/linear_planner.i"
-	@echo "... planner/linear_planner.s"
-	@echo "... planner/thread_planner.o"
-	@echo "... planner/thread_planner.i"
-	@echo "... planner/thread_planner.s"
-	@echo "... solver/src/Linear_QP_Solver.o"
-	@echo "... solver/src/Linear_QP_Solver.i"
-	@echo "... solver/src/Linear_QP_Solver.s"
-	@echo "... solver/src/Solver_Base.o"
-	@echo "... solver/src/Solver_Base.i"
-	@echo "... solver/src/Solver_Base.s"
-	@echo "... wbc/tasks/BodyOriTask.o"
-	@echo "... wbc/tasks/BodyOriTask.i"
-	@echo "... wbc/tasks/BodyOriTask.s"
-	@echo "... wbc/tasks/BodyPosTask.o"
-	@echo "... wbc/tasks/BodyPosTask.i"
-	@echo "... wbc/tasks/BodyPosTask.s"
-	@echo "... wbc/tasks/ContactTask.o"
-	@echo "... wbc/tasks/ContactTask.i"
-	@echo "... wbc/tasks/ContactTask.s"
-	@echo "... wbc/tasks/LinkPosTask.o"
-	@echo "... wbc/tasks/LinkPosTask.i"
-	@echo "... wbc/tasks/LinkPosTask.s"
-	@echo "... wbc/wbc_ctrl/WBC_Ctrl_Base.o"
-	@echo "... wbc/wbc_ctrl/WBC_Ctrl_Base.i"
-	@echo "... wbc/wbc_ctrl/WBC_Ctrl_Base.s"
-	@echo "... wbc/wbc_ctrl/WBC_Locomotion_Ctrl.o"
-	@echo "... wbc/wbc_ctrl/WBC_Locomotion_Ctrl.i"
-	@echo "... wbc/wbc_ctrl/WBC_Locomotion_Ctrl.s"
-	@echo "... wbc/wbic/KinWBC.o"
-	@echo "... wbc/wbic/KinWBC.i"
-	@echo "... wbc/wbic/KinWBC.s"
-	@echo "... wbc/wbic/WBIC.o"
-	@echo "... wbc/wbic/WBIC.i"
-	@echo "... wbc/wbic/WBIC.s"
 .PHONY : help
 
 

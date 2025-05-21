@@ -273,7 +273,7 @@ My_Mujoco_Simulator_IS_TOP_LEVEL:STATIC=ON
 My_Mujoco_Simulator_SOURCE_DIR:STATIC=/home/lingwei/github_repo/dg_fsm
 
 //Dependencies for the target
-hardware_library_LIB_DEPENDS:STATIC=general;lcm;general;libusb-1.0.so;general;libmujoco.so;general;iceoryx_posh::iceoryx_posh;
+hardware_library_LIB_DEPENDS:STATIC=general;lcm;general;libusb-1.0.so;general;iceoryx_posh::iceoryx_posh;
 
 //The directory containing a CMake configuration file for iceoryx_hoofs.
 iceoryx_hoofs_DIR:PATH=/usr/local/lib/cmake/iceoryx_hoofs
@@ -312,7 +312,7 @@ qpOASES_IS_TOP_LEVEL:STATIC=OFF
 qpOASES_SOURCE_DIR:STATIC=/home/lingwei/github_repo/dg_fsm/third-party/qpOASES
 
 //Dependencies for the target
-robot_ctrl_library_LIB_DEPENDS:STATIC=general;lcm;general;libmujoco.so;general;wbc_library;general;solver_library;general;iceoryx_posh::iceoryx_posh;
+robot_ctrl_library_LIB_DEPENDS:STATIC=general;lcm;general;iceoryx_posh::iceoryx_posh;
 
 //Dependencies for the target
 simulation_library_LIB_DEPENDS:STATIC=general;libmujoco.so;general;glfw;general;iceoryx_posh::iceoryx_posh;general;lcm;
@@ -467,7 +467,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=11
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=6
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP

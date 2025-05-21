@@ -1,12 +1,12 @@
 MEMORY
   total            14.2 MB
   struct          159.0 KB
-  buffer           49.3 KB
+  buffer           49.2 KB
   arena            14.0 MB, used 0.2%
 
 SIZES
   narena                14680064
-  nbuffer               50496
+  nbuffer               50368
   nplugin               0
   maxuse_stack          6792
   maxuse_arena          29344
@@ -25,20 +25,20 @@ SIZES
 
 TIMER
     0:  duration =  0          number = 0
-    1:  duration =  0.065      number = 1
+    1:  duration =  0.037      number = 1
     2:  duration =  0          number = 0
-    3:  duration =  0.04       number = 1
-    4:  duration =  0.0047     number = 1
-    5:  duration =  0.0012     number = 1
-    6:  duration =  0.012      number = 1
+    3:  duration =  0.023      number = 1
+    4:  duration =  0.0024     number = 1
+    5:  duration =  0.00066    number = 1
+    6:  duration =  0.007      number = 1
     7:  duration =  0          number = 0
-    8:  duration =  0.0071     number = 1
-    9:  duration =  0.0016     number = 1
-    10:  duration =  0.024      number = 1
-    11:  duration =  0.0064     number = 1
-    12:  duration =  0.00017    number = 1
-    13:  duration =  0.013      number = 1
-    14:  duration =  0.01       number = 1
+    8:  duration =  0.0035     number = 1
+    9:  duration =  0.0012     number = 1
+    10:  duration =  0.012      number = 1
+    11:  duration =  0.006      number = 1
+    12:  duration =  0.00013    number = 1
+    13:  duration =  0.0022     number = 1
+    14:  duration =  0.0091     number = 1
 
 SOLVER STAT
   solver_nisland = 1
@@ -409,12 +409,6 @@ CAM_XPOS
 
 CAM_XMAT
    1         0         0         0         0.71     -0.71      0         0.71      0.71    
-
-LIGHT_XPOS
-   0         0         1.5     
-
-LIGHT_XDIR
-   0         0        -1       
 
 SUBTREE_COM
    0.016     0         0.25    

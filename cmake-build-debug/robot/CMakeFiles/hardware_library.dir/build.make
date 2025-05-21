@@ -139,24 +139,10 @@ robot/CMakeFiles/hardware_library.dir/estimators/Estimator_Base.cpp.s: cmake_for
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/hardware_library.dir/estimators/Estimator_Base.cpp.s"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lingwei/github_repo/dg_fsm/robot/estimators/Estimator_Base.cpp -o CMakeFiles/hardware_library.dir/estimators/Estimator_Base.cpp.s
 
-robot/CMakeFiles/hardware_library.dir/estimators/KalmanFilterEstimator.cpp.o: robot/CMakeFiles/hardware_library.dir/flags.make
-robot/CMakeFiles/hardware_library.dir/estimators/KalmanFilterEstimator.cpp.o: /home/lingwei/github_repo/dg_fsm/robot/estimators/KalmanFilterEstimator.cpp
-robot/CMakeFiles/hardware_library.dir/estimators/KalmanFilterEstimator.cpp.o: robot/CMakeFiles/hardware_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object robot/CMakeFiles/hardware_library.dir/estimators/KalmanFilterEstimator.cpp.o"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot/CMakeFiles/hardware_library.dir/estimators/KalmanFilterEstimator.cpp.o -MF CMakeFiles/hardware_library.dir/estimators/KalmanFilterEstimator.cpp.o.d -o CMakeFiles/hardware_library.dir/estimators/KalmanFilterEstimator.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot/estimators/KalmanFilterEstimator.cpp
-
-robot/CMakeFiles/hardware_library.dir/estimators/KalmanFilterEstimator.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/hardware_library.dir/estimators/KalmanFilterEstimator.cpp.i"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lingwei/github_repo/dg_fsm/robot/estimators/KalmanFilterEstimator.cpp > CMakeFiles/hardware_library.dir/estimators/KalmanFilterEstimator.cpp.i
-
-robot/CMakeFiles/hardware_library.dir/estimators/KalmanFilterEstimator.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/hardware_library.dir/estimators/KalmanFilterEstimator.cpp.s"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lingwei/github_repo/dg_fsm/robot/estimators/KalmanFilterEstimator.cpp -o CMakeFiles/hardware_library.dir/estimators/KalmanFilterEstimator.cpp.s
-
 robot/CMakeFiles/hardware_library.dir/estimators/OrientationEsimator.cpp.o: robot/CMakeFiles/hardware_library.dir/flags.make
 robot/CMakeFiles/hardware_library.dir/estimators/OrientationEsimator.cpp.o: /home/lingwei/github_repo/dg_fsm/robot/estimators/OrientationEsimator.cpp
 robot/CMakeFiles/hardware_library.dir/estimators/OrientationEsimator.cpp.o: robot/CMakeFiles/hardware_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object robot/CMakeFiles/hardware_library.dir/estimators/OrientationEsimator.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object robot/CMakeFiles/hardware_library.dir/estimators/OrientationEsimator.cpp.o"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot/CMakeFiles/hardware_library.dir/estimators/OrientationEsimator.cpp.o -MF CMakeFiles/hardware_library.dir/estimators/OrientationEsimator.cpp.o.d -o CMakeFiles/hardware_library.dir/estimators/OrientationEsimator.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot/estimators/OrientationEsimator.cpp
 
 robot/CMakeFiles/hardware_library.dir/estimators/OrientationEsimator.cpp.i: cmake_force
@@ -170,7 +156,7 @@ robot/CMakeFiles/hardware_library.dir/estimators/OrientationEsimator.cpp.s: cmak
 robot/CMakeFiles/hardware_library.dir/estimators/sim_estimator.cpp.o: robot/CMakeFiles/hardware_library.dir/flags.make
 robot/CMakeFiles/hardware_library.dir/estimators/sim_estimator.cpp.o: /home/lingwei/github_repo/dg_fsm/robot/estimators/sim_estimator.cpp
 robot/CMakeFiles/hardware_library.dir/estimators/sim_estimator.cpp.o: robot/CMakeFiles/hardware_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object robot/CMakeFiles/hardware_library.dir/estimators/sim_estimator.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object robot/CMakeFiles/hardware_library.dir/estimators/sim_estimator.cpp.o"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot/CMakeFiles/hardware_library.dir/estimators/sim_estimator.cpp.o -MF CMakeFiles/hardware_library.dir/estimators/sim_estimator.cpp.o.d -o CMakeFiles/hardware_library.dir/estimators/sim_estimator.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot/estimators/sim_estimator.cpp
 
 robot/CMakeFiles/hardware_library.dir/estimators/sim_estimator.cpp.i: cmake_force
@@ -184,7 +170,7 @@ robot/CMakeFiles/hardware_library.dir/estimators/sim_estimator.cpp.s: cmake_forc
 robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/my_fdsc.cpp.o: robot/CMakeFiles/hardware_library.dir/flags.make
 robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/my_fdsc.cpp.o: /home/lingwei/github_repo/dg_fsm/robot/hardwares/fdsc_utils/my_fdsc.cpp
 robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/my_fdsc.cpp.o: robot/CMakeFiles/hardware_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/my_fdsc.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/my_fdsc.cpp.o"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/my_fdsc.cpp.o -MF CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/my_fdsc.cpp.o.d -o CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/my_fdsc.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot/hardwares/fdsc_utils/my_fdsc.cpp
 
 robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/my_fdsc.cpp.i: cmake_force
@@ -198,7 +184,7 @@ robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/my_fdsc.cpp.s: cmake_
 robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/common.cpp.o: robot/CMakeFiles/hardware_library.dir/flags.make
 robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/common.cpp.o: /home/lingwei/github_repo/dg_fsm/robot/hardwares/fdsc_utils/src/common.cpp
 robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/common.cpp.o: robot/CMakeFiles/hardware_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/common.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/common.cpp.o"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/common.cpp.o -MF CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/common.cpp.o.d -o CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/common.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot/hardwares/fdsc_utils/src/common.cpp
 
 robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/common.cpp.i: cmake_force
@@ -212,7 +198,7 @@ robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/common.cpp.s: cma
 robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/highCmd.cpp.o: robot/CMakeFiles/hardware_library.dir/flags.make
 robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/highCmd.cpp.o: /home/lingwei/github_repo/dg_fsm/robot/hardwares/fdsc_utils/src/highCmd.cpp
 robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/highCmd.cpp.o: robot/CMakeFiles/hardware_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/highCmd.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/highCmd.cpp.o"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/highCmd.cpp.o -MF CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/highCmd.cpp.o.d -o CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/highCmd.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot/hardwares/fdsc_utils/src/highCmd.cpp
 
 robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/highCmd.cpp.i: cmake_force
@@ -226,7 +212,7 @@ robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/highCmd.cpp.s: cm
 robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/highState.cpp.o: robot/CMakeFiles/hardware_library.dir/flags.make
 robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/highState.cpp.o: /home/lingwei/github_repo/dg_fsm/robot/hardwares/fdsc_utils/src/highState.cpp
 robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/highState.cpp.o: robot/CMakeFiles/hardware_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/highState.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/highState.cpp.o"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/highState.cpp.o -MF CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/highState.cpp.o.d -o CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/highState.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot/hardwares/fdsc_utils/src/highState.cpp
 
 robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/highState.cpp.i: cmake_force
@@ -240,7 +226,7 @@ robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/highState.cpp.s: 
 robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/lowCmd.cpp.o: robot/CMakeFiles/hardware_library.dir/flags.make
 robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/lowCmd.cpp.o: /home/lingwei/github_repo/dg_fsm/robot/hardwares/fdsc_utils/src/lowCmd.cpp
 robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/lowCmd.cpp.o: robot/CMakeFiles/hardware_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/lowCmd.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/lowCmd.cpp.o"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/lowCmd.cpp.o -MF CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/lowCmd.cpp.o.d -o CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/lowCmd.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot/hardwares/fdsc_utils/src/lowCmd.cpp
 
 robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/lowCmd.cpp.i: cmake_force
@@ -254,7 +240,7 @@ robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/lowCmd.cpp.s: cma
 robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/lowState.cpp.o: robot/CMakeFiles/hardware_library.dir/flags.make
 robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/lowState.cpp.o: /home/lingwei/github_repo/dg_fsm/robot/hardwares/fdsc_utils/src/lowState.cpp
 robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/lowState.cpp.o: robot/CMakeFiles/hardware_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/lowState.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/lowState.cpp.o"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/lowState.cpp.o -MF CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/lowState.cpp.o.d -o CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/lowState.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot/hardwares/fdsc_utils/src/lowState.cpp
 
 robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/lowState.cpp.i: cmake_force
@@ -268,7 +254,7 @@ robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/lowState.cpp.s: c
 robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/unitreeConnectBoost.cpp.o: robot/CMakeFiles/hardware_library.dir/flags.make
 robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/unitreeConnectBoost.cpp.o: /home/lingwei/github_repo/dg_fsm/robot/hardwares/fdsc_utils/src/unitreeConnectBoost.cpp
 robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/unitreeConnectBoost.cpp.o: robot/CMakeFiles/hardware_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/unitreeConnectBoost.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/unitreeConnectBoost.cpp.o"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/unitreeConnectBoost.cpp.o -MF CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/unitreeConnectBoost.cpp.o.d -o CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/unitreeConnectBoost.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot/hardwares/fdsc_utils/src/unitreeConnectBoost.cpp
 
 robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/unitreeConnectBoost.cpp.i: cmake_force
@@ -282,7 +268,7 @@ robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/src/unitreeConnectBoo
 robot/CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_remote_controller.cpp.o: robot/CMakeFiles/hardware_library.dir/flags.make
 robot/CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_remote_controller.cpp.o: /home/lingwei/github_repo/dg_fsm/robot/hardwares/usb/src/rt_remote_controller.cpp
 robot/CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_remote_controller.cpp.o: robot/CMakeFiles/hardware_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object robot/CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_remote_controller.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object robot/CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_remote_controller.cpp.o"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot/CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_remote_controller.cpp.o -MF CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_remote_controller.cpp.o.d -o CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_remote_controller.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot/hardwares/usb/src/rt_remote_controller.cpp
 
 robot/CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_remote_controller.cpp.i: cmake_force
@@ -296,7 +282,7 @@ robot/CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_remote_controller.cpp
 robot/CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_usb2can.cpp.o: robot/CMakeFiles/hardware_library.dir/flags.make
 robot/CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_usb2can.cpp.o: /home/lingwei/github_repo/dg_fsm/robot/hardwares/usb/src/rt_usb2can.cpp
 robot/CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_usb2can.cpp.o: robot/CMakeFiles/hardware_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Building CXX object robot/CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_usb2can.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object robot/CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_usb2can.cpp.o"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot/CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_usb2can.cpp.o -MF CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_usb2can.cpp.o.d -o CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_usb2can.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot/hardwares/usb/src/rt_usb2can.cpp
 
 robot/CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_usb2can.cpp.i: cmake_force
@@ -310,7 +296,7 @@ robot/CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_usb2can.cpp.s: cmake_
 robot/CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_usb_base.cpp.o: robot/CMakeFiles/hardware_library.dir/flags.make
 robot/CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_usb_base.cpp.o: /home/lingwei/github_repo/dg_fsm/robot/hardwares/usb/src/rt_usb_base.cpp
 robot/CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_usb_base.cpp.o: robot/CMakeFiles/hardware_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Building CXX object robot/CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_usb_base.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Building CXX object robot/CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_usb_base.cpp.o"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot/CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_usb_base.cpp.o -MF CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_usb_base.cpp.o.d -o CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_usb_base.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot/hardwares/usb/src/rt_usb_base.cpp
 
 robot/CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_usb_base.cpp.i: cmake_force
@@ -324,7 +310,7 @@ robot/CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_usb_base.cpp.s: cmake
 robot/CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_usb_imu.cpp.o: robot/CMakeFiles/hardware_library.dir/flags.make
 robot/CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_usb_imu.cpp.o: /home/lingwei/github_repo/dg_fsm/robot/hardwares/usb/src/rt_usb_imu.cpp
 robot/CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_usb_imu.cpp.o: robot/CMakeFiles/hardware_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object robot/CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_usb_imu.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Building CXX object robot/CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_usb_imu.cpp.o"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot/CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_usb_imu.cpp.o -MF CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_usb_imu.cpp.o.d -o CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_usb_imu.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot/hardwares/usb/src/rt_usb_imu.cpp
 
 robot/CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_usb_imu.cpp.i: cmake_force
@@ -338,7 +324,7 @@ robot/CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_usb_imu.cpp.s: cmake_
 robot/CMakeFiles/hardware_library.dir/leg_controller/leg_control.cpp.o: robot/CMakeFiles/hardware_library.dir/flags.make
 robot/CMakeFiles/hardware_library.dir/leg_controller/leg_control.cpp.o: /home/lingwei/github_repo/dg_fsm/robot/leg_controller/leg_control.cpp
 robot/CMakeFiles/hardware_library.dir/leg_controller/leg_control.cpp.o: robot/CMakeFiles/hardware_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object robot/CMakeFiles/hardware_library.dir/leg_controller/leg_control.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object robot/CMakeFiles/hardware_library.dir/leg_controller/leg_control.cpp.o"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot/CMakeFiles/hardware_library.dir/leg_controller/leg_control.cpp.o -MF CMakeFiles/hardware_library.dir/leg_controller/leg_control.cpp.o.d -o CMakeFiles/hardware_library.dir/leg_controller/leg_control.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot/leg_controller/leg_control.cpp
 
 robot/CMakeFiles/hardware_library.dir/leg_controller/leg_control.cpp.i: cmake_force
@@ -349,24 +335,10 @@ robot/CMakeFiles/hardware_library.dir/leg_controller/leg_control.cpp.s: cmake_fo
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/hardware_library.dir/leg_controller/leg_control.cpp.s"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lingwei/github_repo/dg_fsm/robot/leg_controller/leg_control.cpp -o CMakeFiles/hardware_library.dir/leg_controller/leg_control.cpp.s
 
-robot/CMakeFiles/hardware_library.dir/robot_model/Quadruped_Model_Base.cpp.o: robot/CMakeFiles/hardware_library.dir/flags.make
-robot/CMakeFiles/hardware_library.dir/robot_model/Quadruped_Model_Base.cpp.o: /home/lingwei/github_repo/dg_fsm/robot/robot_model/Quadruped_Model_Base.cpp
-robot/CMakeFiles/hardware_library.dir/robot_model/Quadruped_Model_Base.cpp.o: robot/CMakeFiles/hardware_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building CXX object robot/CMakeFiles/hardware_library.dir/robot_model/Quadruped_Model_Base.cpp.o"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot/CMakeFiles/hardware_library.dir/robot_model/Quadruped_Model_Base.cpp.o -MF CMakeFiles/hardware_library.dir/robot_model/Quadruped_Model_Base.cpp.o.d -o CMakeFiles/hardware_library.dir/robot_model/Quadruped_Model_Base.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot/robot_model/Quadruped_Model_Base.cpp
-
-robot/CMakeFiles/hardware_library.dir/robot_model/Quadruped_Model_Base.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/hardware_library.dir/robot_model/Quadruped_Model_Base.cpp.i"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lingwei/github_repo/dg_fsm/robot/robot_model/Quadruped_Model_Base.cpp > CMakeFiles/hardware_library.dir/robot_model/Quadruped_Model_Base.cpp.i
-
-robot/CMakeFiles/hardware_library.dir/robot_model/Quadruped_Model_Base.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/hardware_library.dir/robot_model/Quadruped_Model_Base.cpp.s"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lingwei/github_repo/dg_fsm/robot/robot_model/Quadruped_Model_Base.cpp -o CMakeFiles/hardware_library.dir/robot_model/Quadruped_Model_Base.cpp.s
-
 robot/CMakeFiles/hardware_library.dir/robot_runner/Robot_Runner.cpp.o: robot/CMakeFiles/hardware_library.dir/flags.make
 robot/CMakeFiles/hardware_library.dir/robot_runner/Robot_Runner.cpp.o: /home/lingwei/github_repo/dg_fsm/robot/robot_runner/Robot_Runner.cpp
 robot/CMakeFiles/hardware_library.dir/robot_runner/Robot_Runner.cpp.o: robot/CMakeFiles/hardware_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_22) "Building CXX object robot/CMakeFiles/hardware_library.dir/robot_runner/Robot_Runner.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object robot/CMakeFiles/hardware_library.dir/robot_runner/Robot_Runner.cpp.o"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot/CMakeFiles/hardware_library.dir/robot_runner/Robot_Runner.cpp.o -MF CMakeFiles/hardware_library.dir/robot_runner/Robot_Runner.cpp.o.d -o CMakeFiles/hardware_library.dir/robot_runner/Robot_Runner.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot/robot_runner/Robot_Runner.cpp
 
 robot/CMakeFiles/hardware_library.dir/robot_runner/Robot_Runner.cpp.i: cmake_force
@@ -380,7 +352,7 @@ robot/CMakeFiles/hardware_library.dir/robot_runner/Robot_Runner.cpp.s: cmake_for
 robot/CMakeFiles/hardware_library.dir/thread_tasks/src/thread_fdsc.cpp.o: robot/CMakeFiles/hardware_library.dir/flags.make
 robot/CMakeFiles/hardware_library.dir/thread_tasks/src/thread_fdsc.cpp.o: /home/lingwei/github_repo/dg_fsm/robot/thread_tasks/src/thread_fdsc.cpp
 robot/CMakeFiles/hardware_library.dir/thread_tasks/src/thread_fdsc.cpp.o: robot/CMakeFiles/hardware_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_23) "Building CXX object robot/CMakeFiles/hardware_library.dir/thread_tasks/src/thread_fdsc.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building CXX object robot/CMakeFiles/hardware_library.dir/thread_tasks/src/thread_fdsc.cpp.o"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot/CMakeFiles/hardware_library.dir/thread_tasks/src/thread_fdsc.cpp.o -MF CMakeFiles/hardware_library.dir/thread_tasks/src/thread_fdsc.cpp.o.d -o CMakeFiles/hardware_library.dir/thread_tasks/src/thread_fdsc.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot/thread_tasks/src/thread_fdsc.cpp
 
 robot/CMakeFiles/hardware_library.dir/thread_tasks/src/thread_fdsc.cpp.i: cmake_force
@@ -394,7 +366,7 @@ robot/CMakeFiles/hardware_library.dir/thread_tasks/src/thread_fdsc.cpp.s: cmake_
 robot/CMakeFiles/hardware_library.dir/thread_tasks/src/thread_rc.cpp.o: robot/CMakeFiles/hardware_library.dir/flags.make
 robot/CMakeFiles/hardware_library.dir/thread_tasks/src/thread_rc.cpp.o: /home/lingwei/github_repo/dg_fsm/robot/thread_tasks/src/thread_rc.cpp
 robot/CMakeFiles/hardware_library.dir/thread_tasks/src/thread_rc.cpp.o: robot/CMakeFiles/hardware_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_24) "Building CXX object robot/CMakeFiles/hardware_library.dir/thread_tasks/src/thread_rc.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_22) "Building CXX object robot/CMakeFiles/hardware_library.dir/thread_tasks/src/thread_rc.cpp.o"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot/CMakeFiles/hardware_library.dir/thread_tasks/src/thread_rc.cpp.o -MF CMakeFiles/hardware_library.dir/thread_tasks/src/thread_rc.cpp.o.d -o CMakeFiles/hardware_library.dir/thread_tasks/src/thread_rc.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot/thread_tasks/src/thread_rc.cpp
 
 robot/CMakeFiles/hardware_library.dir/thread_tasks/src/thread_rc.cpp.i: cmake_force
@@ -408,7 +380,7 @@ robot/CMakeFiles/hardware_library.dir/thread_tasks/src/thread_rc.cpp.s: cmake_fo
 robot/CMakeFiles/hardware_library.dir/thread_tasks/src/thread_robot_runner.cpp.o: robot/CMakeFiles/hardware_library.dir/flags.make
 robot/CMakeFiles/hardware_library.dir/thread_tasks/src/thread_robot_runner.cpp.o: /home/lingwei/github_repo/dg_fsm/robot/thread_tasks/src/thread_robot_runner.cpp
 robot/CMakeFiles/hardware_library.dir/thread_tasks/src/thread_robot_runner.cpp.o: robot/CMakeFiles/hardware_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_25) "Building CXX object robot/CMakeFiles/hardware_library.dir/thread_tasks/src/thread_robot_runner.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_23) "Building CXX object robot/CMakeFiles/hardware_library.dir/thread_tasks/src/thread_robot_runner.cpp.o"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot/CMakeFiles/hardware_library.dir/thread_tasks/src/thread_robot_runner.cpp.o -MF CMakeFiles/hardware_library.dir/thread_tasks/src/thread_robot_runner.cpp.o.d -o CMakeFiles/hardware_library.dir/thread_tasks/src/thread_robot_runner.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot/thread_tasks/src/thread_robot_runner.cpp
 
 robot/CMakeFiles/hardware_library.dir/thread_tasks/src/thread_robot_runner.cpp.i: cmake_force
@@ -422,7 +394,7 @@ robot/CMakeFiles/hardware_library.dir/thread_tasks/src/thread_robot_runner.cpp.s
 robot/CMakeFiles/hardware_library.dir/thread_tasks/src/thread_usb_hardware.cpp.o: robot/CMakeFiles/hardware_library.dir/flags.make
 robot/CMakeFiles/hardware_library.dir/thread_tasks/src/thread_usb_hardware.cpp.o: /home/lingwei/github_repo/dg_fsm/robot/thread_tasks/src/thread_usb_hardware.cpp
 robot/CMakeFiles/hardware_library.dir/thread_tasks/src/thread_usb_hardware.cpp.o: robot/CMakeFiles/hardware_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_26) "Building CXX object robot/CMakeFiles/hardware_library.dir/thread_tasks/src/thread_usb_hardware.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_24) "Building CXX object robot/CMakeFiles/hardware_library.dir/thread_tasks/src/thread_usb_hardware.cpp.o"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot/CMakeFiles/hardware_library.dir/thread_tasks/src/thread_usb_hardware.cpp.o -MF CMakeFiles/hardware_library.dir/thread_tasks/src/thread_usb_hardware.cpp.o.d -o CMakeFiles/hardware_library.dir/thread_tasks/src/thread_usb_hardware.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot/thread_tasks/src/thread_usb_hardware.cpp
 
 robot/CMakeFiles/hardware_library.dir/thread_tasks/src/thread_usb_hardware.cpp.i: cmake_force
@@ -440,7 +412,6 @@ hardware_library_OBJECTS = \
 "CMakeFiles/hardware_library.dir/__/utilities/src/utilities_func.cpp.o" \
 "CMakeFiles/hardware_library.dir/HardwareBridge.cpp.o" \
 "CMakeFiles/hardware_library.dir/estimators/Estimator_Base.cpp.o" \
-"CMakeFiles/hardware_library.dir/estimators/KalmanFilterEstimator.cpp.o" \
 "CMakeFiles/hardware_library.dir/estimators/OrientationEsimator.cpp.o" \
 "CMakeFiles/hardware_library.dir/estimators/sim_estimator.cpp.o" \
 "CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/my_fdsc.cpp.o" \
@@ -455,7 +426,6 @@ hardware_library_OBJECTS = \
 "CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_usb_base.cpp.o" \
 "CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_usb_imu.cpp.o" \
 "CMakeFiles/hardware_library.dir/leg_controller/leg_control.cpp.o" \
-"CMakeFiles/hardware_library.dir/robot_model/Quadruped_Model_Base.cpp.o" \
 "CMakeFiles/hardware_library.dir/robot_runner/Robot_Runner.cpp.o" \
 "CMakeFiles/hardware_library.dir/thread_tasks/src/thread_fdsc.cpp.o" \
 "CMakeFiles/hardware_library.dir/thread_tasks/src/thread_rc.cpp.o" \
@@ -470,7 +440,6 @@ robot/libhardware_library.so: robot/CMakeFiles/hardware_library.dir/__/utilities
 robot/libhardware_library.so: robot/CMakeFiles/hardware_library.dir/__/utilities/src/utilities_func.cpp.o
 robot/libhardware_library.so: robot/CMakeFiles/hardware_library.dir/HardwareBridge.cpp.o
 robot/libhardware_library.so: robot/CMakeFiles/hardware_library.dir/estimators/Estimator_Base.cpp.o
-robot/libhardware_library.so: robot/CMakeFiles/hardware_library.dir/estimators/KalmanFilterEstimator.cpp.o
 robot/libhardware_library.so: robot/CMakeFiles/hardware_library.dir/estimators/OrientationEsimator.cpp.o
 robot/libhardware_library.so: robot/CMakeFiles/hardware_library.dir/estimators/sim_estimator.cpp.o
 robot/libhardware_library.so: robot/CMakeFiles/hardware_library.dir/hardwares/fdsc_utils/my_fdsc.cpp.o
@@ -485,7 +454,6 @@ robot/libhardware_library.so: robot/CMakeFiles/hardware_library.dir/hardwares/us
 robot/libhardware_library.so: robot/CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_usb_base.cpp.o
 robot/libhardware_library.so: robot/CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_usb_imu.cpp.o
 robot/libhardware_library.so: robot/CMakeFiles/hardware_library.dir/leg_controller/leg_control.cpp.o
-robot/libhardware_library.so: robot/CMakeFiles/hardware_library.dir/robot_model/Quadruped_Model_Base.cpp.o
 robot/libhardware_library.so: robot/CMakeFiles/hardware_library.dir/robot_runner/Robot_Runner.cpp.o
 robot/libhardware_library.so: robot/CMakeFiles/hardware_library.dir/thread_tasks/src/thread_fdsc.cpp.o
 robot/libhardware_library.so: robot/CMakeFiles/hardware_library.dir/thread_tasks/src/thread_rc.cpp.o
@@ -496,7 +464,7 @@ robot/libhardware_library.so: /usr/local/lib/libiceoryx_posh.a
 robot/libhardware_library.so: /usr/local/lib/libiceoryx_hoofs.a
 robot/libhardware_library.so: /usr/local/lib/libiceoryx_platform.a
 robot/libhardware_library.so: robot/CMakeFiles/hardware_library.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_27) "Linking CXX shared library libhardware_library.so"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_25) "Linking CXX shared library libhardware_library.so"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/hardware_library.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

@@ -8,23 +8,21 @@
 #include "FSM_State_sit_down.h"
 #include "FSM_State_stand_up.h"
 #include "FSM_State_passive.h"
-#include "FSM_State_locomotion.h"
 #include "Control_FSM_Data.h"
-#include "FSM_State_bs.h"
 #include "FSM_State_damping.h"
+#include "FSM_State_RL_Walk.h"
 
 struct FSM_StateList {
     FSM_State_Stand_Up *s_standup;
     FSM_State_SitDown *s_sitdown;
     FSM_State_Passive *s_passive;
-    FSM_State_BS *s_bs;
-    FSM_State_Locomotion *s_locomotion;
     FSM_State_Damping* s_damping;
+    FSM_State_RL_Walk* s_rl_walk;
 };
 
 class ControlFSM {
 public:
-    ControlFSM(usb_controller::logic_remote_controller *rc, Quadruped_Base *qb,
+    ControlFSM(usb_controller::logic_remote_controller *rc,
                Leg_Controller<double> *leg_control, StateEstimatorContainer<double> *stateEsti);
 
     void ControlFSM_run();

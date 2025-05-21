@@ -6,7 +6,7 @@
 
 
 void My_Controller::Controller_Init() {
-    controlfsm_ = new ControlFSM(ctrl_rc_, quadruped_model_, leg_controller_, estimators_);
+    controlfsm_ = new ControlFSM(ctrl_rc_, leg_controller_, estimators_);
 }
 
 void My_Controller::run() {

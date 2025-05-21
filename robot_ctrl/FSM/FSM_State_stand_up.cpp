@@ -15,8 +15,8 @@ FSM_State_Stand_Up::FSM_State_Stand_Up(Control_FSM_Data_t *controlFSMdata, Contr
 bool FSM_State_Stand_Up::state_on_enter() {
     std::cout << YELLOW << "[FSM State]: Enter Stand State.\n" << RESET;
     state_iter_ = 0;
-    double l1 = this->fsm_data_->quadruped_model_->get_hipLinkLength();
-    double l2 = this->fsm_data_->quadruped_model_->get_kneeLinkLength();
+    double l1 = Config::HipLinkLength;
+    double l2 = Config::KneeLinkLength;
     double h = Config::Stand_Up_Height;
     double end_theta1 = acos((l1 * l1 + h * h - l2 * l2) / (2 * l1 * h));
     double end_theta2 = -M_PI + acos((l1 * l1 + l2 * l2 - h * h) / (2 * l1 * l2));

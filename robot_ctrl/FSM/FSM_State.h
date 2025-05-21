@@ -8,14 +8,17 @@
 #include "Control_FSM_Data.h"
 #include "../../utilities/types/std_cout_colors.h"
 #include "../../config/robots_config.h"
+#include "../../config/Config.h"
 
 enum FSM_StateName {
     PASSIVE = 0,
     STAND_UP,
     SIT_DOWN,
-    LOCOMOTION,
-    BALANCE_STAND,
     DAMPING,
+    RL_WALK,
+    RL_RUNNING,
+    RL_FALL_RECOVER,
+    RL_WALK_STAIRS
 };
 
 class FSM_State {

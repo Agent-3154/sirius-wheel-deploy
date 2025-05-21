@@ -1,8 +1,6 @@
 file(REMOVE_RECURSE
   "CMakeFiles/simulation_library.dir/SimulationBridge.cpp.o"
   "CMakeFiles/simulation_library.dir/SimulationBridge.cpp.o.d"
-  "CMakeFiles/simulation_library.dir/__/robot/robot_model/Quadruped_Model_Base.cpp.o"
-  "CMakeFiles/simulation_library.dir/__/robot/robot_model/Quadruped_Model_Base.cpp.o.d"
   "CMakeFiles/simulation_library.dir/__/utilities/src/debug_tools.cpp.o"
   "CMakeFiles/simulation_library.dir/__/utilities/src/debug_tools.cpp.o.d"
   "CMakeFiles/simulation_library.dir/__/utilities/src/easylogging++.cc.o"

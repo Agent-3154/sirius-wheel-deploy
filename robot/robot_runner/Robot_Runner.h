@@ -8,7 +8,6 @@
 #include "../hardwares/usb/include/rt_usb_imu.h"
 #include "../hardwares/usb/include/rt_usb2can.h"
 #include "../hardwares/usb/include/rt_remote_controller.h"
-#include "../robot_model/Quadruped_Model_Base.h"
 #include "../leg_controller/leg_control.h"
 #include "../estimators/Estimator_Base.h"
 #include "../../lcm-types/cpp/leg_control_command_lcmt.hpp"
@@ -27,7 +26,6 @@
 #include "iceoryx/v2.95.4/iceoryx_posh/popo/subscriber.hpp"
 #include "iceoryx/v2.95.4/iceoryx_posh/runtime/posh_runtime.hpp"
 #include "iceoryx/v2.95.4/iox/signal_watcher.hpp"
-#include "sim_memory_share_data.h"
 #elif defined(LapTop)
 #include "iceoryx/v/iceoryx_posh/popo/publisher.hpp"
 #include "iceoryx/v/iceoryx_posh/popo/subscriber.hpp"
@@ -56,14 +54,11 @@ public:
 
     void run();
 
-    void Load_Model(std::string &model_name);
-
     std::mutex sim_mtx; //for sim
 
     //    std::atomic_bool ato_print_data_ = false;
     std::array<double, 7> groud_truth_q{};
     std::array<double, 6> ground_truth_qd_{};
-    Quadruped_Base *quadruped_model_ = nullptr;
 
     Robot_Controller_Base *robot_ctrl_ = nullptr;
 
@@ -71,7 +66,6 @@ public:
     StateEstimateOutput<double> state_esti_ouput_;
     StateEstimatorContainer<double> *estimators_ = nullptr;
     // this mjModel is used for initiate
-    mjModel *mnew = nullptr;
 
     void setupStep();
 

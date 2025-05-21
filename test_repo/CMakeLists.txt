@@ -4,7 +4,6 @@ project(test_repo)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pthread")
 
 include_directories("../mujoco-3.1.3/include")
-include_directories("../third-party/qpOASES/include")
 link_directories("../mujoco-3.1.3/lib")
 link_directories("../utilities/src/")
 include_directories("../utilities/inc/")

@@ -1,0 +1,230 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1,
+						2,
+						3,
+						4,
+						5
+					],
+					"jsonFile" : "directory-.-Release-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.5"
+					},
+					"projectIndex" : 0,
+					"source" : "."
+				},
+				{
+					"build" : "simulator",
+					"jsonFile" : "directory-simulator-Release-d347a3e50d992050a4de.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.10"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 1,
+					"source" : "simulator",
+					"targetIndexes" : 
+					[
+						5
+					]
+				},
+				{
+					"build" : "robot",
+					"jsonFile" : "directory-robot-Release-82275796e1fedbe03909.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.5"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "robot",
+					"targetIndexes" : 
+					[
+						0
+					]
+				},
+				{
+					"build" : "robot_ctrl",
+					"jsonFile" : "directory-robot_ctrl-Release-046ddf46ff1cad4e8a39.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.5"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "robot_ctrl",
+					"targetIndexes" : 
+					[
+						2
+					]
+				},
+				{
+					"build" : "test_repo",
+					"jsonFile" : "directory-test_repo-Release-b2909e26679da94a9ada.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.10"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 2,
+					"source" : "test_repo",
+					"targetIndexes" : 
+					[
+						3,
+						4,
+						6
+					]
+				},
+				{
+					"build" : "lcm_convert",
+					"jsonFile" : "directory-lcm_convert-Release-9b780543d4e0a2dea82e.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.10"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 3,
+					"source" : "lcm_convert",
+					"targetIndexes" : 
+					[
+						1
+					]
+				}
+			],
+			"name" : "Release",
+			"projects" : 
+			[
+				{
+					"childIndexes" : 
+					[
+						1,
+						2,
+						3
+					],
+					"directoryIndexes" : 
+					[
+						0,
+						2,
+						3
+					],
+					"name" : "My_Mujoco_Simulator",
+					"targetIndexes" : 
+					[
+						0,
+						2
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						1
+					],
+					"name" : "my_simulator",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						5
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						4
+					],
+					"name" : "test_repo",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						3,
+						4,
+						6
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						5
+					],
+					"name" : "lcm_reader",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						1
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 2,
+					"id" : "hardware_library::@c6d49de7a9922ca274e0",
+					"jsonFile" : "target-hardware_library-Release-dc06b975f055263ca9c0.json",
+					"name" : "hardware_library",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "lcm_reader::@a48e95bdc0e0b155e4f5",
+					"jsonFile" : "target-lcm_reader-Release-4902aa8aaf6885a957b4.json",
+					"name" : "lcm_reader",
+					"projectIndex" : 3
+				},
+				{
+					"directoryIndex" : 3,
+					"id" : "robot_ctrl_library::@57b8b45a52099543c178",
+					"jsonFile" : "target-robot_ctrl_library-Release-945902c93f2ca849d42e.json",
+					"name" : "robot_ctrl_library",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 4,
+					"id" : "sim_ctrl::@be00a092e35eb2c170d8",
+					"jsonFile" : "target-sim_ctrl-Release-08be4c5b1169c5bdd5ba.json",
+					"name" : "sim_ctrl",
+					"projectIndex" : 2
+				},
+				{
+					"directoryIndex" : 4,
+					"id" : "sim_test::@be00a092e35eb2c170d8",
+					"jsonFile" : "target-sim_test-Release-1becba063e7759272c70.json",
+					"name" : "sim_test",
+					"projectIndex" : 2
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "simulation_library::@f1f3e991e10b5af6b966",
+					"jsonFile" : "target-simulation_library-Release-fa61d3eb431dcda13acf.json",
+					"name" : "simulation_library",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 4,
+					"id" : "test_hardware::@be00a092e35eb2c170d8",
+					"jsonFile" : "target-test_hardware-Release-4290b5f2d350f7691ac8.json",
+					"name" : "test_hardware",
+					"projectIndex" : 2
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/lingwei/github_repo/dg_fsm/cmake-build-debug",
+		"source" : "/home/lingwei/github_repo/dg_fsm"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 7
+	}
+}

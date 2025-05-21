@@ -85,51 +85,6 @@ rebuild_cache:
 rebuild_cache/fast: rebuild_cache
 .PHONY : rebuild_cache/fast
 
-# Special rule for the target list_install_components
-list_install_components:
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Available install components are: \"Unspecified\""
-.PHONY : list_install_components
-
-# Special rule for the target list_install_components
-list_install_components/fast: list_install_components
-.PHONY : list_install_components/fast
-
-# Special rule for the target install
-install: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Install the project..."
-	/home/lingwei/Applications/clion-2024.3.4/bin/cmake/linux/x64/bin/cmake -P cmake_install.cmake
-.PHONY : install
-
-# Special rule for the target install
-install/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Install the project..."
-	/home/lingwei/Applications/clion-2024.3.4/bin/cmake/linux/x64/bin/cmake -P cmake_install.cmake
-.PHONY : install/fast
-
-# Special rule for the target install/local
-install/local: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing only the local directory..."
-	/home/lingwei/Applications/clion-2024.3.4/bin/cmake/linux/x64/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
-.PHONY : install/local
-
-# Special rule for the target install/local
-install/local/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing only the local directory..."
-	/home/lingwei/Applications/clion-2024.3.4/bin/cmake/linux/x64/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
-.PHONY : install/local/fast
-
-# Special rule for the target install/strip
-install/strip: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing the project stripped..."
-	/home/lingwei/Applications/clion-2024.3.4/bin/cmake/linux/x64/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
-.PHONY : install/strip
-
-# Special rule for the target install/strip
-install/strip/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing the project stripped..."
-	/home/lingwei/Applications/clion-2024.3.4/bin/cmake/linux/x64/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
-.PHONY : install/strip/fast
-
 # The main all target
 all: cmake_check_build_system
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_progress_start /home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot//CMakeFiles/progress.marks
@@ -294,30 +249,6 @@ estimators/Estimator_Base.s: estimators/Estimator_Base.cpp.s
 estimators/Estimator_Base.cpp.s:
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot/CMakeFiles/hardware_library.dir/build.make robot/CMakeFiles/hardware_library.dir/estimators/Estimator_Base.cpp.s
 .PHONY : estimators/Estimator_Base.cpp.s
-
-estimators/KalmanFilterEstimator.o: estimators/KalmanFilterEstimator.cpp.o
-.PHONY : estimators/KalmanFilterEstimator.o
-
-# target to build an object file
-estimators/KalmanFilterEstimator.cpp.o:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot/CMakeFiles/hardware_library.dir/build.make robot/CMakeFiles/hardware_library.dir/estimators/KalmanFilterEstimator.cpp.o
-.PHONY : estimators/KalmanFilterEstimator.cpp.o
-
-estimators/KalmanFilterEstimator.i: estimators/KalmanFilterEstimator.cpp.i
-.PHONY : estimators/KalmanFilterEstimator.i
-
-# target to preprocess a source file
-estimators/KalmanFilterEstimator.cpp.i:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot/CMakeFiles/hardware_library.dir/build.make robot/CMakeFiles/hardware_library.dir/estimators/KalmanFilterEstimator.cpp.i
-.PHONY : estimators/KalmanFilterEstimator.cpp.i
-
-estimators/KalmanFilterEstimator.s: estimators/KalmanFilterEstimator.cpp.s
-.PHONY : estimators/KalmanFilterEstimator.s
-
-# target to generate assembly for a file
-estimators/KalmanFilterEstimator.cpp.s:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot/CMakeFiles/hardware_library.dir/build.make robot/CMakeFiles/hardware_library.dir/estimators/KalmanFilterEstimator.cpp.s
-.PHONY : estimators/KalmanFilterEstimator.cpp.s
 
 estimators/OrientationEsimator.o: estimators/OrientationEsimator.cpp.o
 .PHONY : estimators/OrientationEsimator.o
@@ -655,30 +586,6 @@ leg_controller/leg_control.cpp.s:
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot/CMakeFiles/hardware_library.dir/build.make robot/CMakeFiles/hardware_library.dir/leg_controller/leg_control.cpp.s
 .PHONY : leg_controller/leg_control.cpp.s
 
-robot_model/Quadruped_Model_Base.o: robot_model/Quadruped_Model_Base.cpp.o
-.PHONY : robot_model/Quadruped_Model_Base.o
-
-# target to build an object file
-robot_model/Quadruped_Model_Base.cpp.o:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot/CMakeFiles/hardware_library.dir/build.make robot/CMakeFiles/hardware_library.dir/robot_model/Quadruped_Model_Base.cpp.o
-.PHONY : robot_model/Quadruped_Model_Base.cpp.o
-
-robot_model/Quadruped_Model_Base.i: robot_model/Quadruped_Model_Base.cpp.i
-.PHONY : robot_model/Quadruped_Model_Base.i
-
-# target to preprocess a source file
-robot_model/Quadruped_Model_Base.cpp.i:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot/CMakeFiles/hardware_library.dir/build.make robot/CMakeFiles/hardware_library.dir/robot_model/Quadruped_Model_Base.cpp.i
-.PHONY : robot_model/Quadruped_Model_Base.cpp.i
-
-robot_model/Quadruped_Model_Base.s: robot_model/Quadruped_Model_Base.cpp.s
-.PHONY : robot_model/Quadruped_Model_Base.s
-
-# target to generate assembly for a file
-robot_model/Quadruped_Model_Base.cpp.s:
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug && $(MAKE) $(MAKESILENT) -f robot/CMakeFiles/hardware_library.dir/build.make robot/CMakeFiles/hardware_library.dir/robot_model/Quadruped_Model_Base.cpp.s
-.PHONY : robot_model/Quadruped_Model_Base.cpp.s
-
 robot_runner/Robot_Runner.o: robot_runner/Robot_Runner.cpp.o
 .PHONY : robot_runner/Robot_Runner.o
 
@@ -806,10 +713,6 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... edit_cache"
-	@echo "... install"
-	@echo "... install/local"
-	@echo "... install/strip"
-	@echo "... list_install_components"
 	@echo "... rebuild_cache"
 	@echo "... hardware_library"
 	@echo "... HardwareBridge.o"
@@ -827,9 +730,6 @@ help:
 	@echo "... estimators/Estimator_Base.o"
 	@echo "... estimators/Estimator_Base.i"
 	@echo "... estimators/Estimator_Base.s"
-	@echo "... estimators/KalmanFilterEstimator.o"
-	@echo "... estimators/KalmanFilterEstimator.i"
-	@echo "... estimators/KalmanFilterEstimator.s"
 	@echo "... estimators/OrientationEsimator.o"
 	@echo "... estimators/OrientationEsimator.i"
 	@echo "... estimators/OrientationEsimator.s"
@@ -872,9 +772,6 @@ help:
 	@echo "... leg_controller/leg_control.o"
 	@echo "... leg_controller/leg_control.i"
 	@echo "... leg_controller/leg_control.s"
-	@echo "... robot_model/Quadruped_Model_Base.o"
-	@echo "... robot_model/Quadruped_Model_Base.i"
-	@echo "... robot_model/Quadruped_Model_Base.s"
 	@echo "... robot_runner/Robot_Runner.o"
 	@echo "... robot_runner/Robot_Runner.i"
 	@echo "... robot_runner/Robot_Runner.s"

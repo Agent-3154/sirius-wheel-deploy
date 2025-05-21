@@ -2,8 +2,8 @@
 #include "iostream"
 #include <algorithm>
 #include <std_cout_colors.h>
-
 #include "../../utilities/inc/Interpolation.h"
+#include "../../config/robots_config.h"
 
 FSM_State_SitDown::FSM_State_SitDown(Control_FSM_Data *_controlFSMData, Control_Parameters_t *control_para)
         : FSM_State(_controlFSMData, control_para, SIT_DOWN) {
@@ -14,8 +14,8 @@ FSM_State_SitDown::FSM_State_SitDown(Control_FSM_Data *_controlFSMData, Control_
 bool FSM_State_SitDown::state_on_enter() {
     std::cout << YELLOW << "[FSM State]: Enter SitDown State.\n";
     state_iter_ = 0;
-    double l1 = this->fsm_data_->quadruped_model_->get_hipLinkLength();
-    double l2 = this->fsm_data_->quadruped_model_->get_kneeLinkLength();
+    double l1 = Config::HipLinkLength;
+    double l2 = Config::KneeLinkLength;
     double h = Config::Stand_Up_Height;
     double theta1 = acos((l1 * l1 + h * h - l2 * l2) / (2 * l1 * h));
     double theta2 = -M_PI + acos((l1 * l1 + l2 * l2 - h * h) / (2 * l1 * l2));

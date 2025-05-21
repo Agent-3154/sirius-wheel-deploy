@@ -6,13 +6,15 @@
 #include <std_cout_colors.h>
 
 #include "iostream"
+#include "../../config/Config.h"
+#include "../../config/robots_config.h"
 
 template<typename T>
-Leg_Controller<T>::Leg_Controller(Quadruped_Base *quad) {
-    link1_ = quad->get_abadLinkLength();
-    link2_ = quad->get_hipLinkLength();
-    link3_ = quad->get_kneeLinkLength();
-    nlegs_ = quad->get_nLegs();
+Leg_Controller<T>::Leg_Controller() {
+    link1_ = Config::AbadLinkLength;
+    link2_ = Config::HipLinkLength;
+    link3_ = Config::KneeLinkLength;
+    nlegs_ = 4;
 
     Zero_Command();
     Zero_Data();

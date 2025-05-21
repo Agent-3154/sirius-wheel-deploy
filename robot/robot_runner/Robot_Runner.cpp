@@ -4,7 +4,6 @@
 #include "Robot_Runner.h"
 #include "../simulator/include/array_safety.h"
 #include "../utilities/types/std_cout_colors.h"
-#include "../estimators/KalmanFilterEstimator.h"
 #include "../estimators/OrientationEstimator.h"
 #include "../../utilities/inc/utilities_fun.h"
 #include "../../utilities/inc/debug_tools.h"
@@ -14,7 +13,6 @@ RobotRunner::RobotRunner(std::string &model_name, Robot_Controller_Base *control
       lcm_leg_esti_(getLcmUrl(255)), runner_timer_(0, 2000), lcm_cmd_receive_(getLcmUrl(255)),
       lcm_data_publish_(getLcmUrl(255)), subscriber({"Robot", "Feedback", "State"}),
       publisher({"Robot", "Control", "Motor"}) {
-    Load_Model(model_name);
     syn_bool_.store(false);
 }
 
@@ -28,10 +26,8 @@ void RobotRunner::lcm_handle_func() {
  * @note Call this after constructed in hardwarebridge
  */
 void RobotRunner::init_robotrunner() {
-    quadruped_model_ = new Quadruped_Base(mnew);
-    leg_controller_ = new Leg_Controller<double>(quadruped_model_);
-    estimators_ = new StateEstimatorContainer<double>(&state_esti_ouput_, runner_imudata_, leg_controller_->leg_data,
-                                                      quadruped_model_);
+    leg_controller_ = new Leg_Controller<double>();
+    estimators_ = new StateEstimatorContainer<double>(&state_esti_ouput_, runner_imudata_, leg_controller_->leg_data);
     // TODO Add Contact Estimator
 
     // important: set contact phase
@@ -41,11 +37,8 @@ void RobotRunner::init_robotrunner() {
     // this file path is related with script
     estimators_->addEstimator<Estimators::UsbImuOrientationEstimator<double> >(
         Config::path_2_config_directory + "config/Estimators.info");
-    estimators_->addEstimator<Estimators::LinearKFPositionVelocityEsitmator<double> >(
-        Config::path_2_config_directory + "config/Estimators.info");
 
     // assign address to robot ctrl
-    robot_ctrl_->quadruped_model_ = quadruped_model_;
     robot_ctrl_->leg_controller_ = leg_controller_;
     robot_ctrl_->estimators_ = estimators_;
     robot_ctrl_->state_esti_ouput_ = &state_esti_ouput_;
@@ -252,9 +245,6 @@ void RobotRunner::thread_subscriber_function() {
                runner_usbdata_->qd_hip[i] = sample->qd[3 * i + 1];
                runner_usbdata_->qd_knee[i] = sample->qd[3 * i + 2];
            }
-           // std::cout << "[Subscriber]: acc- " << runner_imudata_->accel[0] << " | " << runner_imudata_->accel[1]
-           // << " | " << runner_imudata_->accel[2] << " quat- " << runner_imudata_->q[0] << " | " << runner_imudata_->q[1]
-           // << " | " << runner_imudata_->q[2] << " | " <<runner_imudata_->q[3] << std::endl;
        }).or_else([](auto &result) {
            if (result != iox::popo::ChunkReceiveResult::NO_CHUNK_AVAILABLE) {
                std::cout << "Error receiving chunk." << std::endl;
@@ -262,39 +252,4 @@ void RobotRunner::thread_subscriber_function() {
        });
    }
 
-}
-
-void RobotRunner::Load_Model(std::string &model_name) {
-    // load mujoco model
-    char filename[1000];
-    mujoco::utils::strcpy_arr(filename, model_name.c_str());
-    // make sure filename is not empty
-    if (!filename[0]) {
-        std::cout << RED << "[Error]: " << RESET << "Robot runner file empty!\n";
-        std::abort();
-    }
-    // load and compile
-    char loadError[512] = "";
-    if (mujoco::utils::strlen_arr(filename) > 4 &&
-        !std::strncmp(filename + mujoco::utils::strlen_arr(filename) - 4, ".mjb",
-                      mujoco::utils::sizeof_arr(filename) - mujoco::utils::strlen_arr(filename) + 4)) {
-        mnew = mj_loadModel(filename, nullptr);
-        if (!mnew) {
-            mujoco::utils::strcpy_arr(loadError, "could not load binary model");
-        }
-    } else {
-        mnew = mj_loadXML(filename, nullptr, loadError, 1000);
-        // remove trailing newline character from loadError
-        if (loadError[0]) {
-            int error_length = mujoco::utils::strlen_arr(loadError);
-            if (loadError[error_length - 1] == '\n') {
-                loadError[error_length - 1] = '\0';
-            }
-        }
-        // add build algorithm model
-    }
-    if (!mnew) {
-        std::printf("%s\n", loadError);
-        std::abort();
-    }
 }

@@ -57,10 +57,12 @@ namespace usb_controller {
 
     typedef enum RC_MODE {
         PASSIVE = 0,
-        BANLANCE_STAND,
-        LOCOMOTION,
+        RL_WALK,
+        RL_RUN,
         RECOVER_STAND,
         SITDOWN,
+        RL_WALK_STAIRS,
+        RL_FALL_RECOVER,
         DAMPING
     } RC_MODE_t;
 

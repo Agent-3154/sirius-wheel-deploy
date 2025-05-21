@@ -69,24 +69,10 @@ include simulator/CMakeFiles/simulation_library.dir/progress.make
 # Include the compile flags for this target's objects.
 include simulator/CMakeFiles/simulation_library.dir/flags.make
 
-simulator/CMakeFiles/simulation_library.dir/__/robot/robot_model/Quadruped_Model_Base.cpp.o: simulator/CMakeFiles/simulation_library.dir/flags.make
-simulator/CMakeFiles/simulation_library.dir/__/robot/robot_model/Quadruped_Model_Base.cpp.o: /home/lingwei/github_repo/dg_fsm/robot/robot_model/Quadruped_Model_Base.cpp
-simulator/CMakeFiles/simulation_library.dir/__/robot/robot_model/Quadruped_Model_Base.cpp.o: simulator/CMakeFiles/simulation_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object simulator/CMakeFiles/simulation_library.dir/__/robot/robot_model/Quadruped_Model_Base.cpp.o"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/simulator && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT simulator/CMakeFiles/simulation_library.dir/__/robot/robot_model/Quadruped_Model_Base.cpp.o -MF CMakeFiles/simulation_library.dir/__/robot/robot_model/Quadruped_Model_Base.cpp.o.d -o CMakeFiles/simulation_library.dir/__/robot/robot_model/Quadruped_Model_Base.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot/robot_model/Quadruped_Model_Base.cpp
-
-simulator/CMakeFiles/simulation_library.dir/__/robot/robot_model/Quadruped_Model_Base.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/simulation_library.dir/__/robot/robot_model/Quadruped_Model_Base.cpp.i"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/simulator && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lingwei/github_repo/dg_fsm/robot/robot_model/Quadruped_Model_Base.cpp > CMakeFiles/simulation_library.dir/__/robot/robot_model/Quadruped_Model_Base.cpp.i
-
-simulator/CMakeFiles/simulation_library.dir/__/robot/robot_model/Quadruped_Model_Base.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/simulation_library.dir/__/robot/robot_model/Quadruped_Model_Base.cpp.s"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/simulator && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lingwei/github_repo/dg_fsm/robot/robot_model/Quadruped_Model_Base.cpp -o CMakeFiles/simulation_library.dir/__/robot/robot_model/Quadruped_Model_Base.cpp.s
-
 simulator/CMakeFiles/simulation_library.dir/__/utilities/src/debug_tools.cpp.o: simulator/CMakeFiles/simulation_library.dir/flags.make
 simulator/CMakeFiles/simulation_library.dir/__/utilities/src/debug_tools.cpp.o: /home/lingwei/github_repo/dg_fsm/utilities/src/debug_tools.cpp
 simulator/CMakeFiles/simulation_library.dir/__/utilities/src/debug_tools.cpp.o: simulator/CMakeFiles/simulation_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object simulator/CMakeFiles/simulation_library.dir/__/utilities/src/debug_tools.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object simulator/CMakeFiles/simulation_library.dir/__/utilities/src/debug_tools.cpp.o"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/simulator && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT simulator/CMakeFiles/simulation_library.dir/__/utilities/src/debug_tools.cpp.o -MF CMakeFiles/simulation_library.dir/__/utilities/src/debug_tools.cpp.o.d -o CMakeFiles/simulation_library.dir/__/utilities/src/debug_tools.cpp.o -c /home/lingwei/github_repo/dg_fsm/utilities/src/debug_tools.cpp
 
 simulator/CMakeFiles/simulation_library.dir/__/utilities/src/debug_tools.cpp.i: cmake_force
@@ -100,7 +86,7 @@ simulator/CMakeFiles/simulation_library.dir/__/utilities/src/debug_tools.cpp.s: 
 simulator/CMakeFiles/simulation_library.dir/__/utilities/src/thread_timer.cpp.o: simulator/CMakeFiles/simulation_library.dir/flags.make
 simulator/CMakeFiles/simulation_library.dir/__/utilities/src/thread_timer.cpp.o: /home/lingwei/github_repo/dg_fsm/utilities/src/thread_timer.cpp
 simulator/CMakeFiles/simulation_library.dir/__/utilities/src/thread_timer.cpp.o: simulator/CMakeFiles/simulation_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object simulator/CMakeFiles/simulation_library.dir/__/utilities/src/thread_timer.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object simulator/CMakeFiles/simulation_library.dir/__/utilities/src/thread_timer.cpp.o"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/simulator && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT simulator/CMakeFiles/simulation_library.dir/__/utilities/src/thread_timer.cpp.o -MF CMakeFiles/simulation_library.dir/__/utilities/src/thread_timer.cpp.o.d -o CMakeFiles/simulation_library.dir/__/utilities/src/thread_timer.cpp.o -c /home/lingwei/github_repo/dg_fsm/utilities/src/thread_timer.cpp
 
 simulator/CMakeFiles/simulation_library.dir/__/utilities/src/thread_timer.cpp.i: cmake_force
@@ -114,7 +100,7 @@ simulator/CMakeFiles/simulation_library.dir/__/utilities/src/thread_timer.cpp.s:
 simulator/CMakeFiles/simulation_library.dir/__/utilities/src/utilities_func.cpp.o: simulator/CMakeFiles/simulation_library.dir/flags.make
 simulator/CMakeFiles/simulation_library.dir/__/utilities/src/utilities_func.cpp.o: /home/lingwei/github_repo/dg_fsm/utilities/src/utilities_func.cpp
 simulator/CMakeFiles/simulation_library.dir/__/utilities/src/utilities_func.cpp.o: simulator/CMakeFiles/simulation_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object simulator/CMakeFiles/simulation_library.dir/__/utilities/src/utilities_func.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object simulator/CMakeFiles/simulation_library.dir/__/utilities/src/utilities_func.cpp.o"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/simulator && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT simulator/CMakeFiles/simulation_library.dir/__/utilities/src/utilities_func.cpp.o -MF CMakeFiles/simulation_library.dir/__/utilities/src/utilities_func.cpp.o.d -o CMakeFiles/simulation_library.dir/__/utilities/src/utilities_func.cpp.o -c /home/lingwei/github_repo/dg_fsm/utilities/src/utilities_func.cpp
 
 simulator/CMakeFiles/simulation_library.dir/__/utilities/src/utilities_func.cpp.i: cmake_force
@@ -128,7 +114,7 @@ simulator/CMakeFiles/simulation_library.dir/__/utilities/src/utilities_func.cpp.
 simulator/CMakeFiles/simulation_library.dir/motor_control/my_motor_model.cpp.o: simulator/CMakeFiles/simulation_library.dir/flags.make
 simulator/CMakeFiles/simulation_library.dir/motor_control/my_motor_model.cpp.o: /home/lingwei/github_repo/dg_fsm/simulator/motor_control/my_motor_model.cpp
 simulator/CMakeFiles/simulation_library.dir/motor_control/my_motor_model.cpp.o: simulator/CMakeFiles/simulation_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object simulator/CMakeFiles/simulation_library.dir/motor_control/my_motor_model.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object simulator/CMakeFiles/simulation_library.dir/motor_control/my_motor_model.cpp.o"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/simulator && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT simulator/CMakeFiles/simulation_library.dir/motor_control/my_motor_model.cpp.o -MF CMakeFiles/simulation_library.dir/motor_control/my_motor_model.cpp.o.d -o CMakeFiles/simulation_library.dir/motor_control/my_motor_model.cpp.o -c /home/lingwei/github_repo/dg_fsm/simulator/motor_control/my_motor_model.cpp
 
 simulator/CMakeFiles/simulation_library.dir/motor_control/my_motor_model.cpp.i: cmake_force
@@ -142,7 +128,7 @@ simulator/CMakeFiles/simulation_library.dir/motor_control/my_motor_model.cpp.s: 
 simulator/CMakeFiles/simulation_library.dir/source/glfw_adapter.cc.o: simulator/CMakeFiles/simulation_library.dir/flags.make
 simulator/CMakeFiles/simulation_library.dir/source/glfw_adapter.cc.o: /home/lingwei/github_repo/dg_fsm/simulator/source/glfw_adapter.cc
 simulator/CMakeFiles/simulation_library.dir/source/glfw_adapter.cc.o: simulator/CMakeFiles/simulation_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object simulator/CMakeFiles/simulation_library.dir/source/glfw_adapter.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object simulator/CMakeFiles/simulation_library.dir/source/glfw_adapter.cc.o"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/simulator && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT simulator/CMakeFiles/simulation_library.dir/source/glfw_adapter.cc.o -MF CMakeFiles/simulation_library.dir/source/glfw_adapter.cc.o.d -o CMakeFiles/simulation_library.dir/source/glfw_adapter.cc.o -c /home/lingwei/github_repo/dg_fsm/simulator/source/glfw_adapter.cc
 
 simulator/CMakeFiles/simulation_library.dir/source/glfw_adapter.cc.i: cmake_force
@@ -156,7 +142,7 @@ simulator/CMakeFiles/simulation_library.dir/source/glfw_adapter.cc.s: cmake_forc
 simulator/CMakeFiles/simulation_library.dir/source/glfw_dispatch.cc.o: simulator/CMakeFiles/simulation_library.dir/flags.make
 simulator/CMakeFiles/simulation_library.dir/source/glfw_dispatch.cc.o: /home/lingwei/github_repo/dg_fsm/simulator/source/glfw_dispatch.cc
 simulator/CMakeFiles/simulation_library.dir/source/glfw_dispatch.cc.o: simulator/CMakeFiles/simulation_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object simulator/CMakeFiles/simulation_library.dir/source/glfw_dispatch.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object simulator/CMakeFiles/simulation_library.dir/source/glfw_dispatch.cc.o"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/simulator && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT simulator/CMakeFiles/simulation_library.dir/source/glfw_dispatch.cc.o -MF CMakeFiles/simulation_library.dir/source/glfw_dispatch.cc.o.d -o CMakeFiles/simulation_library.dir/source/glfw_dispatch.cc.o -c /home/lingwei/github_repo/dg_fsm/simulator/source/glfw_dispatch.cc
 
 simulator/CMakeFiles/simulation_library.dir/source/glfw_dispatch.cc.i: cmake_force
@@ -170,7 +156,7 @@ simulator/CMakeFiles/simulation_library.dir/source/glfw_dispatch.cc.s: cmake_for
 simulator/CMakeFiles/simulation_library.dir/source/lodepng.cpp.o: simulator/CMakeFiles/simulation_library.dir/flags.make
 simulator/CMakeFiles/simulation_library.dir/source/lodepng.cpp.o: /home/lingwei/github_repo/dg_fsm/simulator/source/lodepng.cpp
 simulator/CMakeFiles/simulation_library.dir/source/lodepng.cpp.o: simulator/CMakeFiles/simulation_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object simulator/CMakeFiles/simulation_library.dir/source/lodepng.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object simulator/CMakeFiles/simulation_library.dir/source/lodepng.cpp.o"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/simulator && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT simulator/CMakeFiles/simulation_library.dir/source/lodepng.cpp.o -MF CMakeFiles/simulation_library.dir/source/lodepng.cpp.o.d -o CMakeFiles/simulation_library.dir/source/lodepng.cpp.o -c /home/lingwei/github_repo/dg_fsm/simulator/source/lodepng.cpp
 
 simulator/CMakeFiles/simulation_library.dir/source/lodepng.cpp.i: cmake_force
@@ -184,7 +170,7 @@ simulator/CMakeFiles/simulation_library.dir/source/lodepng.cpp.s: cmake_force
 simulator/CMakeFiles/simulation_library.dir/source/platform_ui_adapter.cc.o: simulator/CMakeFiles/simulation_library.dir/flags.make
 simulator/CMakeFiles/simulation_library.dir/source/platform_ui_adapter.cc.o: /home/lingwei/github_repo/dg_fsm/simulator/source/platform_ui_adapter.cc
 simulator/CMakeFiles/simulation_library.dir/source/platform_ui_adapter.cc.o: simulator/CMakeFiles/simulation_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object simulator/CMakeFiles/simulation_library.dir/source/platform_ui_adapter.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object simulator/CMakeFiles/simulation_library.dir/source/platform_ui_adapter.cc.o"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/simulator && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT simulator/CMakeFiles/simulation_library.dir/source/platform_ui_adapter.cc.o -MF CMakeFiles/simulation_library.dir/source/platform_ui_adapter.cc.o.d -o CMakeFiles/simulation_library.dir/source/platform_ui_adapter.cc.o -c /home/lingwei/github_repo/dg_fsm/simulator/source/platform_ui_adapter.cc
 
 simulator/CMakeFiles/simulation_library.dir/source/platform_ui_adapter.cc.i: cmake_force
@@ -198,7 +184,7 @@ simulator/CMakeFiles/simulation_library.dir/source/platform_ui_adapter.cc.s: cma
 simulator/CMakeFiles/simulation_library.dir/my_simulator.cpp.o: simulator/CMakeFiles/simulation_library.dir/flags.make
 simulator/CMakeFiles/simulation_library.dir/my_simulator.cpp.o: /home/lingwei/github_repo/dg_fsm/simulator/my_simulator.cpp
 simulator/CMakeFiles/simulation_library.dir/my_simulator.cpp.o: simulator/CMakeFiles/simulation_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object simulator/CMakeFiles/simulation_library.dir/my_simulator.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object simulator/CMakeFiles/simulation_library.dir/my_simulator.cpp.o"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/simulator && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT simulator/CMakeFiles/simulation_library.dir/my_simulator.cpp.o -MF CMakeFiles/simulation_library.dir/my_simulator.cpp.o.d -o CMakeFiles/simulation_library.dir/my_simulator.cpp.o -c /home/lingwei/github_repo/dg_fsm/simulator/my_simulator.cpp
 
 simulator/CMakeFiles/simulation_library.dir/my_simulator.cpp.i: cmake_force
@@ -212,7 +198,7 @@ simulator/CMakeFiles/simulation_library.dir/my_simulator.cpp.s: cmake_force
 simulator/CMakeFiles/simulation_library.dir/SimulationBridge.cpp.o: simulator/CMakeFiles/simulation_library.dir/flags.make
 simulator/CMakeFiles/simulation_library.dir/SimulationBridge.cpp.o: /home/lingwei/github_repo/dg_fsm/simulator/SimulationBridge.cpp
 simulator/CMakeFiles/simulation_library.dir/SimulationBridge.cpp.o: simulator/CMakeFiles/simulation_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object simulator/CMakeFiles/simulation_library.dir/SimulationBridge.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object simulator/CMakeFiles/simulation_library.dir/SimulationBridge.cpp.o"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/simulator && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT simulator/CMakeFiles/simulation_library.dir/SimulationBridge.cpp.o -MF CMakeFiles/simulation_library.dir/SimulationBridge.cpp.o.d -o CMakeFiles/simulation_library.dir/SimulationBridge.cpp.o -c /home/lingwei/github_repo/dg_fsm/simulator/SimulationBridge.cpp
 
 simulator/CMakeFiles/simulation_library.dir/SimulationBridge.cpp.i: cmake_force
@@ -226,7 +212,7 @@ simulator/CMakeFiles/simulation_library.dir/SimulationBridge.cpp.s: cmake_force
 simulator/CMakeFiles/simulation_library.dir/__/utilities/src/easylogging++.cc.o: simulator/CMakeFiles/simulation_library.dir/flags.make
 simulator/CMakeFiles/simulation_library.dir/__/utilities/src/easylogging++.cc.o: /home/lingwei/github_repo/dg_fsm/utilities/src/easylogging++.cc
 simulator/CMakeFiles/simulation_library.dir/__/utilities/src/easylogging++.cc.o: simulator/CMakeFiles/simulation_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object simulator/CMakeFiles/simulation_library.dir/__/utilities/src/easylogging++.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object simulator/CMakeFiles/simulation_library.dir/__/utilities/src/easylogging++.cc.o"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/simulator && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT simulator/CMakeFiles/simulation_library.dir/__/utilities/src/easylogging++.cc.o -MF CMakeFiles/simulation_library.dir/__/utilities/src/easylogging++.cc.o.d -o CMakeFiles/simulation_library.dir/__/utilities/src/easylogging++.cc.o -c /home/lingwei/github_repo/dg_fsm/utilities/src/easylogging++.cc
 
 simulator/CMakeFiles/simulation_library.dir/__/utilities/src/easylogging++.cc.i: cmake_force
@@ -239,7 +225,6 @@ simulator/CMakeFiles/simulation_library.dir/__/utilities/src/easylogging++.cc.s:
 
 # Object files for target simulation_library
 simulation_library_OBJECTS = \
-"CMakeFiles/simulation_library.dir/__/robot/robot_model/Quadruped_Model_Base.cpp.o" \
 "CMakeFiles/simulation_library.dir/__/utilities/src/debug_tools.cpp.o" \
 "CMakeFiles/simulation_library.dir/__/utilities/src/thread_timer.cpp.o" \
 "CMakeFiles/simulation_library.dir/__/utilities/src/utilities_func.cpp.o" \
@@ -255,7 +240,6 @@ simulation_library_OBJECTS = \
 # External object files for target simulation_library
 simulation_library_EXTERNAL_OBJECTS =
 
-simulator/libsimulation_library.so: simulator/CMakeFiles/simulation_library.dir/__/robot/robot_model/Quadruped_Model_Base.cpp.o
 simulator/libsimulation_library.so: simulator/CMakeFiles/simulation_library.dir/__/utilities/src/debug_tools.cpp.o
 simulator/libsimulation_library.so: simulator/CMakeFiles/simulation_library.dir/__/utilities/src/thread_timer.cpp.o
 simulator/libsimulation_library.so: simulator/CMakeFiles/simulation_library.dir/__/utilities/src/utilities_func.cpp.o
@@ -272,7 +256,7 @@ simulator/libsimulation_library.so: /usr/local/lib/libiceoryx_posh.a
 simulator/libsimulation_library.so: /usr/local/lib/libiceoryx_hoofs.a
 simulator/libsimulation_library.so: /usr/local/lib/libiceoryx_platform.a
 simulator/libsimulation_library.so: simulator/CMakeFiles/simulation_library.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Linking CXX shared library libsimulation_library.so"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Linking CXX shared library libsimulation_library.so"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/simulator && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/simulation_library.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

@@ -18,9 +18,9 @@ struct Robot_State{
 };
 
 struct Sim_Plot {
-    mjtNum foot_pos_des_[4][3]{};
-    mjtNum foot_pos_[4][3]{};
-    mjtNum pos_des_[3]{};
-    mjtNum pos_[3]{};
+    double foot_pos_des_[4][3]{};
+    double foot_pos_[4][3]{};
+    double pos_des_[3]{};
+    double pos_[3]{};
 };
 #endif

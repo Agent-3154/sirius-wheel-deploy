@@ -7,10 +7,8 @@
 
 //#include "../robot/robot_runner/Robot_Runner.h"
 #include "../robot/hardwares/usb/include/rt_remote_controller.h"
-#include "../robot/robot_model/Quadruped_Model_Base.h"
 #include "../robot/leg_controller/leg_control.h"
 #include "../robot/estimators/Estimator_Base.h"
-#include <mujoco/mujoco.h>
 
 class Robot_Controller_Base {
     friend class RobotRunner; // robotrunner can access robot_ctrl private variables
@@ -24,7 +22,6 @@ public:
     virtual void run() = 0;
     std::atomic_bool control_draw_cond_{};
 protected:
-    Quadruped_Base *quadruped_model_ = nullptr;
     Leg_Controller<double> *leg_controller_ = nullptr;
     StateEstimateOutput<double> *state_esti_ouput_ = nullptr;
     StateEstimatorContainer<double> *estimators_ = nullptr;

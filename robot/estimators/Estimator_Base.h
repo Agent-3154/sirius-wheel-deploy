@@ -8,7 +8,6 @@
 #include "../../utilities/types/hardware_types.h"
 #include "../leg_controller/leg_control.h"
 #include <eigen3/Eigen/StdVector>
-#include "../robot_model/Quadruped_Model_Base.h"
 #include "../../lcm-types/cpp/state_estimator_lcmt.hpp"
 
 template<typename T>
@@ -61,7 +60,6 @@ struct StateEstimationData {
     USB_Imu_t *usb_imu_data_;
     Leg_Control_Data<T> *legControlData_;
     Vec4<T> *constactPhase_;
-    Quadruped_Base *p_quadrup;
 };
 
 template<typename T>
@@ -87,13 +85,12 @@ class StateEstimatorContainer {
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     StateEstimatorContainer(StateEstimateOutput<T> *stateEstimate, USB_Imu_t *imuData,
-                            Leg_Control_Data<T> *LegControlData, Quadruped_Base *quadrup_model) {
+                            Leg_Control_Data<T> *LegControlData) {
         phase_ = Vec4<T>::Zero();
         shared_esti_data_.legControlData_ = LegControlData;
         shared_esti_data_.result_ = stateEstimate;
         shared_esti_data_.usb_imu_data_ = imuData;
         shared_esti_data_.constactPhase_ = &phase_;
-        shared_esti_data_.p_quadrup = quadrup_model;
     }
 
     template<typename Estimator_Type>

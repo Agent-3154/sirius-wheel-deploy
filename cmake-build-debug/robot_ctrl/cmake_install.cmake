@@ -42,10 +42,3 @@ if(NOT DEFINED CMAKE_OBJDUMP)
   set(CMAKE_OBJDUMP "/usr/bin/objdump")
 endif()
 
-if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  # Include the install script for each subdirectory.
-  include("/home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl/wbc/cmake_install.cmake")
-  include("/home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl/solver/cmake_install.cmake")
-
-endif()
-

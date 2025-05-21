@@ -44,7 +44,6 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/home/lingwei/github_repo/dg_fsm/cmake-build-debug/third-party/cmake_install.cmake")
   include("/home/lingwei/github_repo/dg_fsm/cmake-build-debug/simulator/cmake_install.cmake")
   include("/home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot/cmake_install.cmake")
   include("/home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl/cmake_install.cmake")

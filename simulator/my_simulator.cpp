@@ -26,7 +26,6 @@
 #include "../../utilities/inc/utilities_fun.h"
 #include "../../utilities/inc/debug_tools.h"
 #include "../config/robots_config.h"
-#include "../robot_ctrl/wbc/QuadProg++/Array.hh"
 
 static std::string GetSavePath(const char *filename) {
     return filename;

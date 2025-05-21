@@ -97,19 +97,19 @@ robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State.cpp.s"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lingwei/github_repo/dg_fsm/robot_ctrl/FSM/FSM_State.cpp -o CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State.cpp.s
 
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_bs.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/flags.make
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_bs.cpp.o: /home/lingwei/github_repo/dg_fsm/robot_ctrl/FSM/FSM_State_bs.cpp
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_bs.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_bs.cpp.o"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_bs.cpp.o -MF CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_bs.cpp.o.d -o CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_bs.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot_ctrl/FSM/FSM_State_bs.cpp
+robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_RL_Walk.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/flags.make
+robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_RL_Walk.cpp.o: /home/lingwei/github_repo/dg_fsm/robot_ctrl/FSM/FSM_State_RL_Walk.cpp
+robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_RL_Walk.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_RL_Walk.cpp.o"
+	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_RL_Walk.cpp.o -MF CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_RL_Walk.cpp.o.d -o CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_RL_Walk.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot_ctrl/FSM/FSM_State_RL_Walk.cpp
 
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_bs.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_bs.cpp.i"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lingwei/github_repo/dg_fsm/robot_ctrl/FSM/FSM_State_bs.cpp > CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_bs.cpp.i
+robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_RL_Walk.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_RL_Walk.cpp.i"
+	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lingwei/github_repo/dg_fsm/robot_ctrl/FSM/FSM_State_RL_Walk.cpp > CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_RL_Walk.cpp.i
 
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_bs.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_bs.cpp.s"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lingwei/github_repo/dg_fsm/robot_ctrl/FSM/FSM_State_bs.cpp -o CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_bs.cpp.s
+robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_RL_Walk.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_RL_Walk.cpp.s"
+	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lingwei/github_repo/dg_fsm/robot_ctrl/FSM/FSM_State_RL_Walk.cpp -o CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_RL_Walk.cpp.s
 
 robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_damping.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/flags.make
 robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_damping.cpp.o: /home/lingwei/github_repo/dg_fsm/robot_ctrl/FSM/FSM_State_damping.cpp
@@ -125,24 +125,10 @@ robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_damping.cpp.s: cmake_
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_damping.cpp.s"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lingwei/github_repo/dg_fsm/robot_ctrl/FSM/FSM_State_damping.cpp -o CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_damping.cpp.s
 
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_locomotion.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/flags.make
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_locomotion.cpp.o: /home/lingwei/github_repo/dg_fsm/robot_ctrl/FSM/FSM_State_locomotion.cpp
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_locomotion.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_locomotion.cpp.o"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_locomotion.cpp.o -MF CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_locomotion.cpp.o.d -o CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_locomotion.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot_ctrl/FSM/FSM_State_locomotion.cpp
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_locomotion.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_locomotion.cpp.i"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lingwei/github_repo/dg_fsm/robot_ctrl/FSM/FSM_State_locomotion.cpp > CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_locomotion.cpp.i
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_locomotion.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_locomotion.cpp.s"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lingwei/github_repo/dg_fsm/robot_ctrl/FSM/FSM_State_locomotion.cpp -o CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_locomotion.cpp.s
-
 robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_passive.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/flags.make
 robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_passive.cpp.o: /home/lingwei/github_repo/dg_fsm/robot_ctrl/FSM/FSM_State_passive.cpp
 robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_passive.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_passive.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_passive.cpp.o"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_passive.cpp.o -MF CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_passive.cpp.o.d -o CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_passive.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot_ctrl/FSM/FSM_State_passive.cpp
 
 robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_passive.cpp.i: cmake_force
@@ -156,7 +142,7 @@ robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_passive.cpp.s: cmake_
 robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_sit_down.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/flags.make
 robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_sit_down.cpp.o: /home/lingwei/github_repo/dg_fsm/robot_ctrl/FSM/FSM_State_sit_down.cpp
 robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_sit_down.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_sit_down.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_sit_down.cpp.o"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_sit_down.cpp.o -MF CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_sit_down.cpp.o.d -o CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_sit_down.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot_ctrl/FSM/FSM_State_sit_down.cpp
 
 robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_sit_down.cpp.i: cmake_force
@@ -170,7 +156,7 @@ robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_sit_down.cpp.s: cmake
 robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_stand_up.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/flags.make
 robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_stand_up.cpp.o: /home/lingwei/github_repo/dg_fsm/robot_ctrl/FSM/FSM_State_stand_up.cpp
 robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_stand_up.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_stand_up.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_stand_up.cpp.o"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_stand_up.cpp.o -MF CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_stand_up.cpp.o.d -o CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_stand_up.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot_ctrl/FSM/FSM_State_stand_up.cpp
 
 robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_stand_up.cpp.i: cmake_force
@@ -181,52 +167,10 @@ robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_stand_up.cpp.s: cmake
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_stand_up.cpp.s"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lingwei/github_repo/dg_fsm/robot_ctrl/FSM/FSM_State_stand_up.cpp -o CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_stand_up.cpp.s
 
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/gait_scheduler/offset_duration_gait.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/flags.make
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/gait_scheduler/offset_duration_gait.cpp.o: /home/lingwei/github_repo/dg_fsm/robot_ctrl/gait_scheduler/offset_duration_gait.cpp
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/gait_scheduler/offset_duration_gait.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object robot_ctrl/CMakeFiles/robot_ctrl_library.dir/gait_scheduler/offset_duration_gait.cpp.o"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot_ctrl/CMakeFiles/robot_ctrl_library.dir/gait_scheduler/offset_duration_gait.cpp.o -MF CMakeFiles/robot_ctrl_library.dir/gait_scheduler/offset_duration_gait.cpp.o.d -o CMakeFiles/robot_ctrl_library.dir/gait_scheduler/offset_duration_gait.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot_ctrl/gait_scheduler/offset_duration_gait.cpp
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/gait_scheduler/offset_duration_gait.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/robot_ctrl_library.dir/gait_scheduler/offset_duration_gait.cpp.i"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lingwei/github_repo/dg_fsm/robot_ctrl/gait_scheduler/offset_duration_gait.cpp > CMakeFiles/robot_ctrl_library.dir/gait_scheduler/offset_duration_gait.cpp.i
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/gait_scheduler/offset_duration_gait.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/robot_ctrl_library.dir/gait_scheduler/offset_duration_gait.cpp.s"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lingwei/github_repo/dg_fsm/robot_ctrl/gait_scheduler/offset_duration_gait.cpp -o CMakeFiles/robot_ctrl_library.dir/gait_scheduler/offset_duration_gait.cpp.s
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/mpc/linear_mpc.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/flags.make
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/mpc/linear_mpc.cpp.o: /home/lingwei/github_repo/dg_fsm/robot_ctrl/mpc/linear_mpc.cpp
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/mpc/linear_mpc.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object robot_ctrl/CMakeFiles/robot_ctrl_library.dir/mpc/linear_mpc.cpp.o"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot_ctrl/CMakeFiles/robot_ctrl_library.dir/mpc/linear_mpc.cpp.o -MF CMakeFiles/robot_ctrl_library.dir/mpc/linear_mpc.cpp.o.d -o CMakeFiles/robot_ctrl_library.dir/mpc/linear_mpc.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot_ctrl/mpc/linear_mpc.cpp
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/mpc/linear_mpc.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/robot_ctrl_library.dir/mpc/linear_mpc.cpp.i"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lingwei/github_repo/dg_fsm/robot_ctrl/mpc/linear_mpc.cpp > CMakeFiles/robot_ctrl_library.dir/mpc/linear_mpc.cpp.i
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/mpc/linear_mpc.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/robot_ctrl_library.dir/mpc/linear_mpc.cpp.s"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lingwei/github_repo/dg_fsm/robot_ctrl/mpc/linear_mpc.cpp -o CMakeFiles/robot_ctrl_library.dir/mpc/linear_mpc.cpp.s
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/mpc/thread_mpc.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/flags.make
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/mpc/thread_mpc.cpp.o: /home/lingwei/github_repo/dg_fsm/robot_ctrl/mpc/thread_mpc.cpp
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/mpc/thread_mpc.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object robot_ctrl/CMakeFiles/robot_ctrl_library.dir/mpc/thread_mpc.cpp.o"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot_ctrl/CMakeFiles/robot_ctrl_library.dir/mpc/thread_mpc.cpp.o -MF CMakeFiles/robot_ctrl_library.dir/mpc/thread_mpc.cpp.o.d -o CMakeFiles/robot_ctrl_library.dir/mpc/thread_mpc.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot_ctrl/mpc/thread_mpc.cpp
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/mpc/thread_mpc.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/robot_ctrl_library.dir/mpc/thread_mpc.cpp.i"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lingwei/github_repo/dg_fsm/robot_ctrl/mpc/thread_mpc.cpp > CMakeFiles/robot_ctrl_library.dir/mpc/thread_mpc.cpp.i
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/mpc/thread_mpc.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/robot_ctrl_library.dir/mpc/thread_mpc.cpp.s"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lingwei/github_repo/dg_fsm/robot_ctrl/mpc/thread_mpc.cpp -o CMakeFiles/robot_ctrl_library.dir/mpc/thread_mpc.cpp.s
-
 robot_ctrl/CMakeFiles/robot_ctrl_library.dir/my_controller.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/flags.make
 robot_ctrl/CMakeFiles/robot_ctrl_library.dir/my_controller.cpp.o: /home/lingwei/github_repo/dg_fsm/robot_ctrl/my_controller.cpp
 robot_ctrl/CMakeFiles/robot_ctrl_library.dir/my_controller.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object robot_ctrl/CMakeFiles/robot_ctrl_library.dir/my_controller.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object robot_ctrl/CMakeFiles/robot_ctrl_library.dir/my_controller.cpp.o"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot_ctrl/CMakeFiles/robot_ctrl_library.dir/my_controller.cpp.o -MF CMakeFiles/robot_ctrl_library.dir/my_controller.cpp.o.d -o CMakeFiles/robot_ctrl_library.dir/my_controller.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot_ctrl/my_controller.cpp
 
 robot_ctrl/CMakeFiles/robot_ctrl_library.dir/my_controller.cpp.i: cmake_force
@@ -237,178 +181,10 @@ robot_ctrl/CMakeFiles/robot_ctrl_library.dir/my_controller.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/robot_ctrl_library.dir/my_controller.cpp.s"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lingwei/github_repo/dg_fsm/robot_ctrl/my_controller.cpp -o CMakeFiles/robot_ctrl_library.dir/my_controller.cpp.s
 
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/planner/linear_planner.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/flags.make
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/planner/linear_planner.cpp.o: /home/lingwei/github_repo/dg_fsm/robot_ctrl/planner/linear_planner.cpp
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/planner/linear_planner.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object robot_ctrl/CMakeFiles/robot_ctrl_library.dir/planner/linear_planner.cpp.o"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot_ctrl/CMakeFiles/robot_ctrl_library.dir/planner/linear_planner.cpp.o -MF CMakeFiles/robot_ctrl_library.dir/planner/linear_planner.cpp.o.d -o CMakeFiles/robot_ctrl_library.dir/planner/linear_planner.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot_ctrl/planner/linear_planner.cpp
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/planner/linear_planner.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/robot_ctrl_library.dir/planner/linear_planner.cpp.i"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lingwei/github_repo/dg_fsm/robot_ctrl/planner/linear_planner.cpp > CMakeFiles/robot_ctrl_library.dir/planner/linear_planner.cpp.i
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/planner/linear_planner.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/robot_ctrl_library.dir/planner/linear_planner.cpp.s"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lingwei/github_repo/dg_fsm/robot_ctrl/planner/linear_planner.cpp -o CMakeFiles/robot_ctrl_library.dir/planner/linear_planner.cpp.s
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/planner/thread_planner.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/flags.make
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/planner/thread_planner.cpp.o: /home/lingwei/github_repo/dg_fsm/robot_ctrl/planner/thread_planner.cpp
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/planner/thread_planner.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object robot_ctrl/CMakeFiles/robot_ctrl_library.dir/planner/thread_planner.cpp.o"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot_ctrl/CMakeFiles/robot_ctrl_library.dir/planner/thread_planner.cpp.o -MF CMakeFiles/robot_ctrl_library.dir/planner/thread_planner.cpp.o.d -o CMakeFiles/robot_ctrl_library.dir/planner/thread_planner.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot_ctrl/planner/thread_planner.cpp
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/planner/thread_planner.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/robot_ctrl_library.dir/planner/thread_planner.cpp.i"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lingwei/github_repo/dg_fsm/robot_ctrl/planner/thread_planner.cpp > CMakeFiles/robot_ctrl_library.dir/planner/thread_planner.cpp.i
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/planner/thread_planner.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/robot_ctrl_library.dir/planner/thread_planner.cpp.s"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lingwei/github_repo/dg_fsm/robot_ctrl/planner/thread_planner.cpp -o CMakeFiles/robot_ctrl_library.dir/planner/thread_planner.cpp.s
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/solver/src/Linear_QP_Solver.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/flags.make
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/solver/src/Linear_QP_Solver.cpp.o: /home/lingwei/github_repo/dg_fsm/robot_ctrl/solver/src/Linear_QP_Solver.cpp
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/solver/src/Linear_QP_Solver.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object robot_ctrl/CMakeFiles/robot_ctrl_library.dir/solver/src/Linear_QP_Solver.cpp.o"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot_ctrl/CMakeFiles/robot_ctrl_library.dir/solver/src/Linear_QP_Solver.cpp.o -MF CMakeFiles/robot_ctrl_library.dir/solver/src/Linear_QP_Solver.cpp.o.d -o CMakeFiles/robot_ctrl_library.dir/solver/src/Linear_QP_Solver.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot_ctrl/solver/src/Linear_QP_Solver.cpp
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/solver/src/Linear_QP_Solver.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/robot_ctrl_library.dir/solver/src/Linear_QP_Solver.cpp.i"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lingwei/github_repo/dg_fsm/robot_ctrl/solver/src/Linear_QP_Solver.cpp > CMakeFiles/robot_ctrl_library.dir/solver/src/Linear_QP_Solver.cpp.i
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/solver/src/Linear_QP_Solver.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/robot_ctrl_library.dir/solver/src/Linear_QP_Solver.cpp.s"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lingwei/github_repo/dg_fsm/robot_ctrl/solver/src/Linear_QP_Solver.cpp -o CMakeFiles/robot_ctrl_library.dir/solver/src/Linear_QP_Solver.cpp.s
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/solver/src/Solver_Base.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/flags.make
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/solver/src/Solver_Base.cpp.o: /home/lingwei/github_repo/dg_fsm/robot_ctrl/solver/src/Solver_Base.cpp
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/solver/src/Solver_Base.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object robot_ctrl/CMakeFiles/robot_ctrl_library.dir/solver/src/Solver_Base.cpp.o"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot_ctrl/CMakeFiles/robot_ctrl_library.dir/solver/src/Solver_Base.cpp.o -MF CMakeFiles/robot_ctrl_library.dir/solver/src/Solver_Base.cpp.o.d -o CMakeFiles/robot_ctrl_library.dir/solver/src/Solver_Base.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot_ctrl/solver/src/Solver_Base.cpp
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/solver/src/Solver_Base.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/robot_ctrl_library.dir/solver/src/Solver_Base.cpp.i"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lingwei/github_repo/dg_fsm/robot_ctrl/solver/src/Solver_Base.cpp > CMakeFiles/robot_ctrl_library.dir/solver/src/Solver_Base.cpp.i
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/solver/src/Solver_Base.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/robot_ctrl_library.dir/solver/src/Solver_Base.cpp.s"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lingwei/github_repo/dg_fsm/robot_ctrl/solver/src/Solver_Base.cpp -o CMakeFiles/robot_ctrl_library.dir/solver/src/Solver_Base.cpp.s
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/BodyOriTask.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/flags.make
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/BodyOriTask.cpp.o: /home/lingwei/github_repo/dg_fsm/robot_ctrl/wbc/tasks/BodyOriTask.cpp
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/BodyOriTask.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Building CXX object robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/BodyOriTask.cpp.o"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/BodyOriTask.cpp.o -MF CMakeFiles/robot_ctrl_library.dir/wbc/tasks/BodyOriTask.cpp.o.d -o CMakeFiles/robot_ctrl_library.dir/wbc/tasks/BodyOriTask.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot_ctrl/wbc/tasks/BodyOriTask.cpp
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/BodyOriTask.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/robot_ctrl_library.dir/wbc/tasks/BodyOriTask.cpp.i"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lingwei/github_repo/dg_fsm/robot_ctrl/wbc/tasks/BodyOriTask.cpp > CMakeFiles/robot_ctrl_library.dir/wbc/tasks/BodyOriTask.cpp.i
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/BodyOriTask.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/robot_ctrl_library.dir/wbc/tasks/BodyOriTask.cpp.s"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lingwei/github_repo/dg_fsm/robot_ctrl/wbc/tasks/BodyOriTask.cpp -o CMakeFiles/robot_ctrl_library.dir/wbc/tasks/BodyOriTask.cpp.s
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/BodyPosTask.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/flags.make
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/BodyPosTask.cpp.o: /home/lingwei/github_repo/dg_fsm/robot_ctrl/wbc/tasks/BodyPosTask.cpp
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/BodyPosTask.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Building CXX object robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/BodyPosTask.cpp.o"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/BodyPosTask.cpp.o -MF CMakeFiles/robot_ctrl_library.dir/wbc/tasks/BodyPosTask.cpp.o.d -o CMakeFiles/robot_ctrl_library.dir/wbc/tasks/BodyPosTask.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot_ctrl/wbc/tasks/BodyPosTask.cpp
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/BodyPosTask.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/robot_ctrl_library.dir/wbc/tasks/BodyPosTask.cpp.i"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lingwei/github_repo/dg_fsm/robot_ctrl/wbc/tasks/BodyPosTask.cpp > CMakeFiles/robot_ctrl_library.dir/wbc/tasks/BodyPosTask.cpp.i
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/BodyPosTask.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/robot_ctrl_library.dir/wbc/tasks/BodyPosTask.cpp.s"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lingwei/github_repo/dg_fsm/robot_ctrl/wbc/tasks/BodyPosTask.cpp -o CMakeFiles/robot_ctrl_library.dir/wbc/tasks/BodyPosTask.cpp.s
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/ContactTask.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/flags.make
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/ContactTask.cpp.o: /home/lingwei/github_repo/dg_fsm/robot_ctrl/wbc/tasks/ContactTask.cpp
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/ContactTask.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/ContactTask.cpp.o"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/ContactTask.cpp.o -MF CMakeFiles/robot_ctrl_library.dir/wbc/tasks/ContactTask.cpp.o.d -o CMakeFiles/robot_ctrl_library.dir/wbc/tasks/ContactTask.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot_ctrl/wbc/tasks/ContactTask.cpp
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/ContactTask.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/robot_ctrl_library.dir/wbc/tasks/ContactTask.cpp.i"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lingwei/github_repo/dg_fsm/robot_ctrl/wbc/tasks/ContactTask.cpp > CMakeFiles/robot_ctrl_library.dir/wbc/tasks/ContactTask.cpp.i
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/ContactTask.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/robot_ctrl_library.dir/wbc/tasks/ContactTask.cpp.s"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lingwei/github_repo/dg_fsm/robot_ctrl/wbc/tasks/ContactTask.cpp -o CMakeFiles/robot_ctrl_library.dir/wbc/tasks/ContactTask.cpp.s
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/LinkPosTask.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/flags.make
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/LinkPosTask.cpp.o: /home/lingwei/github_repo/dg_fsm/robot_ctrl/wbc/tasks/LinkPosTask.cpp
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/LinkPosTask.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/LinkPosTask.cpp.o"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/LinkPosTask.cpp.o -MF CMakeFiles/robot_ctrl_library.dir/wbc/tasks/LinkPosTask.cpp.o.d -o CMakeFiles/robot_ctrl_library.dir/wbc/tasks/LinkPosTask.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot_ctrl/wbc/tasks/LinkPosTask.cpp
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/LinkPosTask.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/robot_ctrl_library.dir/wbc/tasks/LinkPosTask.cpp.i"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lingwei/github_repo/dg_fsm/robot_ctrl/wbc/tasks/LinkPosTask.cpp > CMakeFiles/robot_ctrl_library.dir/wbc/tasks/LinkPosTask.cpp.i
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/LinkPosTask.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/robot_ctrl_library.dir/wbc/tasks/LinkPosTask.cpp.s"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lingwei/github_repo/dg_fsm/robot_ctrl/wbc/tasks/LinkPosTask.cpp -o CMakeFiles/robot_ctrl_library.dir/wbc/tasks/LinkPosTask.cpp.s
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbc_ctrl/WBC_Ctrl_Base.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/flags.make
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbc_ctrl/WBC_Ctrl_Base.cpp.o: /home/lingwei/github_repo/dg_fsm/robot_ctrl/wbc/wbc_ctrl/WBC_Ctrl_Base.cpp
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbc_ctrl/WBC_Ctrl_Base.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building CXX object robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbc_ctrl/WBC_Ctrl_Base.cpp.o"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbc_ctrl/WBC_Ctrl_Base.cpp.o -MF CMakeFiles/robot_ctrl_library.dir/wbc/wbc_ctrl/WBC_Ctrl_Base.cpp.o.d -o CMakeFiles/robot_ctrl_library.dir/wbc/wbc_ctrl/WBC_Ctrl_Base.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot_ctrl/wbc/wbc_ctrl/WBC_Ctrl_Base.cpp
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbc_ctrl/WBC_Ctrl_Base.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/robot_ctrl_library.dir/wbc/wbc_ctrl/WBC_Ctrl_Base.cpp.i"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lingwei/github_repo/dg_fsm/robot_ctrl/wbc/wbc_ctrl/WBC_Ctrl_Base.cpp > CMakeFiles/robot_ctrl_library.dir/wbc/wbc_ctrl/WBC_Ctrl_Base.cpp.i
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbc_ctrl/WBC_Ctrl_Base.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/robot_ctrl_library.dir/wbc/wbc_ctrl/WBC_Ctrl_Base.cpp.s"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lingwei/github_repo/dg_fsm/robot_ctrl/wbc/wbc_ctrl/WBC_Ctrl_Base.cpp -o CMakeFiles/robot_ctrl_library.dir/wbc/wbc_ctrl/WBC_Ctrl_Base.cpp.s
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbc_ctrl/WBC_Locomotion_Ctrl.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/flags.make
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbc_ctrl/WBC_Locomotion_Ctrl.cpp.o: /home/lingwei/github_repo/dg_fsm/robot_ctrl/wbc/wbc_ctrl/WBC_Locomotion_Ctrl.cpp
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbc_ctrl/WBC_Locomotion_Ctrl.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_22) "Building CXX object robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbc_ctrl/WBC_Locomotion_Ctrl.cpp.o"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbc_ctrl/WBC_Locomotion_Ctrl.cpp.o -MF CMakeFiles/robot_ctrl_library.dir/wbc/wbc_ctrl/WBC_Locomotion_Ctrl.cpp.o.d -o CMakeFiles/robot_ctrl_library.dir/wbc/wbc_ctrl/WBC_Locomotion_Ctrl.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot_ctrl/wbc/wbc_ctrl/WBC_Locomotion_Ctrl.cpp
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbc_ctrl/WBC_Locomotion_Ctrl.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/robot_ctrl_library.dir/wbc/wbc_ctrl/WBC_Locomotion_Ctrl.cpp.i"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lingwei/github_repo/dg_fsm/robot_ctrl/wbc/wbc_ctrl/WBC_Locomotion_Ctrl.cpp > CMakeFiles/robot_ctrl_library.dir/wbc/wbc_ctrl/WBC_Locomotion_Ctrl.cpp.i
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbc_ctrl/WBC_Locomotion_Ctrl.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/robot_ctrl_library.dir/wbc/wbc_ctrl/WBC_Locomotion_Ctrl.cpp.s"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lingwei/github_repo/dg_fsm/robot_ctrl/wbc/wbc_ctrl/WBC_Locomotion_Ctrl.cpp -o CMakeFiles/robot_ctrl_library.dir/wbc/wbc_ctrl/WBC_Locomotion_Ctrl.cpp.s
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbic/KinWBC.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/flags.make
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbic/KinWBC.cpp.o: /home/lingwei/github_repo/dg_fsm/robot_ctrl/wbc/wbic/KinWBC.cpp
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbic/KinWBC.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_23) "Building CXX object robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbic/KinWBC.cpp.o"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbic/KinWBC.cpp.o -MF CMakeFiles/robot_ctrl_library.dir/wbc/wbic/KinWBC.cpp.o.d -o CMakeFiles/robot_ctrl_library.dir/wbc/wbic/KinWBC.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot_ctrl/wbc/wbic/KinWBC.cpp
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbic/KinWBC.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/robot_ctrl_library.dir/wbc/wbic/KinWBC.cpp.i"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lingwei/github_repo/dg_fsm/robot_ctrl/wbc/wbic/KinWBC.cpp > CMakeFiles/robot_ctrl_library.dir/wbc/wbic/KinWBC.cpp.i
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbic/KinWBC.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/robot_ctrl_library.dir/wbc/wbic/KinWBC.cpp.s"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lingwei/github_repo/dg_fsm/robot_ctrl/wbc/wbic/KinWBC.cpp -o CMakeFiles/robot_ctrl_library.dir/wbc/wbic/KinWBC.cpp.s
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbic/WBIC.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/flags.make
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbic/WBIC.cpp.o: /home/lingwei/github_repo/dg_fsm/robot_ctrl/wbc/wbic/WBIC.cpp
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbic/WBIC.cpp.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_24) "Building CXX object robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbic/WBIC.cpp.o"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbic/WBIC.cpp.o -MF CMakeFiles/robot_ctrl_library.dir/wbc/wbic/WBIC.cpp.o.d -o CMakeFiles/robot_ctrl_library.dir/wbc/wbic/WBIC.cpp.o -c /home/lingwei/github_repo/dg_fsm/robot_ctrl/wbc/wbic/WBIC.cpp
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbic/WBIC.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/robot_ctrl_library.dir/wbc/wbic/WBIC.cpp.i"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lingwei/github_repo/dg_fsm/robot_ctrl/wbc/wbic/WBIC.cpp > CMakeFiles/robot_ctrl_library.dir/wbc/wbic/WBIC.cpp.i
-
-robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbic/WBIC.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/robot_ctrl_library.dir/wbc/wbic/WBIC.cpp.s"
-	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lingwei/github_repo/dg_fsm/robot_ctrl/wbc/wbic/WBIC.cpp -o CMakeFiles/robot_ctrl_library.dir/wbc/wbic/WBIC.cpp.s
-
 robot_ctrl/CMakeFiles/robot_ctrl_library.dir/__/utilities/src/easylogging++.cc.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/flags.make
 robot_ctrl/CMakeFiles/robot_ctrl_library.dir/__/utilities/src/easylogging++.cc.o: /home/lingwei/github_repo/dg_fsm/utilities/src/easylogging++.cc
 robot_ctrl/CMakeFiles/robot_ctrl_library.dir/__/utilities/src/easylogging++.cc.o: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_25) "Building CXX object robot_ctrl/CMakeFiles/robot_ctrl_library.dir/__/utilities/src/easylogging++.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object robot_ctrl/CMakeFiles/robot_ctrl_library.dir/__/utilities/src/easylogging++.cc.o"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT robot_ctrl/CMakeFiles/robot_ctrl_library.dir/__/utilities/src/easylogging++.cc.o -MF CMakeFiles/robot_ctrl_library.dir/__/utilities/src/easylogging++.cc.o.d -o CMakeFiles/robot_ctrl_library.dir/__/utilities/src/easylogging++.cc.o -c /home/lingwei/github_repo/dg_fsm/utilities/src/easylogging++.cc
 
 robot_ctrl/CMakeFiles/robot_ctrl_library.dir/__/utilities/src/easylogging++.cc.i: cmake_force
@@ -423,28 +199,12 @@ robot_ctrl/CMakeFiles/robot_ctrl_library.dir/__/utilities/src/easylogging++.cc.s
 robot_ctrl_library_OBJECTS = \
 "CMakeFiles/robot_ctrl_library.dir/FSM/Control_FSM.cpp.o" \
 "CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State.cpp.o" \
-"CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_bs.cpp.o" \
+"CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_RL_Walk.cpp.o" \
 "CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_damping.cpp.o" \
-"CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_locomotion.cpp.o" \
 "CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_passive.cpp.o" \
 "CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_sit_down.cpp.o" \
 "CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_stand_up.cpp.o" \
-"CMakeFiles/robot_ctrl_library.dir/gait_scheduler/offset_duration_gait.cpp.o" \
-"CMakeFiles/robot_ctrl_library.dir/mpc/linear_mpc.cpp.o" \
-"CMakeFiles/robot_ctrl_library.dir/mpc/thread_mpc.cpp.o" \
 "CMakeFiles/robot_ctrl_library.dir/my_controller.cpp.o" \
-"CMakeFiles/robot_ctrl_library.dir/planner/linear_planner.cpp.o" \
-"CMakeFiles/robot_ctrl_library.dir/planner/thread_planner.cpp.o" \
-"CMakeFiles/robot_ctrl_library.dir/solver/src/Linear_QP_Solver.cpp.o" \
-"CMakeFiles/robot_ctrl_library.dir/solver/src/Solver_Base.cpp.o" \
-"CMakeFiles/robot_ctrl_library.dir/wbc/tasks/BodyOriTask.cpp.o" \
-"CMakeFiles/robot_ctrl_library.dir/wbc/tasks/BodyPosTask.cpp.o" \
-"CMakeFiles/robot_ctrl_library.dir/wbc/tasks/ContactTask.cpp.o" \
-"CMakeFiles/robot_ctrl_library.dir/wbc/tasks/LinkPosTask.cpp.o" \
-"CMakeFiles/robot_ctrl_library.dir/wbc/wbc_ctrl/WBC_Ctrl_Base.cpp.o" \
-"CMakeFiles/robot_ctrl_library.dir/wbc/wbc_ctrl/WBC_Locomotion_Ctrl.cpp.o" \
-"CMakeFiles/robot_ctrl_library.dir/wbc/wbic/KinWBC.cpp.o" \
-"CMakeFiles/robot_ctrl_library.dir/wbc/wbic/WBIC.cpp.o" \
 "CMakeFiles/robot_ctrl_library.dir/__/utilities/src/easylogging++.cc.o"
 
 # External object files for target robot_ctrl_library
@@ -452,39 +212,19 @@ robot_ctrl_library_EXTERNAL_OBJECTS =
 
 robot_ctrl/librobot_ctrl_library.so: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/Control_FSM.cpp.o
 robot_ctrl/librobot_ctrl_library.so: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State.cpp.o
-robot_ctrl/librobot_ctrl_library.so: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_bs.cpp.o
+robot_ctrl/librobot_ctrl_library.so: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_RL_Walk.cpp.o
 robot_ctrl/librobot_ctrl_library.so: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_damping.cpp.o
-robot_ctrl/librobot_ctrl_library.so: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_locomotion.cpp.o
 robot_ctrl/librobot_ctrl_library.so: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_passive.cpp.o
 robot_ctrl/librobot_ctrl_library.so: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_sit_down.cpp.o
 robot_ctrl/librobot_ctrl_library.so: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/FSM/FSM_State_stand_up.cpp.o
-robot_ctrl/librobot_ctrl_library.so: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/gait_scheduler/offset_duration_gait.cpp.o
-robot_ctrl/librobot_ctrl_library.so: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/mpc/linear_mpc.cpp.o
-robot_ctrl/librobot_ctrl_library.so: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/mpc/thread_mpc.cpp.o
 robot_ctrl/librobot_ctrl_library.so: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/my_controller.cpp.o
-robot_ctrl/librobot_ctrl_library.so: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/planner/linear_planner.cpp.o
-robot_ctrl/librobot_ctrl_library.so: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/planner/thread_planner.cpp.o
-robot_ctrl/librobot_ctrl_library.so: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/solver/src/Linear_QP_Solver.cpp.o
-robot_ctrl/librobot_ctrl_library.so: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/solver/src/Solver_Base.cpp.o
-robot_ctrl/librobot_ctrl_library.so: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/BodyOriTask.cpp.o
-robot_ctrl/librobot_ctrl_library.so: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/BodyPosTask.cpp.o
-robot_ctrl/librobot_ctrl_library.so: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/ContactTask.cpp.o
-robot_ctrl/librobot_ctrl_library.so: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/tasks/LinkPosTask.cpp.o
-robot_ctrl/librobot_ctrl_library.so: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbc_ctrl/WBC_Ctrl_Base.cpp.o
-robot_ctrl/librobot_ctrl_library.so: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbc_ctrl/WBC_Locomotion_Ctrl.cpp.o
-robot_ctrl/librobot_ctrl_library.so: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbic/KinWBC.cpp.o
-robot_ctrl/librobot_ctrl_library.so: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/wbc/wbic/WBIC.cpp.o
 robot_ctrl/librobot_ctrl_library.so: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/__/utilities/src/easylogging++.cc.o
 robot_ctrl/librobot_ctrl_library.so: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/build.make
-robot_ctrl/librobot_ctrl_library.so: robot_ctrl/wbc/libwbc_library.so
-robot_ctrl/librobot_ctrl_library.so: robot_ctrl/solver/libsolver_library.so
 robot_ctrl/librobot_ctrl_library.so: /usr/local/lib/libiceoryx_posh.a
-robot_ctrl/librobot_ctrl_library.so: robot_ctrl/wbc/QuadProg++/libGoldfarb_Optimizer.so
-robot_ctrl/librobot_ctrl_library.so: third-party/qpOASES/libs/libqpOASES.so.3.2
 robot_ctrl/librobot_ctrl_library.so: /usr/local/lib/libiceoryx_hoofs.a
 robot_ctrl/librobot_ctrl_library.so: /usr/local/lib/libiceoryx_platform.a
 robot_ctrl/librobot_ctrl_library.so: robot_ctrl/CMakeFiles/robot_ctrl_library.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_26) "Linking CXX shared library librobot_ctrl_library.so"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/lingwei/github_repo/dg_fsm/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Linking CXX shared library librobot_ctrl_library.so"
 	cd /home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/robot_ctrl_library.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

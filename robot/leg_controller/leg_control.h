@@ -8,7 +8,6 @@
 #include "../../utilities/types/hardware_types.h"
 #include <mutex>
 #include <eigen3/Eigen/StdVector>
-#include "../robot_model/Quadruped_Model_Base.h"
 #include "../../lcm-types/cpp/leg_control_command_lcmt.hpp"
 #include "../../lcm-types/cpp/leg_control_data_lcmt.hpp"
 // struct type for one leg
@@ -42,7 +41,7 @@ struct Leg_Control_Data {
 template<typename T>
 class Leg_Controller {
 public:
-    explicit Leg_Controller(Quadruped_Base *quad);
+    explicit Leg_Controller();
 
     ~Leg_Controller() = default;
 

@@ -97,10 +97,6 @@ test_repo/sim_ctrl: robot_ctrl/librobot_ctrl_library.so
 test_repo/sim_ctrl: /usr/local/lib/libiceoryx_posh.a
 test_repo/sim_ctrl: /usr/local/lib/libiceoryx_hoofs.a
 test_repo/sim_ctrl: /usr/local/lib/libiceoryx_platform.a
-test_repo/sim_ctrl: robot_ctrl/wbc/libwbc_library.so
-test_repo/sim_ctrl: robot_ctrl/wbc/QuadProg++/libGoldfarb_Optimizer.so
-test_repo/sim_ctrl: robot_ctrl/solver/libsolver_library.so
-test_repo/sim_ctrl: third-party/qpOASES/libs/libqpOASES.so.3.2
 test_repo/sim_ctrl: /usr/local/lib/libiceoryx_posh.a
 test_repo/sim_ctrl: /usr/local/lib/libiceoryx_hoofs.a
 test_repo/sim_ctrl: /usr/local/lib/libiceoryx_platform.a
