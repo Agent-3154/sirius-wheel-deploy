@@ -21,16 +21,20 @@
 
 #include "../../utilities/inc/debug_tools.h"
 #include "../hardwares/fdsc_utils/my_fdsc.h"
-#if defined (WORK_COMPUTOR)
+#if defined (ICEORYX_PREFIX_V2954)
+#if defined(SIMULATOR)
 #include "iceoryx/v2.95.4/iceoryx_posh/popo/publisher.hpp"
 #include "iceoryx/v2.95.4/iceoryx_posh/popo/subscriber.hpp"
 #include "iceoryx/v2.95.4/iceoryx_posh/runtime/posh_runtime.hpp"
 #include "iceoryx/v2.95.4/iox/signal_watcher.hpp"
-#elif defined(LapTop)
+#endif
+#elif defined(ICEORYX_PREFIX_V)
+#if defined(SIMULATOR)
 #include "iceoryx/v/iceoryx_posh/popo/publisher.hpp"
 #include "iceoryx/v/iceoryx_posh/popo/subscriber.hpp"
 #include "iceoryx/v/iceoryx_posh/runtime/posh_runtime.hpp"
 #include "iceoryx/v/iox/signal_watcher.hpp"
+#endif
 #endif
 #include "../../simulator/sim_memory_share_data.h"
 
@@ -38,7 +42,7 @@ class RobotRunner {
 public:
     explicit RobotRunner(std::string &model_name, Robot_Controller_Base *control_base, Config::run_type sim_real);
 
-    void lcm_handle_func();
+    // void lcm_handle_func();
 
     ~RobotRunner() = default;
 
@@ -90,10 +94,12 @@ public:
 
     void handleRosCMD(const lcm::ReceiveBuffer *rbuf, const std::string &chan, const ros_lowcmd_lcmt *msg);
 
+#if defined(SIMULATOR)
     iox::popo::Subscriber<Robot_State> subscriber;
     iox::popo::Publisher<Robot_Control_Motor_Cmd> publisher;
     std::thread thread_subscriber_;
     void thread_subscriber_function();
+#endif
 };
 
 #endif //MY_MUJOCO_SIMULATOR_ROBOT_RUNNER_H

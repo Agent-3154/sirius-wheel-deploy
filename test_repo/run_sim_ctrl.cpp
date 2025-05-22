@@ -27,7 +27,9 @@ int main(int argc, char **argv) {
     Config::run_type type_ = Config::sim_mj;
     auto *robot_ctrl = new My_Controller();
     Eigen::setNbThreads(1);
+#if defined (SIMULATOR)
     iox::runtime::PoshRuntime::initRuntime("Sim_Ctrl_Node");
+#endif
     HardwareBridge::My_HardwareBridge sim_ctrl(model_name, robot_ctrl, type_);
     sim_ctrl.setup_HardwareBridge(launch_imu, launch_usb2can, launch_rc, unitree);
     return 0;

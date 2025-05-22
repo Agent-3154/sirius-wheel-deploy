@@ -11,16 +11,20 @@
 RobotRunner::RobotRunner(std::string &model_name, Robot_Controller_Base *control_base, Config::run_type sim)
     : robot_ctrl_(control_base), sim_(sim), lcm_leg_cmd_(getLcmUrl(255)), lcm_leg_data_(getLcmUrl(255)),
       lcm_leg_esti_(getLcmUrl(255)), runner_timer_(0, 2000), lcm_cmd_receive_(getLcmUrl(255)),
-      lcm_data_publish_(getLcmUrl(255)), subscriber({"Robot", "Feedback", "State"}),
-      publisher({"Robot", "Control", "Motor"}) {
+      lcm_data_publish_(getLcmUrl(255))
+#if defined(SIMULATOR)
+      , subscriber({"Robot", "Feedback", "State"}),
+      publisher({"Robot", "Control", "Motor"})
+#endif
+{
     syn_bool_.store(false);
 }
 
-void RobotRunner::lcm_handle_func() {
-    while (true) {
-        lcm_cmd_receive_.handle();
-    }
-}
+// void RobotRunner::lcm_handle_func() {
+// while (true) {
+// lcm_cmd_receive_.handle();
+// }
+// }
 
 /**
  * @note Call this after constructed in hardwarebridge
@@ -46,13 +50,16 @@ void RobotRunner::init_robotrunner() {
 
     robot_ctrl_->Controller_Init();
 
-    if (sim_ == Config::real_ros_ctrl) {
-        std::cout << GREEN << "[LCM SUCCESS]: " << RESET << " Start subcribe upper cmd!\n";
-        lcm_cmd_receive_.subscribe("ROS_CTRL", &RobotRunner::handleRosCMD, this);
-        thread_ptr = std::make_unique<std::thread>(&RobotRunner::lcm_handle_func, this);
-    }else if (sim_ == Config::sim_mj) {
+    // if (sim_ == Config::real_ros_ctrl) {
+    // std::cout << GREEN << "[LCM SUCCESS]: " << RESET << " Start subcribe upper cmd!\n";
+    // lcm_cmd_receive_.subscribe("ROS_CTRL", &RobotRunner::handleRosCMD, this);
+    // thread_ptr = std::make_unique<std::thread>(&RobotRunner::lcm_handle_func, this);
+#if defined(SIMULATOR)
+    if (sim_ == Config::sim_mj) {
         thread_subscriber_ = std::thread(&RobotRunner::thread_subscriber_function, this);
     }
+#endif
+
 }
 
 void RobotRunner::setupStep() {
@@ -107,7 +114,6 @@ void RobotRunner::run() {
         std::lock_guard<std::mutex> lk(runner_imu_->imu_mtx);
         estimators_->run_estimators();
     } else if (sim_ == Config::sim_mj) {
-
         estimators_->run_estimators();
         // for (int i = 0; i < 3; i++) {
         // this->estimators_->shared_esti_data_.result_->p_w_(i) = groud_truth_q[i];
@@ -142,6 +148,7 @@ void RobotRunner::finalStep() {
     } else if (sim_ == Config::sim_mj) {
         std::lock_guard<std::mutex> lk(sim_mtx);
         leg_controller_->Setup_Command(runner_usbcmd_);
+#if defined(SIMULATOR)
         publisher.loan().and_then([this](auto &sample) {
             for (int i = 0; i < 4; i++) {
                 sample->q[3 * i] = runner_usbcmd_->q_des_abad[i];
@@ -164,6 +171,7 @@ void RobotRunner::finalStep() {
         }).or_else([](auto &result) {
             std::cerr << "Unable to loan sample, error: " << result << std::endl;
         });
+#endif
     } else if (sim_ == Config::sim_lcm) {
         std::lock_guard<std::mutex> lk(sim_mtx);
         leg_controller_->Setup_Command(runner_usbcmd_);
@@ -200,56 +208,56 @@ void RobotRunner::finalStep() {
     // runner_timer_.timer_exit(5);
 }
 
-void RobotRunner::handleRosCMD(const lcm::ReceiveBuffer *rbuf, const std::string &chan,
-                               const ros_lowcmd_lcmt *msg) {
-    (void) rbuf;
-    (void) chan;
-    memcpy(&low_cmd_, msg, sizeof(low_cmd_));
-    for (int i = 0; i < 4; i++) {
-        leg_controller_->leg_command[i].q_des(0) = static_cast<double>(low_cmd_.q_des[3 * i]);
-        leg_controller_->leg_command[i].q_des(1) = static_cast<double>(low_cmd_.q_des[3 * i + 1]);
-        leg_controller_->leg_command[i].q_des(2) = static_cast<double>(low_cmd_.q_des[3 * i + 2]);
+// void RobotRunner::handleRosCMD(const lcm::ReceiveBuffer *rbuf, const std::string &chan,
+// const ros_lowcmd_lcmt *msg) {
+// (void) rbuf;
+// (void) chan;
+// memcpy(&low_cmd_, msg, sizeof(low_cmd_));
+// for (int i = 0; i < 4; i++) {
+// leg_controller_->leg_command[i].q_des(0) = static_cast<double>(low_cmd_.q_des[3 * i]);
+// leg_controller_->leg_command[i].q_des(1) = static_cast<double>(low_cmd_.q_des[3 * i + 1]);
+// leg_controller_->leg_command[i].q_des(2) = static_cast<double>(low_cmd_.q_des[3 * i + 2]);
 
-        leg_controller_->leg_command[i].qd_des(0) = static_cast<double>(low_cmd_.qd_des[3 * i]);
-        leg_controller_->leg_command[i].qd_des(1) = static_cast<double>(low_cmd_.qd_des[3 * i + 1]);
-        leg_controller_->leg_command[i].qd_des(2) = static_cast<double>(low_cmd_.qd_des[3 * i + 2]);
+// leg_controller_->leg_command[i].qd_des(0) = static_cast<double>(low_cmd_.qd_des[3 * i]);
+// leg_controller_->leg_command[i].qd_des(1) = static_cast<double>(low_cmd_.qd_des[3 * i + 1]);
+// leg_controller_->leg_command[i].qd_des(2) = static_cast<double>(low_cmd_.qd_des[3 * i + 2]);
 
-        leg_controller_->leg_command[i].tau_ff(0) = static_cast<double>(low_cmd_.tau_ff[3 * i]);
-        leg_controller_->leg_command[i].tau_ff(1) = static_cast<double>(low_cmd_.tau_ff[3 * i + 1]);
-        leg_controller_->leg_command[i].tau_ff(2) = static_cast<double>(low_cmd_.tau_ff[3 * i + 2]);
+// leg_controller_->leg_command[i].tau_ff(0) = static_cast<double>(low_cmd_.tau_ff[3 * i]);
+// leg_controller_->leg_command[i].tau_ff(1) = static_cast<double>(low_cmd_.tau_ff[3 * i + 1]);
+// leg_controller_->leg_command[i].tau_ff(2) = static_cast<double>(low_cmd_.tau_ff[3 * i + 2]);
 
-        leg_controller_->leg_command[i].kp_joint(0, 0) = static_cast<double>(low_cmd_.kp_joint[3 * i]);
-        leg_controller_->leg_command[i].kp_joint(1, 1) = static_cast<double>(low_cmd_.kp_joint[3 * i + 1]);
-        leg_controller_->leg_command[i].kp_joint(2, 2) = static_cast<double>(low_cmd_.kp_joint[3 * i + 2]);
+// leg_controller_->leg_command[i].kp_joint(0, 0) = static_cast<double>(low_cmd_.kp_joint[3 * i]);
+// leg_controller_->leg_command[i].kp_joint(1, 1) = static_cast<double>(low_cmd_.kp_joint[3 * i + 1]);
+// leg_controller_->leg_command[i].kp_joint(2, 2) = static_cast<double>(low_cmd_.kp_joint[3 * i + 2]);
 
-        leg_controller_->leg_command[i].kd_joint(0, 0) = static_cast<double>(low_cmd_.kd_joint[3 * i]);
-        leg_controller_->leg_command[i].kd_joint(1, 1) = static_cast<double>(low_cmd_.kd_joint[3 * i + 1]);
-        leg_controller_->leg_command[i].kd_joint(2, 2) = static_cast<double>(low_cmd_.kd_joint[3 * i + 2]);
+// leg_controller_->leg_command[i].kd_joint(0, 0) = static_cast<double>(low_cmd_.kd_joint[3 * i]);
+// leg_controller_->leg_command[i].kd_joint(1, 1) = static_cast<double>(low_cmd_.kd_joint[3 * i + 1]);
+// leg_controller_->leg_command[i].kd_joint(2, 2) = static_cast<double>(low_cmd_.kd_joint[3 * i + 2]);
+// }
+// }
+
+#if defined(SIMULATOR)
+void RobotRunner::thread_subscriber_function() {
+    while (true) {
+        subscriber.take().and_then([this](auto &sample) {
+            for (int i = 0; i < 3; i++) {
+                runner_imudata_->accel[i] = sample->acc[i];
+                runner_imudata_->gyro[i] = sample->gyro[i];
+            }
+            for (int i = 0; i < 4; i++) {
+                runner_imudata_->q[i] = sample->quat[i];
+                runner_usbdata_->q_abad[i] = sample->q[3 * i];
+                runner_usbdata_->q_hip[i] = sample->q[3 * i + 1];
+                runner_usbdata_->q_knee[i] = sample->q[3 * i + 2];
+                runner_usbdata_->qd_abad[i] = sample->qd[3 * i];
+                runner_usbdata_->qd_hip[i] = sample->qd[3 * i + 1];
+                runner_usbdata_->qd_knee[i] = sample->qd[3 * i + 2];
+            }
+        }).or_else([](auto &result) {
+            if (result != iox::popo::ChunkReceiveResult::NO_CHUNK_AVAILABLE) {
+                std::cout << "Error receiving chunk." << std::endl;
+            }
+        });
     }
 }
-
-void RobotRunner::thread_subscriber_function() {
-   while (true) {
-       subscriber.take().and_then([this](auto &sample) {
-
-           for (int i = 0; i < 3; i++) {
-               runner_imudata_->accel[i] = sample->acc[i];
-               runner_imudata_->gyro[i] = sample->gyro[i];
-           }
-           for (int i = 0; i < 4; i++) {
-               runner_imudata_->q[i] = sample->quat[i];
-               runner_usbdata_->q_abad[i] = sample->q[3 * i];
-               runner_usbdata_->q_hip[i] = sample->q[3 * i + 1];
-               runner_usbdata_->q_knee[i] = sample->q[3 * i + 2];
-               runner_usbdata_->qd_abad[i] = sample->qd[3 * i];
-               runner_usbdata_->qd_hip[i] = sample->qd[3 * i + 1];
-               runner_usbdata_->qd_knee[i] = sample->qd[3 * i + 2];
-           }
-       }).or_else([](auto &result) {
-           if (result != iox::popo::ChunkReceiveResult::NO_CHUNK_AVAILABLE) {
-               std::cout << "Error receiving chunk." << std::endl;
-           }
-       });
-   }
-
-}
+#endif

@@ -23,7 +23,16 @@ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 60 --slave /
 ```
 
 ---
-
+### Build the Project
+```bash
+mkdir build && cd build
+# if you want to run on real robot
+# the cmake will show (Real_Robot build exclude iceoryx)
+cmake -DREAL_ROBOT=true .. 
+# the cmake will show (Simulator build include iceoryx)
+cmake .. # just for simulation
+make -jn
+```
 ### Running the project
 #### Remote FSM:
 * LB + A = STAND
@@ -41,6 +50,10 @@ bash ./scripts/launch_sim_ctrl.sh # in a new terminal
 Watch the data in the lcm channel.
 ```bash
 bash ./scripts/launch_lcm.sh
+```
+Send bin to the slave
+```bash
+bash ./scripts/send_to_slave.sh #TODO: test this script
 ```
 
 
