@@ -17,10 +17,10 @@
 #include "../lcm-types/cpp/mpc_lcmt.hpp"
 #include "../lcm-types/cpp/planner_lcmt.hpp"
 #if defined (WORK_COMPUTOR)
-#include "iceoryx/v2.95.4/iceoryx_posh/popo/publisher.hpp"
-#include "iceoryx/v2.95.4/iceoryx_posh/popo/subscriber.hpp"
-#include "iceoryx/v2.95.4/iceoryx_posh/runtime/posh_runtime.hpp"
-#include "iceoryx/v2.95.4/iox/signal_watcher.hpp"
+#include "iceoryx_posh/popo/publisher.hpp"
+#include "iceoryx_posh/popo/subscriber.hpp"
+#include "iceoryx_posh/runtime/posh_runtime.hpp"
+#include "iox/signal_watcher.hpp"
 #elif defined(LapTop)
 #include "iceoryx/v/iceoryx_posh/popo/publisher.hpp"
 #include "iceoryx/v/iceoryx_posh/popo/subscriber.hpp"

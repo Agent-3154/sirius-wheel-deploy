@@ -8,7 +8,7 @@ include_directories("../utilities/types")
 include_directories("../utilities/inc")
 include_directories("FSM/")
 link_directories(${LINK_DIR})
-
+include_directories("/home/hb/legged/iceoryx/")
 file(GLOB_RECURSE robot_ctrl_sources "*.cpp" "FSM/*.cpp")
 find_package(iceoryx_platform REQUIRED)
 find_package(iceoryx_posh CONFIG REQUIRED)
