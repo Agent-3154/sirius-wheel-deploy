@@ -9,14 +9,15 @@ include_directories("../utilities/inc")
 include_directories("FSM/")
 link_directories(${LINK_DIR})
 include_directories("/home/hb/legged/iceoryx/")
+include_directories("../onnxruntime-linux-x64-1-16-1/include")
 file(GLOB_RECURSE robot_ctrl_sources "*.cpp" "FSM/*.cpp" "rl_controller/*.cpp")
 find_package(iceoryx_platform REQUIRED)
 find_package(iceoryx_posh CONFIG REQUIRED)
 find_package(iceoryx_hoofs CONFIG REQUIRED)
-
+find_library(onnx onnxruntime ../onnxruntime-linux-x64-1-16-1/lib)
 add_library(robot_ctrl_library SHARED ${robot_ctrl_sources}
         ../utilities/src/easylogging++.cc
 )
 
 target_link_libraries(robot_ctrl_library
-        lcm iceoryx_posh::iceoryx_posh)
+        lcm iceoryx_posh::iceoryx_posh ${onnx})

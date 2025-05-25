@@ -22,6 +22,7 @@ private:
     std::vector<Vec3<double> > joint_pos_ini_;
     std::vector<Vec3<double> > joint_pos_end_;
     std::shared_ptr<RLController> rl_controller_;
+    
 };
 
 #endif  // FSM_STATE_RL_WALK_H_

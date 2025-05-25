@@ -130,3 +130,21 @@ ERROR: Headers and library have different versions
 Fri May 16 20:32:15 2025
 ERROR: Headers and library have different versions
 
+Sun May 25 20:04:06 2025
+WARNING: Nan, Inf or huge value in CTRL at ACTUATOR 0. The simulation is unstable. Time = 9.7240.
+
+Sun May 25 20:04:25 2025
+WARNING: Nan, Inf or huge value in CTRL at ACTUATOR 0. The simulation is unstable. Time = 5.1860.
+
+Sun May 25 20:07:03 2025
+WARNING: Nan, Inf or huge value in CTRL at ACTUATOR 0. The simulation is unstable. Time = 0.0000.
+
+Sun May 25 20:07:11 2025
+WARNING: Nan, Inf or huge value in CTRL at ACTUATOR 0. The simulation is unstable. Time = 3.0510.
+
+Sun May 25 20:15:38 2025
+WARNING: Nan, Inf or huge value in CTRL at ACTUATOR 0. The simulation is unstable. Time = 122.7660.
+
+Sun May 25 20:15:44 2025
+WARNING: Nan, Inf or huge value in CTRL at ACTUATOR 0. The simulation is unstable. Time = 0.0000.
+
