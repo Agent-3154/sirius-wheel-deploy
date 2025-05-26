@@ -9,7 +9,6 @@ include_directories("robot_runner/")
 include_directories("thread_tasks/")
 include_directories("thread_tasks/inc")
 include_directories("hardwares/usb/include")
-include_directories("hardwares/fdsc_utils/inc")
 include_directories("../robot_ctrl")
 include_directories(${INC_DIR})
 include_directories("../utilities/types")
@@ -17,7 +16,7 @@ include_directories("../robot_ctrl/")
 
 link_directories(${LINK_DIR})
 
-file(GLOB_RECURSE hardware_sources "hardwares/usb/src/*.cpp" "hardwares/fdsc_utils/src/*.cpp" "../utilities/src/*.cpp" "*.cpp"
+file(GLOB_RECURSE hardware_sources "hardwares/usb/src/*.cpp"  "../utilities/src/*.cpp" "*.cpp"
         "estimators/*.cpp" "leg_controller/*.cpp" "thread_tasks/src/*.cpp" "thread_tasks/*.cpp" "robot_model/*.cpp"
         "hardwares/usb/src/*.cpp" "robot_runner/*.cpp")
 
@@ -35,10 +34,6 @@ add_library(hardware_library SHARED ${hardware_sources}
         ../config/Config.h
         estimators/sim_estimator.h
         estimators/sim_estimator.cpp
-        thread_tasks/inc/thread_fdsc.h
-        hardwares/fdsc_utils/my_fdsc.h
-        hardwares/fdsc_utils/my_fdsc.cpp
-        thread_tasks/src/thread_fdsc.cpp
         #        ../utilities/src/easylogging++.cc
 )
 

@@ -9,42 +9,38 @@
 #include <vector>
 #include <eigen3/Eigen/Dense>
 
+typedef struct Controller_M_Cmd {
+    float q_des;
+    float qd_des;
+    float kp;
+    float kd;
+    float tau_ff;
+} CMCmd_t;
+
+typedef struct Control_Chip_Cmd {
+    CMCmd_t motor_cmds[6];
+    int32_t chip_flg;
+}CCC_t;
+
 typedef struct USBCommand {
-    float q_des_abad[4];
-    float q_des_hip[4];
-    float q_des_knee[4];
-    float qd_des_abad[4];
-    float qd_des_hip[4];
-    float qd_des_knee[4];
-    float kp_abad[4];
-    float kp_hip[4];
-    float kp_knee[4];
-    float kd_abad[4];
-    float kd_hip[4];
-    float kd_knee[4];
-    float tau_abad_ff[4];
-    float tau_hip_ff[4];
-    float tau_knee_ff[4];
-    int32_t flags[2];
+    CCC_t chip_cmds[3];
 } USB_Command_t;
 
+typedef struct Controller_M_Data {
+    float q;
+    float qd;
+    float tau;
+    float uq;
+    float ud;
+} CMData_t;
+
+typedef struct Controller_Chip_Data {
+    CMData_t motor_datas[6];
+    int32_t chip_flg;
+} CCData_t;
+
 typedef struct USBData {
-    float q_abad[4];
-    float q_hip[4];
-    float q_knee[4];
-    float qd_abad[4];
-    float qd_hip[4];
-    float qd_knee[4];
-    float tau_abad[4];
-    float tau_hip[4];
-    float tau_knee[4];
-    float uq_abad[4];
-    float uq_hip[4];
-    float uq_knee[4];
-    float ud_abad[4];
-    float ud_hip[4];
-    float ud_knee[4];
-    int32_t flags[2];
+    CCData_t chip_datas[3];
 } USB_Data_t;
 
 typedef struct IMUData {

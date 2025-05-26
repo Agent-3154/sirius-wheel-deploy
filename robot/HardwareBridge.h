@@ -7,7 +7,6 @@
 
 #include <memory>
 
-#include "thread_tasks/inc/thread_fdsc.h"
 #include "thread_tasks/inc/thread_usb_hardware.h"
 #include "thread_tasks/inc/thread_rc.h"
 #include "../utilities/types/hardware_types.h"
@@ -31,8 +30,6 @@ namespace HardwareBridge {
 
         void thread_usb_function();
         void thread_rc_function();
-        void thread_free_sdk_function();
-
         // std::shared_ptr<Utilities::ThreadPool> tp_usb_;
         // std::shared_ptr<Utilities::ThreadPool> tp_rc_;
         // std::shared_ptr<Utilities::ThreadPool> tp_robot_runner_;
@@ -41,14 +38,12 @@ namespace HardwareBridge {
         std::shared_ptr<Thread::thread_usb_hardwares> t_usb_;
         std::shared_ptr<Thread::thread_rc> t_rc_;
         std::shared_ptr<Thread::thread_robot_runner> t_robot_runner_;
-        std::shared_ptr<Thread::thread_fdsdk_hardwares> t_fdsdk_hardwares_;
 
         RobotRunner* robot_runner_ = nullptr;
-        USB_HARDWARE::Motor_Control_Board *usb2can_board_handle_ = nullptr;
+        USB_HARDWARE::Beast_USB2CAN *usb2can_board_handle_ = nullptr;
         USB_HARDWARE::USB_IMU *imu_handle_ = nullptr;
         USB_HARDWARE::USB_Hardware_Containers* usb_container_;
         usb_controller::logic_remote_controller *rc_handle_ = nullptr;
-        My_FDSC* my_fdsc_ = nullptr;
 
         USB_Command_t *usb_cmd_;
         USB_Data_t *usb_data_;

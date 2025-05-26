@@ -14,37 +14,20 @@
 class usb_command_t
 {
     public:
-        float      q_des_abad[4];
+        float      chip1_cmd[30];
 
-        float      q_des_hip[4];
+        /// 6 motors, 5 commands each
+        int32_t    chip1_flg[1];
 
-        float      q_des_knee[4];
+        float      chip2_cmd[30];
 
-        float      qd_des_abad[4];
+        /// 6 motors, 5 commands each
+        int32_t    chip2_flg[1];
 
-        float      qd_des_hip[4];
+        float      chip3_cmd[30];
 
-        float      qd_des_knee[4];
-
-        float      kp_abad[4];
-
-        float      kp_hip[4];
-
-        float      kp_knee[4];
-
-        float      kd_abad[4];
-
-        float      kd_hip[4];
-
-        float      kd_knee[4];
-
-        float      tau_abad_ff[4];
-
-        float      tau_hip_ff[4];
-
-        float      tau_knee_ff[4];
-
-        int32_t    flags[2];
+        /// 6 motors, 5 commands each
+        int32_t    chip3_flg[1];
 
     public:
         /**
@@ -142,52 +125,22 @@ int usb_command_t::_encodeNoHash(void *buf, int offset, int maxlen) const
 {
     int pos = 0, tlen;
 
-    tlen = __float_encode_array(buf, offset + pos, maxlen - pos, &this->q_des_abad[0], 4);
+    tlen = __float_encode_array(buf, offset + pos, maxlen - pos, &this->chip1_cmd[0], 30);
     if(tlen < 0) return tlen; else pos += tlen;
 
-    tlen = __float_encode_array(buf, offset + pos, maxlen - pos, &this->q_des_hip[0], 4);
+    tlen = __int32_t_encode_array(buf, offset + pos, maxlen - pos, &this->chip1_flg[0], 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
-    tlen = __float_encode_array(buf, offset + pos, maxlen - pos, &this->q_des_knee[0], 4);
+    tlen = __float_encode_array(buf, offset + pos, maxlen - pos, &this->chip2_cmd[0], 30);
     if(tlen < 0) return tlen; else pos += tlen;
 
-    tlen = __float_encode_array(buf, offset + pos, maxlen - pos, &this->qd_des_abad[0], 4);
+    tlen = __int32_t_encode_array(buf, offset + pos, maxlen - pos, &this->chip2_flg[0], 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
-    tlen = __float_encode_array(buf, offset + pos, maxlen - pos, &this->qd_des_hip[0], 4);
+    tlen = __float_encode_array(buf, offset + pos, maxlen - pos, &this->chip3_cmd[0], 30);
     if(tlen < 0) return tlen; else pos += tlen;
 
-    tlen = __float_encode_array(buf, offset + pos, maxlen - pos, &this->qd_des_knee[0], 4);
-    if(tlen < 0) return tlen; else pos += tlen;
-
-    tlen = __float_encode_array(buf, offset + pos, maxlen - pos, &this->kp_abad[0], 4);
-    if(tlen < 0) return tlen; else pos += tlen;
-
-    tlen = __float_encode_array(buf, offset + pos, maxlen - pos, &this->kp_hip[0], 4);
-    if(tlen < 0) return tlen; else pos += tlen;
-
-    tlen = __float_encode_array(buf, offset + pos, maxlen - pos, &this->kp_knee[0], 4);
-    if(tlen < 0) return tlen; else pos += tlen;
-
-    tlen = __float_encode_array(buf, offset + pos, maxlen - pos, &this->kd_abad[0], 4);
-    if(tlen < 0) return tlen; else pos += tlen;
-
-    tlen = __float_encode_array(buf, offset + pos, maxlen - pos, &this->kd_hip[0], 4);
-    if(tlen < 0) return tlen; else pos += tlen;
-
-    tlen = __float_encode_array(buf, offset + pos, maxlen - pos, &this->kd_knee[0], 4);
-    if(tlen < 0) return tlen; else pos += tlen;
-
-    tlen = __float_encode_array(buf, offset + pos, maxlen - pos, &this->tau_abad_ff[0], 4);
-    if(tlen < 0) return tlen; else pos += tlen;
-
-    tlen = __float_encode_array(buf, offset + pos, maxlen - pos, &this->tau_hip_ff[0], 4);
-    if(tlen < 0) return tlen; else pos += tlen;
-
-    tlen = __float_encode_array(buf, offset + pos, maxlen - pos, &this->tau_knee_ff[0], 4);
-    if(tlen < 0) return tlen; else pos += tlen;
-
-    tlen = __int32_t_encode_array(buf, offset + pos, maxlen - pos, &this->flags[0], 2);
+    tlen = __int32_t_encode_array(buf, offset + pos, maxlen - pos, &this->chip3_flg[0], 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
     return pos;
@@ -197,52 +150,22 @@ int usb_command_t::_decodeNoHash(const void *buf, int offset, int maxlen)
 {
     int pos = 0, tlen;
 
-    tlen = __float_decode_array(buf, offset + pos, maxlen - pos, &this->q_des_abad[0], 4);
+    tlen = __float_decode_array(buf, offset + pos, maxlen - pos, &this->chip1_cmd[0], 30);
     if(tlen < 0) return tlen; else pos += tlen;
 
-    tlen = __float_decode_array(buf, offset + pos, maxlen - pos, &this->q_des_hip[0], 4);
+    tlen = __int32_t_decode_array(buf, offset + pos, maxlen - pos, &this->chip1_flg[0], 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
-    tlen = __float_decode_array(buf, offset + pos, maxlen - pos, &this->q_des_knee[0], 4);
+    tlen = __float_decode_array(buf, offset + pos, maxlen - pos, &this->chip2_cmd[0], 30);
     if(tlen < 0) return tlen; else pos += tlen;
 
-    tlen = __float_decode_array(buf, offset + pos, maxlen - pos, &this->qd_des_abad[0], 4);
+    tlen = __int32_t_decode_array(buf, offset + pos, maxlen - pos, &this->chip2_flg[0], 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
-    tlen = __float_decode_array(buf, offset + pos, maxlen - pos, &this->qd_des_hip[0], 4);
+    tlen = __float_decode_array(buf, offset + pos, maxlen - pos, &this->chip3_cmd[0], 30);
     if(tlen < 0) return tlen; else pos += tlen;
 
-    tlen = __float_decode_array(buf, offset + pos, maxlen - pos, &this->qd_des_knee[0], 4);
-    if(tlen < 0) return tlen; else pos += tlen;
-
-    tlen = __float_decode_array(buf, offset + pos, maxlen - pos, &this->kp_abad[0], 4);
-    if(tlen < 0) return tlen; else pos += tlen;
-
-    tlen = __float_decode_array(buf, offset + pos, maxlen - pos, &this->kp_hip[0], 4);
-    if(tlen < 0) return tlen; else pos += tlen;
-
-    tlen = __float_decode_array(buf, offset + pos, maxlen - pos, &this->kp_knee[0], 4);
-    if(tlen < 0) return tlen; else pos += tlen;
-
-    tlen = __float_decode_array(buf, offset + pos, maxlen - pos, &this->kd_abad[0], 4);
-    if(tlen < 0) return tlen; else pos += tlen;
-
-    tlen = __float_decode_array(buf, offset + pos, maxlen - pos, &this->kd_hip[0], 4);
-    if(tlen < 0) return tlen; else pos += tlen;
-
-    tlen = __float_decode_array(buf, offset + pos, maxlen - pos, &this->kd_knee[0], 4);
-    if(tlen < 0) return tlen; else pos += tlen;
-
-    tlen = __float_decode_array(buf, offset + pos, maxlen - pos, &this->tau_abad_ff[0], 4);
-    if(tlen < 0) return tlen; else pos += tlen;
-
-    tlen = __float_decode_array(buf, offset + pos, maxlen - pos, &this->tau_hip_ff[0], 4);
-    if(tlen < 0) return tlen; else pos += tlen;
-
-    tlen = __float_decode_array(buf, offset + pos, maxlen - pos, &this->tau_knee_ff[0], 4);
-    if(tlen < 0) return tlen; else pos += tlen;
-
-    tlen = __int32_t_decode_array(buf, offset + pos, maxlen - pos, &this->flags[0], 2);
+    tlen = __int32_t_decode_array(buf, offset + pos, maxlen - pos, &this->chip3_flg[0], 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
     return pos;
@@ -251,28 +174,18 @@ int usb_command_t::_decodeNoHash(const void *buf, int offset, int maxlen)
 int usb_command_t::_getEncodedSizeNoHash() const
 {
     int enc_size = 0;
-    enc_size += __float_encoded_array_size(NULL, 4);
-    enc_size += __float_encoded_array_size(NULL, 4);
-    enc_size += __float_encoded_array_size(NULL, 4);
-    enc_size += __float_encoded_array_size(NULL, 4);
-    enc_size += __float_encoded_array_size(NULL, 4);
-    enc_size += __float_encoded_array_size(NULL, 4);
-    enc_size += __float_encoded_array_size(NULL, 4);
-    enc_size += __float_encoded_array_size(NULL, 4);
-    enc_size += __float_encoded_array_size(NULL, 4);
-    enc_size += __float_encoded_array_size(NULL, 4);
-    enc_size += __float_encoded_array_size(NULL, 4);
-    enc_size += __float_encoded_array_size(NULL, 4);
-    enc_size += __float_encoded_array_size(NULL, 4);
-    enc_size += __float_encoded_array_size(NULL, 4);
-    enc_size += __float_encoded_array_size(NULL, 4);
-    enc_size += __int32_t_encoded_array_size(NULL, 2);
+    enc_size += __float_encoded_array_size(NULL, 30);
+    enc_size += __int32_t_encoded_array_size(NULL, 1);
+    enc_size += __float_encoded_array_size(NULL, 30);
+    enc_size += __int32_t_encoded_array_size(NULL, 1);
+    enc_size += __float_encoded_array_size(NULL, 30);
+    enc_size += __int32_t_encoded_array_size(NULL, 1);
     return enc_size;
 }
 
 uint64_t usb_command_t::_computeHash(const __lcm_hash_ptr *)
 {
-    uint64_t hash = 0xecc8eaa6369bc165LL;
+    uint64_t hash = 0x4b0674318281283eLL;
     return (hash<<1) + ((hash>>63)&1);
 }
 

@@ -60,60 +60,64 @@ void Leg_Controller<T>::Setup_Command(USB_Command_t *usb_cmd) {
         // std::cout << "leg_foot_force: id" << leg_id << "| " << leg_foot_force <<"\n";
         leg_motor_torques += leg_data[leg_id].J.transpose() * leg_foot_force;
 
-        if(leg_motor_torques.array().isNaN().any()) {
+        if (leg_motor_torques.array().isNaN().any()) {
             leg_motor_torques.setZero();
             Zero_Command();
             // std::cout << RED << "[ERROR]: " << RESET << " leg_motor_torques is NaN\n" << std::endl;
         }
         // set command
-        usb_cmd->tau_abad_ff[leg_id] = leg_motor_torques(0);
-        usb_cmd->tau_hip_ff[leg_id] = leg_motor_torques(1);
-        usb_cmd->tau_knee_ff[leg_id] = leg_motor_torques(2);
+        const int index = leg_id / 2;
+        const int index_shift = index * 2;
+        usb_cmd->chip_cmds[index].motor_cmds[3 * (leg_id - index_shift)].tau_ff = leg_motor_torques(0);
+        usb_cmd->chip_cmds[index].motor_cmds[3 * (leg_id - index_shift) + 1].tau_ff = leg_motor_torques(1);
+        usb_cmd->chip_cmds[index].motor_cmds[3 * (leg_id - index_shift) + 2].tau_ff = leg_motor_torques(2);
 
-        usb_cmd->kd_abad[leg_id] = leg_command[leg_id].kd_joint(0, 0);
-        usb_cmd->kd_hip[leg_id] = leg_command[leg_id].kd_joint(1, 1);
-        usb_cmd->kd_knee[leg_id] = leg_command[leg_id].kd_joint(2, 2);
 
-        usb_cmd->kp_abad[leg_id] = leg_command[leg_id].kp_joint(0, 0);
-        usb_cmd->kp_hip[leg_id] = leg_command[leg_id].kp_joint(1, 1);
-        usb_cmd->kp_knee[leg_id] = leg_command[leg_id].kp_joint(2, 2);
+        usb_cmd->chip_cmds[index].motor_cmds[3 * (leg_id - index_shift)].kd = leg_command[leg_id].kd_joint(0, 0);
+        usb_cmd->chip_cmds[index].motor_cmds[3 * (leg_id - index_shift) + 1].kd = leg_command[leg_id].kd_joint(1, 1);
+        usb_cmd->chip_cmds[index].motor_cmds[3 * (leg_id - index_shift) + 2].kd = leg_command[leg_id].kd_joint(2, 2);
 
-        usb_cmd->q_des_abad[leg_id] = leg_command[leg_id].q_des(0);
-        usb_cmd->q_des_hip[leg_id] = leg_command[leg_id].q_des(1);
-        usb_cmd->q_des_knee[leg_id] = leg_command[leg_id].q_des(2);
+        usb_cmd->chip_cmds[index].motor_cmds[3 * (leg_id - index_shift)].kp = leg_command[leg_id].kp_joint(0, 0);
+        usb_cmd->chip_cmds[index].motor_cmds[3 * (leg_id - index_shift) + 1].kp = leg_command[leg_id].kp_joint(1, 1);
+        usb_cmd->chip_cmds[index].motor_cmds[3 * (leg_id - index_shift) + 2].kp = leg_command[leg_id].kp_joint(2, 2);
 
-        usb_cmd->qd_des_abad[leg_id] = leg_command[leg_id].qd_des(0);
-        usb_cmd->qd_des_hip[leg_id] = leg_command[leg_id].qd_des(1);
-        usb_cmd->qd_des_knee[leg_id] = leg_command[leg_id].qd_des(2);
+        usb_cmd->chip_cmds[index].motor_cmds[3 * (leg_id - index_shift)].q_des = leg_command[leg_id].q_des(0);
+        usb_cmd->chip_cmds[index].motor_cmds[3 * (leg_id - index_shift) + 1].q_des = leg_command[leg_id].q_des(1);
+        usb_cmd->chip_cmds[index].motor_cmds[3 * (leg_id - index_shift) + 2].q_des = leg_command[leg_id].q_des(2);
+
+        usb_cmd->chip_cmds[index].motor_cmds[3 * (leg_id - index_shift)].qd_des = leg_command[leg_id].qd_des(0);
+        usb_cmd->chip_cmds[index].motor_cmds[3 * (leg_id - index_shift) + 1].qd_des = leg_command[leg_id].qd_des(1);
+        usb_cmd->chip_cmds[index].motor_cmds[3 * (leg_id - index_shift) + 2].qd_des = leg_command[leg_id].qd_des(2);
 
         //TODO add enable and disable flags
-
     }
 
     // enable part
     enable_counter++;
     if (enable_counter < 50) {
-        usb_cmd->flags[0] = 0x01 << 1;
-        usb_cmd->flags[1] = 0x01 << 1;
+        usb_cmd->chip_cmds[0].chip_flg = 0x01 << 1;
+        usb_cmd->chip_cmds[1].chip_flg = 0x01 << 1;
     } else {
-        usb_cmd->flags[0] = usb_cmd->flags[1] = 0x01 | (0x01 << 2); // mit mode
+        usb_cmd->chip_cmds[0].chip_flg = usb_cmd->chip_cmds[1].chip_flg = 0x01 | (0x01 << 2); // mit mode
     }
     if (enable_counter > 80) enable_counter = 80;
 }
 
 template<typename T>
 void Leg_Controller<T>::Update_Data(const USB_Data_t *usb_data) {
-//    std::cout << usb_data->qd_knee[4];
+    //    std::cout << usb_data->qd_knee[4];
     for (int leg = 0; leg < nlegs_; leg++) {
-        leg_data[leg].q(0) = usb_data->q_abad[leg];
-        leg_data[leg].q(1) = usb_data->q_hip[leg];
-        leg_data[leg].q(2) = usb_data->q_knee[leg];
-        leg_data[leg].qd(0) = usb_data->qd_abad[leg];
-        leg_data[leg].qd(1) = usb_data->qd_hip[leg];
-        leg_data[leg].qd(2) = usb_data->qd_knee[leg];
-        leg_data[leg].tau(0) = usb_data->tau_abad[leg];
-        leg_data[leg].tau(1) = usb_data->tau_hip[leg];
-        leg_data[leg].tau(2) = usb_data->tau_knee[leg];
+        const int index = leg / 2;
+        const int index_shift = index * 2;
+        leg_data[leg].q(0) = usb_data->chip_datas[index].motor_datas[3 * (leg - index_shift)].q;
+        leg_data[leg].q(1) = usb_data->chip_datas[index].motor_datas[3 * (leg - index_shift) + 1].q;
+        leg_data[leg].q(2) = usb_data->chip_datas[index].motor_datas[3 * (leg - index_shift) + 2].q;
+        leg_data[leg].qd(0) = usb_data->chip_datas[index].motor_datas[3 * (leg - index_shift)].qd;
+        leg_data[leg].qd(1) = usb_data->chip_datas[index].motor_datas[3 * (leg - index_shift) + 1].qd;
+        leg_data[leg].qd(2) = usb_data->chip_datas[index].motor_datas[3 * (leg - index_shift) + 2].qd;
+        leg_data[leg].tau(0) = usb_data->chip_datas[index].motor_datas[3 * (leg - index_shift)].tau;
+        leg_data[leg].tau(1) = usb_data->chip_datas[index].motor_datas[3 * (leg - index_shift) + 1].tau;
+        leg_data[leg].tau(2) = usb_data->chip_datas[index].motor_datas[3 * (leg - index_shift) + 2].tau;
 
         computeLegJacobianAndPosition(leg_data[leg].q, &(leg_data[leg].J), &(leg_data[leg].p), leg);
         leg_data[leg].v = leg_data[leg].J * leg_data[leg].qd;
@@ -169,11 +173,11 @@ void Leg_Controller<T>::computeLegJacobianAndPosition(Vec3<T> &q, Mat3<T> *J, Ve
         J->operator()(0, 1) = -link3_ * c23 + -link2_ * c2;
         J->operator()(0, 2) = -link3_ * c23;
         J->operator()(1, 0) = link3_ * c1 * c23 + link2_ * c1 * c2 - link1_ * sideSign * s1;
-//        J->operator()(1, 0) = link3_ * c1 * c23 + link2_ * c1 * c2 - link1_ * s1;
+        //        J->operator()(1, 0) = link3_ * c1 * c23 + link2_ * c1 * c2 - link1_ * s1;
         J->operator()(1, 1) = -link3_ * s1 * s23 - link2_ * s1 * s2;
         J->operator()(1, 2) = -link3_ * s1 * s23;
         J->operator()(2, 0) = link3_ * s1 * c23 + link2_ * c2 * s1 + link1_ * sideSign * c1;
-//        J->operator()(2, 0) = link3_ * s1 * c23 + link2_ * c2 * s1 + link1_ * c1;
+        //        J->operator()(2, 0) = link3_ * s1 * c23 + link2_ * c2 * s1 + link1_ * c1;
         J->operator()(2, 1) = link3_ * c1 * s23 + link2_ * c1 * s2;
         J->operator()(2, 2) = link3_ * c1 * s23;
     }
@@ -181,8 +185,8 @@ void Leg_Controller<T>::computeLegJacobianAndPosition(Vec3<T> &q, Mat3<T> *J, Ve
         p->operator()(0) = -link3_ * s23 - link2_ * s2;
         p->operator()(1) = link1_ * sideSign * c1 + link3_ * (s1 * c23) + link2_ * c2 * s1;
         p->operator()(2) = link1_ * sideSign * s1 - link3_ * (c1 * c23) - link2_ * c1 * c2;
-//        p->operator()(1) = link1_ * c1 + link3_ * (s1 * c23) + link2_ * c2 * s1;
-//        p->operator()(2) = link1_ * s1 - link3_ * (c1 * c23) - link2_ * c1 * c2;
+        //        p->operator()(1) = link1_ * c1 + link3_ * (s1 * c23) + link2_ * c2 * s1;
+        //        p->operator()(2) = link1_ * s1 - link3_ * (c1 * c23) - link2_ * c1 * c2;
     }
 }
 
@@ -193,4 +197,3 @@ struct Leg_Control_Command<double>;
 
 template
 class Leg_Controller<double>;
-

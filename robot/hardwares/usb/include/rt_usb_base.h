@@ -15,7 +15,7 @@ namespace USB_HARDWARE {
         USB_Hardware_Base(const std::string &usb_name, uint16_t vendor_id, uint16_t product_id, uint8_t _motors_epin,
                           uint8_t _motors_epout);
 
-        ~USB_Hardware_Base();
+        virtual ~USB_Hardware_Base();
 
         virtual void start_transfer() = 0;
 

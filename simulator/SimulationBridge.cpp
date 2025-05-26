@@ -13,11 +13,8 @@
 
 INITIALIZE_EASYLOGGINGPP
 
-Simulation::SimulationBridge::SimulationBridge(const std::string &task_name, int task_frequency,
-                                               std::string &model_name,
-                                               Config::run_type _sim_type) : Thread::thread_timer(
-                                                                                 task_name, task_frequency,
-                                                                                 Config::mj_sim_time_spy),
+Simulation::SimulationBridge::SimulationBridge(const std::string &task_name, int task_frequency, std::string &model_name,
+                                               Config::run_type _sim_type) : Thread::thread_timer(task_name, task_frequency, Config::mj_sim_time_spy),
                                                                              model_name_(model_name),
                                                                              lcm_(getLcmUrl(255)),
                                                                              usb_2_can_LCM_(getLcmUrl(255)),
@@ -296,8 +293,10 @@ void Simulation::SimulationBridge::setup_simulation_bridge(bool real_imu, bool r
     sim_handle_ = std::make_unique<
         mj::Simulate>(std::make_unique<mj::GlfwAdapter>(), false, real_imu, real_control);
     // start thread
+    std::cout << "run here\n";
     physics_handle_ = std::thread(&SimulationBridge::PhysicsThread, this);
     // start simulation UI loop (blocking call)
+    std::cout << "run here\n";
     sim_handle_->RenderLoop();
     physics_handle_.join();
 }
@@ -362,180 +361,188 @@ void Simulation::SimulationBridge::sim_step() {
  * @note algthm: right-hand axis, sim: left-hand axis
  */
 void Simulation::SimulationBridge::sim_control() {
-    {
-        // parse sensor data, order in xml file
-        int gyro_adr = m_->sensor_adr[0];
-        int quat_adr = m_->sensor_adr[1];
-        int acc_adr = m_->sensor_adr[2];
+    // parse sensor data, order in xml file
+    int gyro_adr = m_->sensor_adr[0];
+    int quat_adr = m_->sensor_adr[1];
+    int acc_adr = m_->sensor_adr[2];
 
-        // add noise
+    // add noise
 
-        // std::cout << "[IN LOOP]\n";
-        noise_quat << d_->sensordata[quat_adr + 0], d_->sensordata[quat_adr + 1], d_->sensordata[quat_adr + 2],
-                d_->sensordata[quat_adr + 3];
-        gyro_ << d_->sensordata[gyro_adr + 0], d_->sensordata[gyro_adr + 1], d_->sensordata[gyro_adr + 2];
-        acc_ << d_->sensordata[acc_adr + 0], d_->sensordata[acc_adr + 1], d_->sensordata[acc_adr + 2];
-        // Vec3<double> noise_rpy = ori::quatToRPY(noise_quat);
-        // for (int i = 0; i < 3; i++) {
-        //     noise_rpy(i) += dist_quat_(generator);
-        // }
-        // noise_quat = ori::rpyToQuat(noise_rpy);
-        subscriber.take()
-                .and_then([this](auto &sample) {
-                    for (int i = 0; i < 4; i++) {
-                        motor_cmd_->q_des_abad[i] = sample->q[3 * i];
-                        motor_cmd_->q_des_hip[i] = sample->q[3 * i + 1];
-                        motor_cmd_->q_des_knee[i] = sample->q[3 * i + 2];
+    // std::cout << "[IN LOOP]\n";
+    noise_quat << d_->sensordata[quat_adr + 0], d_->sensordata[quat_adr + 1], d_->sensordata[quat_adr + 2],
+            d_->sensordata[quat_adr + 3];
+    gyro_ << d_->sensordata[gyro_adr + 0], d_->sensordata[gyro_adr + 1], d_->sensordata[gyro_adr + 2];
+    acc_ << d_->sensordata[acc_adr + 0], d_->sensordata[acc_adr + 1], d_->sensordata[acc_adr + 2];
+    // Vec3<double> noise_rpy = ori::quatToRPY(noise_quat);
+    // for (int i = 0; i < 3; i++) {
+    //     noise_rpy(i) += dist_quat_(generator);
+    // }
+    // noise_quat = ori::rpyToQuat(noise_rpy);
+    subscriber.take()
+            .and_then([this](auto &sample) {
+                for (int i = 0; i < 4; i++) {
+                    const int index = i / 2;
+                    const int index_shift = index * 2;
+                    motor_cmd_->chip_cmds[index].motor_cmds[3 * (i - index_shift)].q_des = sample->q[3 * i];
+                    motor_cmd_->chip_cmds[index].motor_cmds[3 * (i - index_shift) + 1].q_des = sample->q[3 * i + 1];
+                    motor_cmd_->chip_cmds[index].motor_cmds[3 * (i - index_shift) + 2].q_des = sample->q[3 * i + 2];
 
-                        motor_cmd_->qd_des_abad[i] = sample->qd[3 * i];
-                        motor_cmd_->qd_des_hip[i] = sample->qd[3 * i + 1];
-                        motor_cmd_->qd_des_knee[i] = sample->qd[3 * i + 2];
+                    motor_cmd_->chip_cmds[index].motor_cmds[3 * (i - index_shift)].qd_des = sample->qd[3 * i];
+                    motor_cmd_->chip_cmds[index].motor_cmds[3 * (i - index_shift) + 1].qd_des = sample->qd[3 * i + 1];
+                    motor_cmd_->chip_cmds[index].motor_cmds[3 * (i - index_shift) + 2].qd_des = sample->qd[3 * i + 2];
 
-                        motor_cmd_->tau_abad_ff[i] = sample->tau_ff[3 * i];
-                        motor_cmd_->tau_hip_ff[i] = sample->tau_ff[3 * i + 1];
-                        motor_cmd_->tau_knee_ff[i] = sample->tau_ff[3 * i + 2];
+                    motor_cmd_->chip_cmds[index].motor_cmds[3 * (i - index_shift)].tau_ff = sample->tau_ff[3 * i];
+                    motor_cmd_->chip_cmds[index].motor_cmds[3 * (i - index_shift) + 1].tau_ff = sample->tau_ff[3 * i + 1];
+                    motor_cmd_->chip_cmds[index].motor_cmds[3 * (i - index_shift) + 2].tau_ff = sample->tau_ff[3 * i + 2];
 
-                        motor_cmd_->kp_abad[i] = sample->kp[3 * i];
-                        motor_cmd_->kp_hip[i] = sample->kp[3 * i + 1];
-                        motor_cmd_->kp_knee[i] = sample->kp[3 * i + 2];
+                    motor_cmd_->chip_cmds[index].motor_cmds[3 * (i - index_shift)].kp = sample->kp[3 * i];
+                    motor_cmd_->chip_cmds[index].motor_cmds[3 * (i - index_shift) + 1].kp = sample->kp[3 * i + 1];
+                    motor_cmd_->chip_cmds[index].motor_cmds[3 * (i - index_shift) + 2].kp = sample->kp[3 * i + 2];
 
-                        motor_cmd_->kd_abad[i] = sample->kd[3 * i];
-                        motor_cmd_->kd_hip[i] = sample->kd[3 * i + 1];
-                        motor_cmd_->kd_knee[i] = sample->kd[3 * i + 2];
+                    motor_cmd_->chip_cmds[index].motor_cmds[3 * (i - index_shift)].kd = sample->kd[3 * i];
+                    motor_cmd_->chip_cmds[index].motor_cmds[3 * (i - index_shift) + 1].kd = sample->kd[3 * i + 1];
+                    motor_cmd_->chip_cmds[index].motor_cmds[3 * (i - index_shift) + 2].kd = sample->kd[3 * i + 2];
+                }
+            })
+            .or_else([](auto &result) {
+                    if (result != iox::popo::ChunkReceiveResult::NO_CHUNK_AVAILABLE) {
+                        std::cout << "Error receiving chunk." << std::endl;
                     }
-                })
+                }
+            );
+
+
+    // for (int i = 0; i < m_->sensor_dim[0]; i++) {
+    // usb_imu_->gyro[i] = static_cast<float>(d_->sensordata[gyro_adr + i] + dist_gyro_(generator));
+    //     usb_imu_->q[i] = static_cast<float>(noise_quat(i));
+    //     //            usb_imu_->q[i] = (float) d_->sensordata[quat_adr + i];
+    //     usb_imu_->accel[i] = static_cast<float>(d_->sensordata[acc_adr + i] + dist_acc_(generator));
+    // }
+    // // std::cout << "accel: " << usb_imu_->accel[2] << std::endl;
+    // usb_imu_->q[3] = static_cast<float>(noise_quat(3));
+    // set mocap data
+    // if (runner_started) {
+    //     Vec3<double> mocap_pw = this->robot_runner_->estimators_->get_result_world_position();
+    //     Quat<double> mocap_ori = this->robot_runner_->estimators_->get_result_quat();
+    //     for (int i = 0; i < 3; i++) {
+    //         d_->mocap_pos[3 * mocap_esti_indicator_id_ + i] = mocap_pw(i);
+    //         d_->mocap_quat[4 * mocap_esti_indicator_id_ + i] = mocap_ori(i);
+    //     }
+    //     d_->mocap_quat[4 * mocap_esti_indicator_id_ + 3] = mocap_ori(3);
+    // }
+
+    if (sim_handle_->draw_traject) {
+        sim_handle_->set_draw_traj(true);
+        plot_subscriber_.take()
+                .and_then([this](auto &sample) {
+                        for (int i = 0; i < 3; i++) {
+                            for (int j = 0; j < 4; j++) {
+                                foot_pos_last_des_[j][i] = foot_pos_des_[j][i];
+                                foot_pos_des_[j][i] = sample->foot_pos_des_[j][i];
+                                foot_pos_last_[j][i] = foot_pos_[j][i];
+                                foot_pos_[j][i] = sample->foot_pos_[j][i];
+                            }
+                            pos_last_des_[i] = pos_des_[i];
+                            pos_last_[i] = pos_[i];
+                            pos_des_[i] = sample->pos_des_[i];
+                            pos_[i] = sample->pos_[i];
+                        }
+                        // std::cout << "pos_des: " << pos_des_[0] << " | " << pos_des_[1] << " | " << pos_des_[2] << std::endl;
+                    }
+                )
                 .or_else([](auto &result) {
                         if (result != iox::popo::ChunkReceiveResult::NO_CHUNK_AVAILABLE) {
                             std::cout << "Error receiving chunk." << std::endl;
                         }
                     }
                 );
-
-
-        // for (int i = 0; i < m_->sensor_dim[0]; i++) {
-        // usb_imu_->gyro[i] = static_cast<float>(d_->sensordata[gyro_adr + i] + dist_gyro_(generator));
-        //     usb_imu_->q[i] = static_cast<float>(noise_quat(i));
-        //     //            usb_imu_->q[i] = (float) d_->sensordata[quat_adr + i];
-        //     usb_imu_->accel[i] = static_cast<float>(d_->sensordata[acc_adr + i] + dist_acc_(generator));
-        // }
-        // // std::cout << "accel: " << usb_imu_->accel[2] << std::endl;
-        // usb_imu_->q[3] = static_cast<float>(noise_quat(3));
-        // set mocap data
-        // if (runner_started) {
-        //     Vec3<double> mocap_pw = this->robot_runner_->estimators_->get_result_world_position();
-        //     Quat<double> mocap_ori = this->robot_runner_->estimators_->get_result_quat();
-        //     for (int i = 0; i < 3; i++) {
-        //         d_->mocap_pos[3 * mocap_esti_indicator_id_ + i] = mocap_pw(i);
-        //         d_->mocap_quat[4 * mocap_esti_indicator_id_ + i] = mocap_ori(i);
-        //     }
-        //     d_->mocap_quat[4 * mocap_esti_indicator_id_ + 3] = mocap_ori(3);
-        // }
-
-        if (sim_handle_->draw_traject) {
-            sim_handle_->set_draw_traj(true);
-            plot_subscriber_.take()
-                    .and_then([this](auto &sample) {
-                            for (int i = 0; i < 3; i++) {
-                                for (int j = 0; j < 4; j++) {
-                                    foot_pos_last_des_[j][i] = foot_pos_des_[j][i];
-                                    foot_pos_des_[j][i] = sample->foot_pos_des_[j][i];
-                                    foot_pos_last_[j][i] = foot_pos_[j][i];
-                                    foot_pos_[j][i] = sample->foot_pos_[j][i];
-                                }
-                                pos_last_des_[i] = pos_des_[i];
-                                pos_last_[i] = pos_[i];
-                                pos_des_[i] = sample->pos_des_[i];
-                                pos_[i] = sample->pos_[i];
-                            }
-                        // std::cout << "pos_des: " << pos_des_[0] << " | " << pos_des_[1] << " | " << pos_des_[2] << std::endl;
-                        }
-                    )
-                    .or_else([](auto &result) {
-                            if (result != iox::popo::ChunkReceiveResult::NO_CHUNK_AVAILABLE) {
-                                std::cout << "Error receiving chunk." << std::endl;
-                            }
-                        }
-                    );
-            for (int i = 0; i < 4; i++) {
-                sim_handle_->set_foot_trajectory_des(foot_pos_last_des_[i], foot_pos_des_[i], i);
-                sim_handle_->set_foot_trajectory(foot_pos_last_[i], foot_pos_[i], i);
-                sim_handle_->set_pos_trajectory(pos_last_, pos_);
-                sim_handle_->set_pos_trajectory_des(pos_last_des_, pos_des_);
-                // sim_handle_->set_mpc_force(mpc_force[i], i);
-            }
-        } else {
-            sim_handle_->set_draw_traj(false);
-        }
-        /* parse joint data
-         * body: free joint: xyz | q[4]
-         * motor
-         */
-        // std::cout << "Actuator: \n" << d_->actuator_force[0] << " | " << d_->actuator_force[1] << " | "
-        //         << d_->actuator_force[2] << std::endl;
         for (int i = 0; i < 4; i++) {
-            motor_data_->q_abad[i] = static_cast<float>(d_->qpos[Config::abad_pos_addr_offset + 3 * i]);
-            motor_data_->q_hip[i] = static_cast<float>(d_->qpos[Config::hip_pos_addr_offset + 3 * i]);
-            motor_data_->q_knee[i] = static_cast<float>(d_->qpos[Config::knee_pos_addr_offset + 3 * i]);
-            motor_data_->qd_abad[i] = static_cast<float>(d_->qvel[Config::abad_vel_addr_offset + 3 * i]);
-            motor_data_->qd_hip[i] = static_cast<float>(d_->qvel[Config::hip_vel_addr_offset + 3 * i]);
-            motor_data_->qd_knee[i] = static_cast<float>(d_->qvel[Config::knee_vel_addr_offset + 3 * i]);
+            sim_handle_->set_foot_trajectory_des(foot_pos_last_des_[i], foot_pos_des_[i], i);
+            sim_handle_->set_foot_trajectory(foot_pos_last_[i], foot_pos_[i], i);
+            sim_handle_->set_pos_trajectory(pos_last_, pos_);
+            sim_handle_->set_pos_trajectory_des(pos_last_des_, pos_des_);
+            // sim_handle_->set_mpc_force(mpc_force[i], i);
         }
-        motors_->pack_motor_cmd(motor_cmd_, motor_data_);
-        publisher.loan()
-                .and_then([this](auto &sample) {
-                    for (int i = 0; i < 3; i++) {
-                        sample->gyro[i] = gyro_(i);
-                        sample->acc[i] = acc_(i);
-                    }
-                    for (int i = 0; i < 4; i++) {
-                        sample->quat[i] = noise_quat(i);
-                        sample->q[3 * i] = motor_data_->q_abad[i];
-                        sample->q[3 * i + 1] = motor_data_->q_hip[i];
-                        sample->q[3 * i + 2] = motor_data_->q_knee[i];
-                        sample->qd[3 * i] = motor_data_->qd_abad[i];
-                        sample->qd[3 * i + 1] = motor_data_->qd_hip[i];
-                        sample->qd[3 * i + 2] = motor_data_->qd_knee[i];
-                    }
-                    sample.publish();
-                })
-                .or_else([](auto &result) {
-                    std::cerr << "Unable to loan sample, error: " << result << std::endl;
-                });
-        //        std::cout << "torque: ";
-        for (int i = 0; i < m_->nu; i++) {
-            d_->ctrl[i] = motors_->get_torque(i);
-            //            std::cout << d_->ctrl[i] << " | ";
-        }
-        //        std::cout << std::endl;
+    } else {
+        sim_handle_->set_draw_traj(false);
     }
+    /* parse joint data
+     * body: free joint: xyz | q[4]
+     * motor
+     */
+    // std::cout << "Actuator: \n" << d_->actuator_force[0] << " | " << d_->actuator_force[1] << " | "
+    //         << d_->actuator_force[2] << std::endl;
+    for (int i = 0; i < 4; i++) {
+        const int index = i / 2;
+        const int index_shift = index * 2; // (0,2)
+        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift)].q = static_cast<float>(d_->qpos[Config::abad_pos_addr_offset + 3 * i]);
+        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift) + 1].q = static_cast<float>(d_->qpos[Config::hip_pos_addr_offset + 3 * i]);
+        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift) + 2].q = static_cast<float>(d_->qpos[Config::knee_pos_addr_offset + 3 * i]);
+        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift)].qd = static_cast<float>(d_->qvel[Config::abad_vel_addr_offset + 3 * i]);
+        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift) + 1].qd = static_cast<float>(d_->qvel[Config::hip_vel_addr_offset + 3 * i]);
+        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift) + 2].qd = static_cast<float>(d_->qvel[Config::knee_vel_addr_offset + 3 * i]);
+    }
+
+    motors_->pack_motor_cmd(motor_cmd_, motor_data_);
+    publisher.loan()
+            .and_then([this](auto &sample) {
+                for (int i = 0; i < 3; i++) {
+                    sample->gyro[i] = gyro_(i);
+                    sample->acc[i] = acc_(i);
+                }
+                for (int i = 0; i < 4; i++) {
+                    sample->quat[i] = noise_quat(i);
+                    const int index = i / 2;
+                    const int index_shift = index * 2;
+                    sample->q[3 * i] = motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift)].q;
+                    sample->q[3 * i + 1] = motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift) + 1].q;
+                    sample->q[3 * i + 2] = motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift) + 2].q;
+                    sample->qd[3 * i] = motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift)].qd;
+                    sample->qd[3 * i + 1] = motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift) + 1].qd;
+                    sample->qd[3 * i + 2] = motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift) + 2].qd;
+                }
+                sample.publish();
+            })
+            .or_else([](auto &result) {
+                std::cerr << "Unable to loan sample, error: " << result << std::endl;
+            });
+    //        std::cout << "torque: ";
+    for (int i = 0; i < m_->nu; i++) {
+        d_->ctrl[i] = motors_->get_torque(i);
+        //            std::cout << d_->ctrl[i] << " | ";
+    }
+    //        std::cout << std::endl;
 }
+
 
 void Simulation::SimulationBridge::sim_show_step() {
     usb_2_can_LCM_.handleTimeout(0);
     usb_imu_LCM_.handleTimeout(0);
     for (int i = 0; i < 4; i++) {
-        motor_data_->q_abad[i] = static_cast<float>(d_->qpos[Config::abad_pos_addr_offset + 3 * i]);
-        motor_data_->q_hip[i] = static_cast<float>(d_->qpos[Config::hip_pos_addr_offset + 3 * i]);
-        motor_data_->q_knee[i] = static_cast<float>(d_->qpos[Config::knee_pos_addr_offset + 3 * i]);
-        motor_data_->qd_abad[i] = static_cast<float>(d_->qvel[Config::abad_vel_addr_offset + 3 * i]);
-        motor_data_->qd_hip[i] = static_cast<float>(d_->qvel[Config::hip_vel_addr_offset + 3 * i]);
-        motor_data_->qd_knee[i] = static_cast<float>(d_->qvel[Config::knee_vel_addr_offset + 3 * i]);
+        const int index = i / 2; // (0, 1, 2, 3) / 2 = (0,1)
+        const int index_shift = index * 2; // (0,2)
+        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift)].q = static_cast<float>(d_->qpos[Config::abad_pos_addr_offset + 3 * i]);
+        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift) + 1].q = static_cast<float>(d_->qpos[Config::hip_pos_addr_offset + 3 * i]);
+        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift) + 2].q = static_cast<float>(d_->qpos[Config::knee_pos_addr_offset + 3 * i]);
+        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift)].qd = static_cast<float>(d_->qvel[Config::abad_vel_addr_offset + 3 * i]);
+        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift) + 1].qd = static_cast<float>(d_->qvel[Config::hip_vel_addr_offset + 3 * i]);
+        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift) + 2].qd = static_cast<float>(d_->qvel[Config::knee_vel_addr_offset + 3 * i]);
 
-        motor_cmd_->q_des_abad[i] = sim_local_usbdata.q_abad[i];
-        motor_cmd_->q_des_hip[i] = sim_local_usbdata.q_hip[i];
-        motor_cmd_->q_des_knee[i] = sim_local_usbdata.q_knee[i];
-        motor_cmd_->qd_des_abad[i] = sim_local_usbdata.qd_abad[i];
-        motor_cmd_->qd_des_hip[i] = sim_local_usbdata.qd_hip[i];
-        motor_cmd_->qd_des_knee[i] = sim_local_usbdata.qd_knee[i];
-        motor_cmd_->tau_abad_ff[i] = 0;
-        motor_cmd_->tau_hip_ff[i] = 0;
-        motor_cmd_->tau_knee_ff[i] = 0;
-        motor_cmd_->kp_abad[i] = Config::joint_kp;
-        motor_cmd_->kp_hip[i] = Config::joint_kp;
-        motor_cmd_->kp_knee[i] = Config::joint_kp;
-        motor_cmd_->kd_abad[i] = Config::joint_kd;
-        motor_cmd_->kd_hip[i] = Config::joint_kd;
-        motor_cmd_->kd_knee[i] = Config::joint_kd;
+        // motor_cmd_->chip_cmds[index].motor_cmds[3 * i].q_des = sim_local_usbdata.;
+        // motor_cmd_->q_des_hip[i] = sim_local_usbdata.q_hip[i];
+        // motor_cmd_->q_des_knee[i] = sim_local_usbdata.q_knee[i];
+        // motor_cmd_->qd_des_abad[i] = sim_local_usbdata.qd_abad[i];
+        // motor_cmd_->qd_des_hip[i] = sim_local_usbdata.qd_hip[i];
+        // motor_cmd_->qd_des_knee[i] = sim_local_usbdata.qd_knee[i];
+        // motor_cmd_->tau_abad_ff[i] = 0;
+        // motor_cmd_->tau_hip_ff[i] = 0;
+        // motor_cmd_->tau_knee_ff[i] = 0;
+        // motor_cmd_->kp_abad[i] = Config::joint_kp;
+        // motor_cmd_->kp_hip[i] = Config::joint_kp;
+        // motor_cmd_->kp_knee[i] = Config::joint_kp;
+        // motor_cmd_->kd_abad[i] = Config::joint_kd;
+        // motor_cmd_->kd_hip[i] = Config::joint_kd;
+        // motor_cmd_->kd_knee[i] = Config::joint_kd;
     }
     motors_->pack_motor_cmd(motor_cmd_, motor_data_);
     //        std::cout << "torque: ";

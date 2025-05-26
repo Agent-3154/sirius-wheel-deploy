@@ -11,46 +11,26 @@ import lcm.lcm.*;
  
 public final class usb_data_t implements lcm.lcm.LCMEncodable
 {
-    public float q_abad[];
-    public float q_hip[];
-    public float q_knee[];
-    public float qd_abad[];
-    public float qd_hip[];
-    public float qd_knee[];
-    public float tau_abad[];
-    public float tau_hip[];
-    public float tau_knee[];
-    public float uq_abad[];
-    public float uq_hip[];
-    public float uq_knee[];
-    public float ud_abad[];
-    public float ud_hip[];
-    public float ud_knee[];
-    public int flags[];
+    public float chip1_data[];
+    public int chip1_flg[];
+    public float chip2_data[];
+    public int chip2_flg[];
+    public float chip3_data[];
+    public int chip3_flg[];
     public long timestamp;
  
     public usb_data_t()
     {
-        q_abad = new float[4];
-        q_hip = new float[4];
-        q_knee = new float[4];
-        qd_abad = new float[4];
-        qd_hip = new float[4];
-        qd_knee = new float[4];
-        tau_abad = new float[4];
-        tau_hip = new float[4];
-        tau_knee = new float[4];
-        uq_abad = new float[4];
-        uq_hip = new float[4];
-        uq_knee = new float[4];
-        ud_abad = new float[4];
-        ud_hip = new float[4];
-        ud_knee = new float[4];
-        flags = new int[2];
+        chip1_data = new float[30];
+        chip1_flg = new int[1];
+        chip2_data = new float[30];
+        chip2_flg = new int[1];
+        chip3_data = new float[30];
+        chip3_flg = new int[1];
     }
  
     public static final long LCM_FINGERPRINT;
-    public static final long LCM_FINGERPRINT_BASE = 0xf4830ab0d5c8f697L;
+    public static final long LCM_FINGERPRINT_BASE = 0x3b5ba9ae3fee3fabL;
  
     static {
         LCM_FINGERPRINT = _hashRecursive(new ArrayList<Class<?>>());
@@ -76,68 +56,28 @@ public final class usb_data_t implements lcm.lcm.LCMEncodable
  
     public void _encodeRecursive(DataOutput outs) throws IOException
     {
-        for (int a = 0; a < 4; a++) {
-            outs.writeFloat(this.q_abad[a]); 
+        for (int a = 0; a < 30; a++) {
+            outs.writeFloat(this.chip1_data[a]); 
         }
  
-        for (int a = 0; a < 4; a++) {
-            outs.writeFloat(this.q_hip[a]); 
+        for (int a = 0; a < 1; a++) {
+            outs.writeInt(this.chip1_flg[a]); 
         }
  
-        for (int a = 0; a < 4; a++) {
-            outs.writeFloat(this.q_knee[a]); 
+        for (int a = 0; a < 30; a++) {
+            outs.writeFloat(this.chip2_data[a]); 
         }
  
-        for (int a = 0; a < 4; a++) {
-            outs.writeFloat(this.qd_abad[a]); 
+        for (int a = 0; a < 1; a++) {
+            outs.writeInt(this.chip2_flg[a]); 
         }
  
-        for (int a = 0; a < 4; a++) {
-            outs.writeFloat(this.qd_hip[a]); 
+        for (int a = 0; a < 30; a++) {
+            outs.writeFloat(this.chip3_data[a]); 
         }
  
-        for (int a = 0; a < 4; a++) {
-            outs.writeFloat(this.qd_knee[a]); 
-        }
- 
-        for (int a = 0; a < 4; a++) {
-            outs.writeFloat(this.tau_abad[a]); 
-        }
- 
-        for (int a = 0; a < 4; a++) {
-            outs.writeFloat(this.tau_hip[a]); 
-        }
- 
-        for (int a = 0; a < 4; a++) {
-            outs.writeFloat(this.tau_knee[a]); 
-        }
- 
-        for (int a = 0; a < 4; a++) {
-            outs.writeFloat(this.uq_abad[a]); 
-        }
- 
-        for (int a = 0; a < 4; a++) {
-            outs.writeFloat(this.uq_hip[a]); 
-        }
- 
-        for (int a = 0; a < 4; a++) {
-            outs.writeFloat(this.uq_knee[a]); 
-        }
- 
-        for (int a = 0; a < 4; a++) {
-            outs.writeFloat(this.ud_abad[a]); 
-        }
- 
-        for (int a = 0; a < 4; a++) {
-            outs.writeFloat(this.ud_hip[a]); 
-        }
- 
-        for (int a = 0; a < 4; a++) {
-            outs.writeFloat(this.ud_knee[a]); 
-        }
- 
-        for (int a = 0; a < 2; a++) {
-            outs.writeInt(this.flags[a]); 
+        for (int a = 0; a < 1; a++) {
+            outs.writeInt(this.chip3_flg[a]); 
         }
  
         outs.writeLong(this.timestamp); 
@@ -166,84 +106,34 @@ public final class usb_data_t implements lcm.lcm.LCMEncodable
  
     public void _decodeRecursive(DataInput ins) throws IOException
     {
-        this.q_abad = new float[(int) 4];
-        for (int a = 0; a < 4; a++) {
-            this.q_abad[a] = ins.readFloat();
+        this.chip1_data = new float[(int) 30];
+        for (int a = 0; a < 30; a++) {
+            this.chip1_data[a] = ins.readFloat();
         }
  
-        this.q_hip = new float[(int) 4];
-        for (int a = 0; a < 4; a++) {
-            this.q_hip[a] = ins.readFloat();
+        this.chip1_flg = new int[(int) 1];
+        for (int a = 0; a < 1; a++) {
+            this.chip1_flg[a] = ins.readInt();
         }
  
-        this.q_knee = new float[(int) 4];
-        for (int a = 0; a < 4; a++) {
-            this.q_knee[a] = ins.readFloat();
+        this.chip2_data = new float[(int) 30];
+        for (int a = 0; a < 30; a++) {
+            this.chip2_data[a] = ins.readFloat();
         }
  
-        this.qd_abad = new float[(int) 4];
-        for (int a = 0; a < 4; a++) {
-            this.qd_abad[a] = ins.readFloat();
+        this.chip2_flg = new int[(int) 1];
+        for (int a = 0; a < 1; a++) {
+            this.chip2_flg[a] = ins.readInt();
         }
  
-        this.qd_hip = new float[(int) 4];
-        for (int a = 0; a < 4; a++) {
-            this.qd_hip[a] = ins.readFloat();
+        this.chip3_data = new float[(int) 30];
+        for (int a = 0; a < 30; a++) {
+            this.chip3_data[a] = ins.readFloat();
         }
  
-        this.qd_knee = new float[(int) 4];
-        for (int a = 0; a < 4; a++) {
-            this.qd_knee[a] = ins.readFloat();
-        }
- 
-        this.tau_abad = new float[(int) 4];
-        for (int a = 0; a < 4; a++) {
-            this.tau_abad[a] = ins.readFloat();
-        }
- 
-        this.tau_hip = new float[(int) 4];
-        for (int a = 0; a < 4; a++) {
-            this.tau_hip[a] = ins.readFloat();
-        }
- 
-        this.tau_knee = new float[(int) 4];
-        for (int a = 0; a < 4; a++) {
-            this.tau_knee[a] = ins.readFloat();
-        }
- 
-        this.uq_abad = new float[(int) 4];
-        for (int a = 0; a < 4; a++) {
-            this.uq_abad[a] = ins.readFloat();
-        }
- 
-        this.uq_hip = new float[(int) 4];
-        for (int a = 0; a < 4; a++) {
-            this.uq_hip[a] = ins.readFloat();
-        }
- 
-        this.uq_knee = new float[(int) 4];
-        for (int a = 0; a < 4; a++) {
-            this.uq_knee[a] = ins.readFloat();
-        }
- 
-        this.ud_abad = new float[(int) 4];
-        for (int a = 0; a < 4; a++) {
-            this.ud_abad[a] = ins.readFloat();
-        }
- 
-        this.ud_hip = new float[(int) 4];
-        for (int a = 0; a < 4; a++) {
-            this.ud_hip[a] = ins.readFloat();
-        }
- 
-        this.ud_knee = new float[(int) 4];
-        for (int a = 0; a < 4; a++) {
-            this.ud_knee[a] = ins.readFloat();
-        }
- 
-        this.flags = new int[(int) 2];
-        for (int a = 0; a < 2; a++) {
-            this.flags[a] = ins.readInt();
+        this.chip3_flg = new int[(int) 1];
+        for (int a = 0; a < 1; a++) {
+            this.chip3_flg[a] = ins.readInt();
         }
  
         this.timestamp = ins.readLong();
@@ -253,38 +143,18 @@ public final class usb_data_t implements lcm.lcm.LCMEncodable
     public lcmtypes.usb_data_t copy()
     {
         lcmtypes.usb_data_t outobj = new lcmtypes.usb_data_t();
-        outobj.q_abad = new float[(int) 4];
-        System.arraycopy(this.q_abad, 0, outobj.q_abad, 0, 4); 
-        outobj.q_hip = new float[(int) 4];
-        System.arraycopy(this.q_hip, 0, outobj.q_hip, 0, 4); 
-        outobj.q_knee = new float[(int) 4];
-        System.arraycopy(this.q_knee, 0, outobj.q_knee, 0, 4); 
-        outobj.qd_abad = new float[(int) 4];
-        System.arraycopy(this.qd_abad, 0, outobj.qd_abad, 0, 4); 
-        outobj.qd_hip = new float[(int) 4];
-        System.arraycopy(this.qd_hip, 0, outobj.qd_hip, 0, 4); 
-        outobj.qd_knee = new float[(int) 4];
-        System.arraycopy(this.qd_knee, 0, outobj.qd_knee, 0, 4); 
-        outobj.tau_abad = new float[(int) 4];
-        System.arraycopy(this.tau_abad, 0, outobj.tau_abad, 0, 4); 
-        outobj.tau_hip = new float[(int) 4];
-        System.arraycopy(this.tau_hip, 0, outobj.tau_hip, 0, 4); 
-        outobj.tau_knee = new float[(int) 4];
-        System.arraycopy(this.tau_knee, 0, outobj.tau_knee, 0, 4); 
-        outobj.uq_abad = new float[(int) 4];
-        System.arraycopy(this.uq_abad, 0, outobj.uq_abad, 0, 4); 
-        outobj.uq_hip = new float[(int) 4];
-        System.arraycopy(this.uq_hip, 0, outobj.uq_hip, 0, 4); 
-        outobj.uq_knee = new float[(int) 4];
-        System.arraycopy(this.uq_knee, 0, outobj.uq_knee, 0, 4); 
-        outobj.ud_abad = new float[(int) 4];
-        System.arraycopy(this.ud_abad, 0, outobj.ud_abad, 0, 4); 
-        outobj.ud_hip = new float[(int) 4];
-        System.arraycopy(this.ud_hip, 0, outobj.ud_hip, 0, 4); 
-        outobj.ud_knee = new float[(int) 4];
-        System.arraycopy(this.ud_knee, 0, outobj.ud_knee, 0, 4); 
-        outobj.flags = new int[(int) 2];
-        System.arraycopy(this.flags, 0, outobj.flags, 0, 2); 
+        outobj.chip1_data = new float[(int) 30];
+        System.arraycopy(this.chip1_data, 0, outobj.chip1_data, 0, 30); 
+        outobj.chip1_flg = new int[(int) 1];
+        System.arraycopy(this.chip1_flg, 0, outobj.chip1_flg, 0, 1); 
+        outobj.chip2_data = new float[(int) 30];
+        System.arraycopy(this.chip2_data, 0, outobj.chip2_data, 0, 30); 
+        outobj.chip2_flg = new int[(int) 1];
+        System.arraycopy(this.chip2_flg, 0, outobj.chip2_flg, 0, 1); 
+        outobj.chip3_data = new float[(int) 30];
+        System.arraycopy(this.chip3_data, 0, outobj.chip3_data, 0, 30); 
+        outobj.chip3_flg = new int[(int) 1];
+        System.arraycopy(this.chip3_flg, 0, outobj.chip3_flg, 0, 1); 
         outobj.timestamp = this.timestamp;
  
         return outobj;

@@ -59,33 +59,15 @@ void RobotRunner::init_robotrunner() {
         thread_subscriber_ = std::thread(&RobotRunner::thread_subscriber_function, this);
     }
 #endif
-
 }
 
 void RobotRunner::setupStep() {
     if (sim_ == Config::real_usb) {
         std::lock_guard<std::mutex> lk(runner_usb2can_->usb_in_mutex);
         leg_controller_->Update_Data(runner_usbdata_);
-    } else if (sim_ == Config::real_unitree) {
-        std::lock_guard lk(runner_fdsc_->data_mtx_);
-        leg_controller_->Update_Data(runner_usbdata_); // update usb data to legdata, imu data is updated in hardwares
     } else if (sim_ == Config::sim_mj) {
         std::lock_guard<std::mutex> lk(sim_mtx);
         leg_controller_->Update_Data(runner_usbdata_);
-    } else if (sim_ == Config::real_ros_ctrl) {
-        std::lock_guard<std::mutex> lk(runner_usb2can_->usb_in_mutex);
-        for (int i = 0; i < 4; i++) {
-            low_state_data_.q[3 * i] = runner_usbdata_->q_abad[i];
-            low_state_data_.q[3 * i + 1] = runner_usbdata_->q_hip[i];
-            low_state_data_.q[3 * i + 2] = runner_usbdata_->q_knee[i];
-            low_state_data_.qd[3 * i] = runner_usbdata_->qd_abad[i];
-            low_state_data_.qd[3 * i + 1] = runner_usbdata_->qd_hip[i];
-            low_state_data_.qd[3 * i + 2] = runner_usbdata_->qd_knee[i];
-            low_state_data_.tauIq[3 * i] = runner_usbdata_->tau_abad[i];
-            low_state_data_.tauIq[3 * i + 1] = runner_usbdata_->tau_hip[i];
-            low_state_data_.tauIq[3 * i + 2] = runner_usbdata_->tau_knee[i];
-        }
-        lcm_data_publish_.publish("CTRL_DATA", &low_state_data_);
     } else {
         // lcm_state_.handleTimeout(0);
         // for (int i = 0; i < 4; i++) {
@@ -142,30 +124,30 @@ void RobotRunner::finalStep() {
     if (sim_ == Config::real_usb) {
         std::lock_guard<std::mutex> lk(runner_usb2can_->usb_out_mutex);
         leg_controller_->Setup_Command(runner_usbcmd_);
-    } else if (sim_ == Config::real_unitree) {
-        std::lock_guard lk(runner_fdsc_->cmd_mtx_);
-        leg_controller_->Setup_Command(runner_usbcmd_);
     } else if (sim_ == Config::sim_mj) {
         std::lock_guard<std::mutex> lk(sim_mtx);
         leg_controller_->Setup_Command(runner_usbcmd_);
 #if defined(SIMULATOR)
         publisher.loan().and_then([this](auto &sample) {
             for (int i = 0; i < 4; i++) {
-                sample->q[3 * i] = runner_usbcmd_->q_des_abad[i];
-                sample->q[3 * i + 1] = runner_usbcmd_->q_des_hip[i];
-                sample->q[3 * i + 2] = runner_usbcmd_->q_des_knee[i];
-                sample->qd[3 * i] = runner_usbcmd_->qd_des_abad[i];
-                sample->qd[3 * i + 1] = runner_usbcmd_->qd_des_hip[i];
-                sample->qd[3 * i + 2] = runner_usbcmd_->qd_des_knee[i];
-                sample->tau_ff[3 * i] = runner_usbcmd_->tau_abad_ff[i];
-                sample->tau_ff[3 * i + 1] = runner_usbcmd_->tau_hip_ff[i];
-                sample->tau_ff[3 * i + 2] = runner_usbcmd_->tau_knee_ff[i];
-                sample->kp[3 * i] = runner_usbcmd_->kp_abad[i];
-                sample->kp[3 * i + 1] = runner_usbcmd_->kp_hip[i];
-                sample->kp[3 * i + 2] = runner_usbcmd_->kp_knee[i];
-                sample->kd[3 * i] = runner_usbcmd_->kd_abad[i];
-                sample->kd[3 * i + 1] = runner_usbcmd_->kd_hip[i];
-                sample->kd[3 * i + 2] = runner_usbcmd_->kd_knee[i];
+                const int index = i / 2;
+                const int index_shift = index * 2;
+                // std::cout << "index: " << index << " | index_shift: " << index_shift << std::endl;
+                sample->q[3 * i] = runner_usbcmd_->chip_cmds[index].motor_cmds[3 * (i - index_shift)].q_des;
+                sample->q[3 * i + 1] = runner_usbcmd_->chip_cmds[index].motor_cmds[3 * (i - index_shift) + 1].q_des;
+                sample->q[3 * i + 2] = runner_usbcmd_->chip_cmds[index].motor_cmds[3 * (i - index_shift) + 2].q_des;
+                sample->qd[3 * i] = runner_usbcmd_->chip_cmds[index].motor_cmds[3 * (i - index_shift)].qd_des;
+                sample->qd[3 * i + 1] = runner_usbcmd_->chip_cmds[index].motor_cmds[3 * (i - index_shift) + 1].qd_des;
+                sample->qd[3 * i + 2] = runner_usbcmd_->chip_cmds[index].motor_cmds[3 * (i - index_shift) + 2].qd_des;
+                sample->tau_ff[3 * i] = runner_usbcmd_->chip_cmds[index].motor_cmds[3 * (i - index_shift)].tau_ff;
+                sample->tau_ff[3 * i + 1] = runner_usbcmd_->chip_cmds[index].motor_cmds[3 * (i - index_shift) + 1].tau_ff;
+                sample->tau_ff[3 * i + 2] = runner_usbcmd_->chip_cmds[index].motor_cmds[3 * (i - index_shift) + 2].tau_ff;
+                sample->kp[3 * i] = runner_usbcmd_->chip_cmds[index].motor_cmds[3 * (i - index_shift)].kp;
+                sample->kp[3 * i + 1] = runner_usbcmd_->chip_cmds[index].motor_cmds[3 * (i - index_shift) + 1].kp;
+                sample->kp[3 * i + 2] = runner_usbcmd_->chip_cmds[index].motor_cmds[3 * (i - index_shift) + 2].kp;
+                sample->kd[3 * i] = runner_usbcmd_->chip_cmds[index].motor_cmds[3 * (i - index_shift)].kd;
+                sample->kd[3 * i + 1] = runner_usbcmd_->chip_cmds[index].motor_cmds[3 * (i - index_shift) + 1].kd;
+                sample->kd[3 * i + 2] = runner_usbcmd_->chip_cmds[index].motor_cmds[3 * (i - index_shift) + 2].kd;
             }
             sample.publish();
         }).or_else([](auto &result) {
@@ -246,12 +228,14 @@ void RobotRunner::thread_subscriber_function() {
             }
             for (int i = 0; i < 4; i++) {
                 runner_imudata_->q[i] = sample->quat[i];
-                runner_usbdata_->q_abad[i] = sample->q[3 * i];
-                runner_usbdata_->q_hip[i] = sample->q[3 * i + 1];
-                runner_usbdata_->q_knee[i] = sample->q[3 * i + 2];
-                runner_usbdata_->qd_abad[i] = sample->qd[3 * i];
-                runner_usbdata_->qd_hip[i] = sample->qd[3 * i + 1];
-                runner_usbdata_->qd_knee[i] = sample->qd[3 * i + 2];
+                const int index = i / 2; // (0,1,2,3)->(0,0,1,1)
+                const int index_shift = index * 2; // (0,0,2,2)
+                runner_usbdata_->chip_datas[index].motor_datas[3 * (i - index_shift)].q = sample->q[3 * i];
+                runner_usbdata_->chip_datas[index].motor_datas[3 * (i - index_shift) + 1].q = sample->q[3 * i + 1];
+                runner_usbdata_->chip_datas[index].motor_datas[3 * (i - index_shift) + 2].q = sample->q[3 * i + 2];
+                runner_usbdata_->chip_datas[index].motor_datas[3 * (i - index_shift)].qd = sample->qd[3 * i];
+                runner_usbdata_->chip_datas[index].motor_datas[3 * (i - index_shift) + 1].qd = sample->qd[3 * i + 1];
+                runner_usbdata_->chip_datas[index].motor_datas[3 * (i - index_shift) + 2].qd = sample->qd[3 * i + 2];
             }
         }).or_else([](auto &result) {
             if (result != iox::popo::ChunkReceiveResult::NO_CHUNK_AVAILABLE) {

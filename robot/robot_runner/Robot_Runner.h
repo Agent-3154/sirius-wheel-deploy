@@ -20,7 +20,6 @@
 #include "../../config/Config.h"
 
 #include "../../utilities/inc/debug_tools.h"
-#include "../hardwares/fdsc_utils/my_fdsc.h"
 #if defined (ICEORYX_PREFIX_V2954)
 #if defined(SIMULATOR)
 #include "iceoryx/v2.95.4/iceoryx_posh/popo/publisher.hpp"
@@ -47,9 +46,8 @@ public:
     ~RobotRunner() = default;
 
     usb_controller::logic_remote_controller *runner_rc_ = nullptr;
-    USB_HARDWARE::Motor_Control_Board *runner_usb2can_ = nullptr;
+    USB_HARDWARE::Beast_USB2CAN *runner_usb2can_ = nullptr;
     USB_HARDWARE::USB_IMU *runner_imu_ = nullptr;
-    My_FDSC *runner_fdsc_ = nullptr;
     USB_Data_t *runner_usbdata_ = nullptr;
     USB_Command_t *runner_usbcmd_ = nullptr;
     USB_Imu_t *runner_imudata_ = nullptr;

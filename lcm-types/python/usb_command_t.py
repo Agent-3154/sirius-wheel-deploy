@@ -10,29 +10,19 @@ except ImportError:
 import struct
 
 class usb_command_t(object):
-    __slots__ = ["q_des_abad", "q_des_hip", "q_des_knee", "qd_des_abad", "qd_des_hip", "qd_des_knee", "kp_abad", "kp_hip", "kp_knee", "kd_abad", "kd_hip", "kd_knee", "tau_abad_ff", "tau_hip_ff", "tau_knee_ff", "flags"]
+    __slots__ = ["chip1_cmd", "chip1_flg", "chip2_cmd", "chip2_flg", "chip3_cmd", "chip3_flg"]
 
-    __typenames__ = ["float", "float", "float", "float", "float", "float", "float", "float", "float", "float", "float", "float", "float", "float", "float", "int32_t"]
+    __typenames__ = ["float", "int32_t", "float", "int32_t", "float", "int32_t"]
 
-    __dimensions__ = [[4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [2]]
+    __dimensions__ = [[30], [1], [30], [1], [30], [1]]
 
     def __init__(self):
-        self.q_des_abad = [ 0.0 for dim0 in range(4) ]
-        self.q_des_hip = [ 0.0 for dim0 in range(4) ]
-        self.q_des_knee = [ 0.0 for dim0 in range(4) ]
-        self.qd_des_abad = [ 0.0 for dim0 in range(4) ]
-        self.qd_des_hip = [ 0.0 for dim0 in range(4) ]
-        self.qd_des_knee = [ 0.0 for dim0 in range(4) ]
-        self.kp_abad = [ 0.0 for dim0 in range(4) ]
-        self.kp_hip = [ 0.0 for dim0 in range(4) ]
-        self.kp_knee = [ 0.0 for dim0 in range(4) ]
-        self.kd_abad = [ 0.0 for dim0 in range(4) ]
-        self.kd_hip = [ 0.0 for dim0 in range(4) ]
-        self.kd_knee = [ 0.0 for dim0 in range(4) ]
-        self.tau_abad_ff = [ 0.0 for dim0 in range(4) ]
-        self.tau_hip_ff = [ 0.0 for dim0 in range(4) ]
-        self.tau_knee_ff = [ 0.0 for dim0 in range(4) ]
-        self.flags = [ 0 for dim0 in range(2) ]
+        self.chip1_cmd = [ 0.0 for dim0 in range(30) ]
+        self.chip1_flg = [ 0 for dim0 in range(1) ]
+        self.chip2_cmd = [ 0.0 for dim0 in range(30) ]
+        self.chip2_flg = [ 0 for dim0 in range(1) ]
+        self.chip3_cmd = [ 0.0 for dim0 in range(30) ]
+        self.chip3_flg = [ 0 for dim0 in range(1) ]
 
     def encode(self):
         buf = BytesIO()
@@ -41,22 +31,12 @@ class usb_command_t(object):
         return buf.getvalue()
 
     def _encode_one(self, buf):
-        buf.write(struct.pack('>4f', *self.q_des_abad[:4]))
-        buf.write(struct.pack('>4f', *self.q_des_hip[:4]))
-        buf.write(struct.pack('>4f', *self.q_des_knee[:4]))
-        buf.write(struct.pack('>4f', *self.qd_des_abad[:4]))
-        buf.write(struct.pack('>4f', *self.qd_des_hip[:4]))
-        buf.write(struct.pack('>4f', *self.qd_des_knee[:4]))
-        buf.write(struct.pack('>4f', *self.kp_abad[:4]))
-        buf.write(struct.pack('>4f', *self.kp_hip[:4]))
-        buf.write(struct.pack('>4f', *self.kp_knee[:4]))
-        buf.write(struct.pack('>4f', *self.kd_abad[:4]))
-        buf.write(struct.pack('>4f', *self.kd_hip[:4]))
-        buf.write(struct.pack('>4f', *self.kd_knee[:4]))
-        buf.write(struct.pack('>4f', *self.tau_abad_ff[:4]))
-        buf.write(struct.pack('>4f', *self.tau_hip_ff[:4]))
-        buf.write(struct.pack('>4f', *self.tau_knee_ff[:4]))
-        buf.write(struct.pack('>2i', *self.flags[:2]))
+        buf.write(struct.pack('>30f', *self.chip1_cmd[:30]))
+        buf.write(struct.pack('>1i', *self.chip1_flg[:1]))
+        buf.write(struct.pack('>30f', *self.chip2_cmd[:30]))
+        buf.write(struct.pack('>1i', *self.chip2_flg[:1]))
+        buf.write(struct.pack('>30f', *self.chip3_cmd[:30]))
+        buf.write(struct.pack('>1i', *self.chip3_flg[:1]))
 
     def decode(data):
         if hasattr(data, 'read'):
@@ -70,28 +50,18 @@ class usb_command_t(object):
 
     def _decode_one(buf):
         self = usb_command_t()
-        self.q_des_abad = struct.unpack('>4f', buf.read(16))
-        self.q_des_hip = struct.unpack('>4f', buf.read(16))
-        self.q_des_knee = struct.unpack('>4f', buf.read(16))
-        self.qd_des_abad = struct.unpack('>4f', buf.read(16))
-        self.qd_des_hip = struct.unpack('>4f', buf.read(16))
-        self.qd_des_knee = struct.unpack('>4f', buf.read(16))
-        self.kp_abad = struct.unpack('>4f', buf.read(16))
-        self.kp_hip = struct.unpack('>4f', buf.read(16))
-        self.kp_knee = struct.unpack('>4f', buf.read(16))
-        self.kd_abad = struct.unpack('>4f', buf.read(16))
-        self.kd_hip = struct.unpack('>4f', buf.read(16))
-        self.kd_knee = struct.unpack('>4f', buf.read(16))
-        self.tau_abad_ff = struct.unpack('>4f', buf.read(16))
-        self.tau_hip_ff = struct.unpack('>4f', buf.read(16))
-        self.tau_knee_ff = struct.unpack('>4f', buf.read(16))
-        self.flags = struct.unpack('>2i', buf.read(8))
+        self.chip1_cmd = struct.unpack('>30f', buf.read(120))
+        self.chip1_flg = struct.unpack('>1i', buf.read(4))
+        self.chip2_cmd = struct.unpack('>30f', buf.read(120))
+        self.chip2_flg = struct.unpack('>1i', buf.read(4))
+        self.chip3_cmd = struct.unpack('>30f', buf.read(120))
+        self.chip3_flg = struct.unpack('>1i', buf.read(4))
         return self
     _decode_one = staticmethod(_decode_one)
 
     def _get_hash_recursive(parents):
         if usb_command_t in parents: return 0
-        tmphash = (0xecc8eaa6369bc165) & 0xffffffffffffffff
+        tmphash = (0x4b0674318281283e) & 0xffffffffffffffff
         tmphash  = (((tmphash<<1)&0xffffffffffffffff) + (tmphash>>63)) & 0xffffffffffffffff
         return tmphash
     _get_hash_recursive = staticmethod(_get_hash_recursive)
