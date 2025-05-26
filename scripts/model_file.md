@@ -25,20 +25,20 @@ SIZES
 
 TIMER
     0:  duration =  0          number = 0
-    1:  duration =  0.062      number = 1
+    1:  duration =  0.12       number = 1
     2:  duration =  0          number = 0
-    3:  duration =  0.04       number = 1
-    4:  duration =  0.0037     number = 1
-    5:  duration =  0.00094    number = 1
-    6:  duration =  0.012      number = 1
+    3:  duration =  0.07       number = 1
+    4:  duration =  0.0085     number = 1
+    5:  duration =  0.002      number = 1
+    6:  duration =  0.028      number = 1
     7:  duration =  0          number = 0
-    8:  duration =  0.0055     number = 1
-    9:  duration =  0.0023     number = 1
-    10:  duration =  0.017      number = 1
-    11:  duration =  0.013      number = 1
-    12:  duration =  0.0002     number = 1
-    13:  duration =  0.0095     number = 1
-    14:  duration =  0.0075     number = 1
+    8:  duration =  0.012      number = 1
+    9:  duration =  0.0052     number = 1
+    10:  duration =  0.024      number = 1
+    11:  duration =  0.027      number = 1
+    12:  duration =  0.00035    number = 1
+    13:  duration =  0.0076     number = 1
+    14:  duration =  0.015      number = 1
 
 SOLVER STAT
   solver_nisland = 1

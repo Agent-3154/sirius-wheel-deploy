@@ -1,0 +1,490 @@
+{
+	"artifacts" : 
+	[
+		{
+			"path" : "test_repo/sim_ctrl"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_executable",
+			"link_directories",
+			"target_link_libraries",
+			"set_target_properties",
+			"include",
+			"find_package",
+			"find_dependency",
+			"add_compile_definitions",
+			"add_definitions",
+			"include_directories"
+		],
+		"files" : 
+		[
+			"test_repo/CMakeLists.txt",
+			"robot/CMakeLists.txt",
+			"/usr/local/lib/cmake/iceoryx_posh/iceoryx_poshTargets.cmake",
+			"/usr/local/lib/cmake/iceoryx_posh/iceoryx_poshConfig.cmake",
+			"/usr/local/lib/cmake/iceoryx_hoofs/iceoryx_hoofsTargets.cmake",
+			"/usr/local/lib/cmake/iceoryx_hoofs/iceoryx_hoofsConfig.cmake",
+			"/home/lingwei/Applications/clion-2024.3.4/bin/cmake/linux/x64/share/cmake-3.30/Modules/CMakeFindDependencyMacro.cmake",
+			"robot_ctrl/CMakeLists.txt",
+			"/usr/local/lib/cmake/iceoryx_platform/iceoryx_platformTargets.cmake",
+			"/usr/local/lib/cmake/iceoryx_platform/iceoryx_platformConfig.cmake",
+			"CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 18,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 7,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 8,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 19,
+				"parent" : 0
+			},
+			{
+				"file" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 1,
+				"line" : 40,
+				"parent" : 5
+			},
+			{
+				"command" : 5,
+				"file" : 1,
+				"line" : 26,
+				"parent" : 5
+			},
+			{
+				"file" : 3,
+				"parent" : 7
+			},
+			{
+				"command" : 4,
+				"file" : 3,
+				"line" : 49,
+				"parent" : 8
+			},
+			{
+				"file" : 2,
+				"parent" : 9
+			},
+			{
+				"command" : 3,
+				"file" : 2,
+				"line" : 56,
+				"parent" : 10
+			},
+			{
+				"command" : 6,
+				"file" : 3,
+				"line" : 47,
+				"parent" : 8
+			},
+			{
+				"command" : 5,
+				"file" : 6,
+				"line" : 76,
+				"parent" : 12
+			},
+			{
+				"file" : 5,
+				"parent" : 13
+			},
+			{
+				"command" : 4,
+				"file" : 5,
+				"line" : 48,
+				"parent" : 14
+			},
+			{
+				"file" : 4,
+				"parent" : 15
+			},
+			{
+				"command" : 3,
+				"file" : 4,
+				"line" : 56,
+				"parent" : 16
+			},
+			{
+				"file" : 7
+			},
+			{
+				"command" : 2,
+				"file" : 7,
+				"line" : 22,
+				"parent" : 18
+			},
+			{
+				"command" : 5,
+				"file" : 7,
+				"line" : 16,
+				"parent" : 18
+			},
+			{
+				"file" : 3,
+				"parent" : 20
+			},
+			{
+				"command" : 4,
+				"file" : 3,
+				"line" : 49,
+				"parent" : 21
+			},
+			{
+				"file" : 2,
+				"parent" : 22
+			},
+			{
+				"command" : 3,
+				"file" : 2,
+				"line" : 56,
+				"parent" : 23
+			},
+			{
+				"command" : 6,
+				"file" : 3,
+				"line" : 47,
+				"parent" : 21
+			},
+			{
+				"command" : 5,
+				"file" : 6,
+				"line" : 76,
+				"parent" : 25
+			},
+			{
+				"file" : 5,
+				"parent" : 26
+			},
+			{
+				"command" : 4,
+				"file" : 5,
+				"line" : 48,
+				"parent" : 27
+			},
+			{
+				"file" : 4,
+				"parent" : 28
+			},
+			{
+				"command" : 3,
+				"file" : 4,
+				"line" : 56,
+				"parent" : 29
+			},
+			{
+				"command" : 5,
+				"file" : 1,
+				"line" : 25,
+				"parent" : 5
+			},
+			{
+				"file" : 9,
+				"parent" : 31
+			},
+			{
+				"command" : 4,
+				"file" : 9,
+				"line" : 45,
+				"parent" : 32
+			},
+			{
+				"file" : 8,
+				"parent" : 33
+			},
+			{
+				"command" : 3,
+				"file" : 8,
+				"line" : 56,
+				"parent" : 34
+			},
+			{
+				"file" : 10
+			},
+			{
+				"command" : 7,
+				"file" : 10,
+				"line" : 13,
+				"parent" : 36
+			},
+			{
+				"command" : 8,
+				"file" : 10,
+				"line" : 40,
+				"parent" : 36
+			},
+			{
+				"command" : 8,
+				"file" : 10,
+				"line" : 39,
+				"parent" : 36
+			},
+			{
+				"command" : 7,
+				"file" : 10,
+				"line" : 14,
+				"parent" : 36
+			},
+			{
+				"command" : 7,
+				"file" : 10,
+				"line" : 24,
+				"parent" : 36
+			},
+			{
+				"command" : 9,
+				"file" : 0,
+				"line" : 6,
+				"parent" : 0
+			},
+			{
+				"command" : 9,
+				"file" : 0,
+				"line" : 9,
+				"parent" : 0
+			},
+			{
+				"command" : 9,
+				"file" : 0,
+				"line" : 10,
+				"parent" : 0
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-O3 -fPIC -no-pie -march=native -ggdb -Wall   -Wextra -Wcast-align -Wdisabled-optimization -Wformat=2   -Winit-self -Wmissing-include-dirs -Wno-overloaded-virtual   -Wno-missing-field-initializers -Wno-unused-parameter -std=c++17 -pthread -O3 -DNDEBUG -std=c++17 -fdiagnostics-color=always"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 37,
+					"define" : "DG_ENGINEER"
+				},
+				{
+					"backtrace" : 38,
+					"define" : "EIGEN_FAST_MATH=1"
+				},
+				{
+					"backtrace" : 39,
+					"define" : "EIGEN_STACK_ALLOCATION_LIMIT=0"
+				},
+				{
+					"backtrace" : 40,
+					"define" : "ICEORYX_PREFIX_V2954"
+				},
+				{
+					"backtrace" : 41,
+					"define" : "SIMULATOR"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 42,
+					"path" : "/home/lingwei/github_repo/dg_fsm/test_repo/../mujoco-3.1.3/include"
+				},
+				{
+					"backtrace" : 43,
+					"path" : "/home/lingwei/github_repo/dg_fsm/test_repo/../utilities/inc"
+				},
+				{
+					"backtrace" : 44,
+					"path" : "/home/lingwei/github_repo/dg_fsm/test_repo/../onnxruntime-linux-x64-1-16-1/include"
+				},
+				{
+					"backtrace" : 4,
+					"isSystem" : true,
+					"path" : "/usr/local/include/iceoryx/v2.95.4"
+				}
+			],
+			"language" : "CXX",
+			"languageStandard" : 
+			{
+				"backtraces" : 
+				[
+					1
+				],
+				"standard" : "17"
+			},
+			"sourceIndexes" : 
+			[
+				0
+			]
+		}
+	],
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 4,
+			"id" : "hardware_library::@c6d49de7a9922ca274e0"
+		},
+		{
+			"backtrace" : 4,
+			"id" : "robot_ctrl_library::@57b8b45a52099543c178"
+		}
+	],
+	"id" : "sim_ctrl::@be00a092e35eb2c170d8",
+	"link" : 
+	{
+		"commandFragments" : 
+		[
+			{
+				"fragment" : "-O3 -fPIC -no-pie -march=native -ggdb -Wall   -Wextra -Wcast-align -Wdisabled-optimization -Wformat=2   -Winit-self -Wmissing-include-dirs -Wno-overloaded-virtual   -Wno-missing-field-initializers -Wno-unused-parameter -std=c++17 -pthread -O3 -DNDEBUG",
+				"role" : "flags"
+			},
+			{
+				"fragment" : "",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-L/home/lingwei/github_repo/dg_fsm/test_repo/../mujoco-3.1.3/lib",
+				"role" : "libraryPath"
+			},
+			{
+				"backtrace" : 3,
+				"fragment" : "-L/home/lingwei/github_repo/dg_fsm/test_repo/../utilities/src",
+				"role" : "libraryPath"
+			},
+			{
+				"fragment" : "-Wl,-rpath,/home/lingwei/github_repo/dg_fsm/test_repo/../mujoco-3.1.3/lib:/home/lingwei/github_repo/dg_fsm/test_repo/../utilities/src:/home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot:/home/lingwei/github_repo/dg_fsm/cmake-build-debug/robot_ctrl:/home/lingwei/github_repo/dg_fsm/onnxruntime-linux-x64-1-16-1/lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "../robot/libhardware_library.so",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "../robot_ctrl/librobot_ctrl_library.so",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "/home/lingwei/github_repo/dg_fsm/onnxruntime-linux-x64-1-16-1/lib/libonnxruntime.so",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 6,
+				"fragment" : "-lusb-1.0",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 6,
+				"fragment" : "/usr/local/lib/libiceoryx_posh.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 11,
+				"fragment" : "/usr/local/lib/libiceoryx_hoofs.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 17,
+				"fragment" : "/usr/local/lib/libiceoryx_platform.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 6,
+				"fragment" : "-llcm",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 19,
+				"fragment" : "/usr/local/lib/libiceoryx_posh.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 24,
+				"fragment" : "/usr/local/lib/libiceoryx_hoofs.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 30,
+				"fragment" : "/usr/local/lib/libiceoryx_platform.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 35,
+				"fragment" : "-lacl",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 11,
+				"fragment" : "-lrt",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 17,
+				"fragment" : "-latomic",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 35,
+				"fragment" : "-lpthread",
+				"role" : "libraries"
+			}
+		],
+		"language" : "CXX"
+	},
+	"name" : "sim_ctrl",
+	"nameOnDisk" : "sim_ctrl",
+	"paths" : 
+	{
+		"build" : "test_repo",
+		"source" : "test_repo"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "test_repo/run_sim_ctrl.cpp",
+			"sourceGroupIndex" : 0
+		}
+	],
+	"type" : "EXECUTABLE"
+}

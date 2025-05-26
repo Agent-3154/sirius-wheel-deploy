@@ -9,6 +9,7 @@ include_directories("../utilities/inc")
 include_directories("FSM/")
 link_directories(${LINK_DIR})
 file(GLOB_RECURSE robot_ctrl_sources "*.cpp" "FSM/*.cpp")
+include_directories("../onnxruntime-linux-x64-1-16-1/include")
 if (SIMULATOR_FLG)
     message(WARNING "\nSimulator build include iceoryx")
     find_package(iceoryx_platform REQUIRED)
@@ -19,12 +20,12 @@ if (SIMULATOR_FLG)
             ../utilities/src/easylogging++.cc
     )
     target_link_libraries(robot_ctrl_library
-            lcm iceoryx_posh::iceoryx_posh)
+            lcm iceoryx_posh::iceoryx_posh ${onnx})
 else ()
     message(WARNING "\nReal_Robot build exclude iceoryx")
     add_library(robot_ctrl_library SHARED ${robot_ctrl_sources}
             ../utilities/src/easylogging++.cc
     )
 
-    target_link_libraries(robot_ctrl_library lcm)
+    target_link_libraries(robot_ctrl_library lcm ${onnx})
 endif ()

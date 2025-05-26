@@ -52,3 +52,5 @@ qtcreator-*
 
 # Catkin custom files
 CATKIN_IGNORE
+onnxruntime-linux-x64-1-16-1
+.vscode/

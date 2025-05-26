@@ -21,7 +21,13 @@ sudo apt update
 sudo apt-get install gcc-11 g++-11
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 60 --slave /usr/bin/g++ g++ /usr/bin/g++-11 
 ```
-
+* Download onnx:
+```bash
+# Download the C++ library (adjust version as needed)
+wget https://github.com/microsoft/onnxruntime/releases/download/v1.16.1/onnxruntime-linux-x64-1.16.1.tgz
+tar -xvzf onnxruntime-linux-x64-1.16.1.tgz
+```
+rename `onnxruntime-linux-x64-1.16.1` to `onnxruntime-linux-x64-1-16-1`
 ---
 ### Build the Project
 ```bash

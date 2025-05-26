@@ -1,0 +1,41 @@
+file(REMOVE_RECURSE
+  "CMakeFiles/hardware_library.dir/HardwareBridge.cpp.o"
+  "CMakeFiles/hardware_library.dir/HardwareBridge.cpp.o.d"
+  "CMakeFiles/hardware_library.dir/__/utilities/src/debug_tools.cpp.o"
+  "CMakeFiles/hardware_library.dir/__/utilities/src/debug_tools.cpp.o.d"
+  "CMakeFiles/hardware_library.dir/__/utilities/src/thread_timer.cpp.o"
+  "CMakeFiles/hardware_library.dir/__/utilities/src/thread_timer.cpp.o.d"
+  "CMakeFiles/hardware_library.dir/__/utilities/src/utilities_func.cpp.o"
+  "CMakeFiles/hardware_library.dir/__/utilities/src/utilities_func.cpp.o.d"
+  "CMakeFiles/hardware_library.dir/estimators/Estimator_Base.cpp.o"
+  "CMakeFiles/hardware_library.dir/estimators/Estimator_Base.cpp.o.d"
+  "CMakeFiles/hardware_library.dir/estimators/OrientationEsimator.cpp.o"
+  "CMakeFiles/hardware_library.dir/estimators/OrientationEsimator.cpp.o.d"
+  "CMakeFiles/hardware_library.dir/estimators/sim_estimator.cpp.o"
+  "CMakeFiles/hardware_library.dir/estimators/sim_estimator.cpp.o.d"
+  "CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_remote_controller.cpp.o"
+  "CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_remote_controller.cpp.o.d"
+  "CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_usb2can.cpp.o"
+  "CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_usb2can.cpp.o.d"
+  "CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_usb_base.cpp.o"
+  "CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_usb_base.cpp.o.d"
+  "CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_usb_imu.cpp.o"
+  "CMakeFiles/hardware_library.dir/hardwares/usb/src/rt_usb_imu.cpp.o.d"
+  "CMakeFiles/hardware_library.dir/leg_controller/leg_control.cpp.o"
+  "CMakeFiles/hardware_library.dir/leg_controller/leg_control.cpp.o.d"
+  "CMakeFiles/hardware_library.dir/robot_runner/Robot_Runner.cpp.o"
+  "CMakeFiles/hardware_library.dir/robot_runner/Robot_Runner.cpp.o.d"
+  "CMakeFiles/hardware_library.dir/thread_tasks/src/thread_rc.cpp.o"
+  "CMakeFiles/hardware_library.dir/thread_tasks/src/thread_rc.cpp.o.d"
+  "CMakeFiles/hardware_library.dir/thread_tasks/src/thread_robot_runner.cpp.o"
+  "CMakeFiles/hardware_library.dir/thread_tasks/src/thread_robot_runner.cpp.o.d"
+  "CMakeFiles/hardware_library.dir/thread_tasks/src/thread_usb_hardware.cpp.o"
+  "CMakeFiles/hardware_library.dir/thread_tasks/src/thread_usb_hardware.cpp.o.d"
+  "libhardware_library.pdb"
+  "libhardware_library.so"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang CXX)
+  include(CMakeFiles/hardware_library.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()

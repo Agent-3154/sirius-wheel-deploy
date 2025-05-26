@@ -14,7 +14,7 @@ file(GLOB simulator_sources "source/*.cc" "source/*.cpp" "../utilities/src/*.cpp
         "../robot/robot_model/*.cpp" "motor_control/*.cpp")
 
 include(GNUInstallDirs)
-
+include_directories("/usr/local/include")
 find_package(iceoryx_platform REQUIRED)
 find_package(iceoryx_posh CONFIG REQUIRED)
 find_package(iceoryx_hoofs CONFIG REQUIRED)

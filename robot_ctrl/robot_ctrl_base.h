@@ -4,7 +4,7 @@
 
 #ifndef MY_MUJOCO_SIMULATOR_ROBOT_CTRL_BASE_H
 #define MY_MUJOCO_SIMULATOR_ROBOT_CTRL_BASE_H
-
+#include <atomic>
 //#include "../robot/robot_runner/Robot_Runner.h"
 #include "../robot/hardwares/usb/include/rt_remote_controller.h"
 #include "../robot/leg_controller/leg_control.h"
