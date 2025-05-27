@@ -528,21 +528,44 @@ void Simulation::SimulationBridge::sim_show_step() {
         motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift) + 1].qd = static_cast<float>(d_->qvel[Config::hip_vel_addr_offset + 3 * i]);
         motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift) + 2].qd = static_cast<float>(d_->qvel[Config::knee_vel_addr_offset + 3 * i]);
 
-        // motor_cmd_->chip_cmds[index].motor_cmds[3 * i].q_des = sim_local_usbdata.;
-        // motor_cmd_->q_des_hip[i] = sim_local_usbdata.q_hip[i];
-        // motor_cmd_->q_des_knee[i] = sim_local_usbdata.q_knee[i];
-        // motor_cmd_->qd_des_abad[i] = sim_local_usbdata.qd_abad[i];
-        // motor_cmd_->qd_des_hip[i] = sim_local_usbdata.qd_hip[i];
-        // motor_cmd_->qd_des_knee[i] = sim_local_usbdata.qd_knee[i];
-        // motor_cmd_->tau_abad_ff[i] = 0;
-        // motor_cmd_->tau_hip_ff[i] = 0;
-        // motor_cmd_->tau_knee_ff[i] = 0;
-        // motor_cmd_->kp_abad[i] = Config::joint_kp;
-        // motor_cmd_->kp_hip[i] = Config::joint_kp;
-        // motor_cmd_->kp_knee[i] = Config::joint_kp;
-        // motor_cmd_->kd_abad[i] = Config::joint_kd;
-        // motor_cmd_->kd_hip[i] = Config::joint_kd;
-        // motor_cmd_->kd_knee[i] = Config::joint_kd;
+        // chip data: q, qd, tau_ff, uq,ud
+        if (index == 0) {
+            motor_cmd_->chip_cmds[index].motor_cmds[3 * i].q_des = sim_local_usbdata.chip1_data[3 * i][0];
+            motor_cmd_->chip_cmds[index].motor_cmds[3 * i].qd_des = sim_local_usbdata.chip1_data[3 * i][1];
+            motor_cmd_->chip_cmds[index].motor_cmds[3 * i].tau_ff = 0;
+            motor_cmd_->chip_cmds[index].motor_cmds[3 * i].kp = Config::joint_kp;
+            motor_cmd_->chip_cmds[index].motor_cmds[3 * i].kd = Config::joint_kd;
+
+            motor_cmd_->chip_cmds[index].motor_cmds[3 * i + 1].q_des = sim_local_usbdata.chip1_data[3 * i + 1][0];
+            motor_cmd_->chip_cmds[index].motor_cmds[3 * i + 1].qd_des = sim_local_usbdata.chip1_data[3 * i + 1][1];
+            motor_cmd_->chip_cmds[index].motor_cmds[3 * i + 1].tau_ff = 0;
+            motor_cmd_->chip_cmds[index].motor_cmds[3 * i + 1].kp = Config::joint_kp;
+            motor_cmd_->chip_cmds[index].motor_cmds[3 * i + 1].kd = Config::joint_kd;
+
+            motor_cmd_->chip_cmds[index].motor_cmds[3 * i + 2].q_des = sim_local_usbdata.chip1_data[3 * i + 2][0];
+            motor_cmd_->chip_cmds[index].motor_cmds[3 * i + 2].qd_des = sim_local_usbdata.chip1_data[3 * i + 2][1];
+            motor_cmd_->chip_cmds[index].motor_cmds[3 * i + 2].tau_ff = 0;
+            motor_cmd_->chip_cmds[index].motor_cmds[3 * i + 2].kp = Config::joint_kp;
+            motor_cmd_->chip_cmds[index].motor_cmds[3 * i + 2].kd = Config::joint_kd;
+        }else if (index == 1) {
+            motor_cmd_->chip_cmds[index].motor_cmds[3 * (i-index_shift)].q_des = sim_local_usbdata.chip2_data[3 * (i-index_shift)][0];
+            motor_cmd_->chip_cmds[index].motor_cmds[3 * (i-index_shift)].qd_des = sim_local_usbdata.chip2_data[3 * (i-index_shift)][1];
+            motor_cmd_->chip_cmds[index].motor_cmds[3 * (i-index_shift)].tau_ff = 0;
+            motor_cmd_->chip_cmds[index].motor_cmds[3 * (i-index_shift)].kp = Config::joint_kp;
+            motor_cmd_->chip_cmds[index].motor_cmds[3 * (i-index_shift)].kd = Config::joint_kd;
+
+            motor_cmd_->chip_cmds[index].motor_cmds[3 * (i-index_shift) + 1].q_des = sim_local_usbdata.chip2_data[3 * (i-index_shift) + 1][0];
+            motor_cmd_->chip_cmds[index].motor_cmds[3 * (i-index_shift) + 1].qd_des = sim_local_usbdata.chip2_data[3 * (i-index_shift) + 1][1];
+            motor_cmd_->chip_cmds[index].motor_cmds[3 * (i-index_shift) + 1].tau_ff = 0;
+            motor_cmd_->chip_cmds[index].motor_cmds[3 * (i-index_shift) + 1].kp = Config::joint_kp;
+            motor_cmd_->chip_cmds[index].motor_cmds[3 * (i-index_shift) + 1].kd = Config::joint_kd;
+
+            motor_cmd_->chip_cmds[index].motor_cmds[3 * (i-index_shift) + 2].q_des = sim_local_usbdata.chip2_data[3 * (i-index_shift) + 2][0];
+            motor_cmd_->chip_cmds[index].motor_cmds[3 * (i-index_shift) + 2].qd_des = sim_local_usbdata.chip2_data[3 * (i-index_shift) + 2][1];
+            motor_cmd_->chip_cmds[index].motor_cmds[3 * (i-index_shift) + 2].tau_ff = 0;
+            motor_cmd_->chip_cmds[index].motor_cmds[3 * (i-index_shift) + 2].kp = Config::joint_kp;
+            motor_cmd_->chip_cmds[index].motor_cmds[3 * (i-index_shift) + 2].kd = Config::joint_kd;
+        }
     }
     motors_->pack_motor_cmd(motor_cmd_, motor_data_);
     //        std::cout << "torque: ";

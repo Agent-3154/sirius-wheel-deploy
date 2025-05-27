@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
     std::string model_name = "../robot/robot_model/dg_engineer/scene.xml";
     bool launch_imu = true;
     bool launch_usb2can = true;
-    bool launch_rc = false;
+    bool launch_rc = true;
     bool unitree = false;
     Config::run_type type_ = Config::real_usb;
 #endif

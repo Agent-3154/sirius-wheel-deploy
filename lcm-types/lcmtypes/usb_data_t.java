@@ -11,26 +11,26 @@ import lcm.lcm.*;
  
 public final class usb_data_t implements lcm.lcm.LCMEncodable
 {
-    public float chip1_data[];
+    public float chip1_data[][];
     public int chip1_flg[];
-    public float chip2_data[];
+    public float chip2_data[][];
     public int chip2_flg[];
-    public float chip3_data[];
+    public float chip3_data[][];
     public int chip3_flg[];
     public long timestamp;
  
     public usb_data_t()
     {
-        chip1_data = new float[30];
+        chip1_data = new float[6][5];
         chip1_flg = new int[1];
-        chip2_data = new float[30];
+        chip2_data = new float[6][5];
         chip2_flg = new int[1];
-        chip3_data = new float[30];
+        chip3_data = new float[6][5];
         chip3_flg = new int[1];
     }
  
     public static final long LCM_FINGERPRINT;
-    public static final long LCM_FINGERPRINT_BASE = 0x3b5ba9ae3fee3fabL;
+    public static final long LCM_FINGERPRINT_BASE = 0x72e5d7e103d70683L;
  
     static {
         LCM_FINGERPRINT = _hashRecursive(new ArrayList<Class<?>>());
@@ -56,24 +56,30 @@ public final class usb_data_t implements lcm.lcm.LCMEncodable
  
     public void _encodeRecursive(DataOutput outs) throws IOException
     {
-        for (int a = 0; a < 30; a++) {
-            outs.writeFloat(this.chip1_data[a]); 
+        for (int a = 0; a < 6; a++) {
+            for (int b = 0; b < 5; b++) {
+                outs.writeFloat(this.chip1_data[a][b]); 
+            }
         }
  
         for (int a = 0; a < 1; a++) {
             outs.writeInt(this.chip1_flg[a]); 
         }
  
-        for (int a = 0; a < 30; a++) {
-            outs.writeFloat(this.chip2_data[a]); 
+        for (int a = 0; a < 6; a++) {
+            for (int b = 0; b < 5; b++) {
+                outs.writeFloat(this.chip2_data[a][b]); 
+            }
         }
  
         for (int a = 0; a < 1; a++) {
             outs.writeInt(this.chip2_flg[a]); 
         }
  
-        for (int a = 0; a < 30; a++) {
-            outs.writeFloat(this.chip3_data[a]); 
+        for (int a = 0; a < 6; a++) {
+            for (int b = 0; b < 5; b++) {
+                outs.writeFloat(this.chip3_data[a][b]); 
+            }
         }
  
         for (int a = 0; a < 1; a++) {
@@ -106,9 +112,11 @@ public final class usb_data_t implements lcm.lcm.LCMEncodable
  
     public void _decodeRecursive(DataInput ins) throws IOException
     {
-        this.chip1_data = new float[(int) 30];
-        for (int a = 0; a < 30; a++) {
-            this.chip1_data[a] = ins.readFloat();
+        this.chip1_data = new float[(int) 6][(int) 5];
+        for (int a = 0; a < 6; a++) {
+            for (int b = 0; b < 5; b++) {
+                this.chip1_data[a][b] = ins.readFloat();
+            }
         }
  
         this.chip1_flg = new int[(int) 1];
@@ -116,9 +124,11 @@ public final class usb_data_t implements lcm.lcm.LCMEncodable
             this.chip1_flg[a] = ins.readInt();
         }
  
-        this.chip2_data = new float[(int) 30];
-        for (int a = 0; a < 30; a++) {
-            this.chip2_data[a] = ins.readFloat();
+        this.chip2_data = new float[(int) 6][(int) 5];
+        for (int a = 0; a < 6; a++) {
+            for (int b = 0; b < 5; b++) {
+                this.chip2_data[a][b] = ins.readFloat();
+            }
         }
  
         this.chip2_flg = new int[(int) 1];
@@ -126,9 +136,11 @@ public final class usb_data_t implements lcm.lcm.LCMEncodable
             this.chip2_flg[a] = ins.readInt();
         }
  
-        this.chip3_data = new float[(int) 30];
-        for (int a = 0; a < 30; a++) {
-            this.chip3_data[a] = ins.readFloat();
+        this.chip3_data = new float[(int) 6][(int) 5];
+        for (int a = 0; a < 6; a++) {
+            for (int b = 0; b < 5; b++) {
+                this.chip3_data[a][b] = ins.readFloat();
+            }
         }
  
         this.chip3_flg = new int[(int) 1];
@@ -143,16 +155,22 @@ public final class usb_data_t implements lcm.lcm.LCMEncodable
     public lcmtypes.usb_data_t copy()
     {
         lcmtypes.usb_data_t outobj = new lcmtypes.usb_data_t();
-        outobj.chip1_data = new float[(int) 30];
-        System.arraycopy(this.chip1_data, 0, outobj.chip1_data, 0, 30); 
+        outobj.chip1_data = new float[(int) 6][(int) 5];
+        for (int a = 0; a < 6; a++) {
+            System.arraycopy(this.chip1_data[a], 0, outobj.chip1_data[a], 0, 5);        }
+ 
         outobj.chip1_flg = new int[(int) 1];
         System.arraycopy(this.chip1_flg, 0, outobj.chip1_flg, 0, 1); 
-        outobj.chip2_data = new float[(int) 30];
-        System.arraycopy(this.chip2_data, 0, outobj.chip2_data, 0, 30); 
+        outobj.chip2_data = new float[(int) 6][(int) 5];
+        for (int a = 0; a < 6; a++) {
+            System.arraycopy(this.chip2_data[a], 0, outobj.chip2_data[a], 0, 5);        }
+ 
         outobj.chip2_flg = new int[(int) 1];
         System.arraycopy(this.chip2_flg, 0, outobj.chip2_flg, 0, 1); 
-        outobj.chip3_data = new float[(int) 30];
-        System.arraycopy(this.chip3_data, 0, outobj.chip3_data, 0, 30); 
+        outobj.chip3_data = new float[(int) 6][(int) 5];
+        for (int a = 0; a < 6; a++) {
+            System.arraycopy(this.chip3_data[a], 0, outobj.chip3_data[a], 0, 5);        }
+ 
         outobj.chip3_flg = new int[(int) 1];
         System.arraycopy(this.chip3_flg, 0, outobj.chip3_flg, 0, 1); 
         outobj.timestamp = this.timestamp;

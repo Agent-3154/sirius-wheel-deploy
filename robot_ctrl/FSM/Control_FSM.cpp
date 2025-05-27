@@ -91,7 +91,7 @@ void ControlFSM::ControlFSM_run() {
     }
 
     if (danger_times_ > 10) {
-        LOG(WARNING) << "Reach the danger velocity!";
+        // LOG(WARNING) << "Reach the danger velocity!";
         state_next_ = state_list_.s_damping;
         danger_times_ = 0;
     }

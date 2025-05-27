@@ -14,14 +14,14 @@ class usb_data_t(object):
 
     __typenames__ = ["float", "int32_t", "float", "int32_t", "float", "int32_t", "int64_t"]
 
-    __dimensions__ = [[30], [1], [30], [1], [30], [1], None]
+    __dimensions__ = [[6, 5], [1], [6, 5], [1], [6, 5], [1], None]
 
     def __init__(self):
-        self.chip1_data = [ 0.0 for dim0 in range(30) ]
+        self.chip1_data = [ [ 0.0 for dim1 in range(5) ] for dim0 in range(6) ]
         self.chip1_flg = [ 0 for dim0 in range(1) ]
-        self.chip2_data = [ 0.0 for dim0 in range(30) ]
+        self.chip2_data = [ [ 0.0 for dim1 in range(5) ] for dim0 in range(6) ]
         self.chip2_flg = [ 0 for dim0 in range(1) ]
-        self.chip3_data = [ 0.0 for dim0 in range(30) ]
+        self.chip3_data = [ [ 0.0 for dim1 in range(5) ] for dim0 in range(6) ]
         self.chip3_flg = [ 0 for dim0 in range(1) ]
         self.timestamp = 0
 
@@ -32,11 +32,14 @@ class usb_data_t(object):
         return buf.getvalue()
 
     def _encode_one(self, buf):
-        buf.write(struct.pack('>30f', *self.chip1_data[:30]))
+        for i0 in range(6):
+            buf.write(struct.pack('>5f', *self.chip1_data[i0][:5]))
         buf.write(struct.pack('>1i', *self.chip1_flg[:1]))
-        buf.write(struct.pack('>30f', *self.chip2_data[:30]))
+        for i0 in range(6):
+            buf.write(struct.pack('>5f', *self.chip2_data[i0][:5]))
         buf.write(struct.pack('>1i', *self.chip2_flg[:1]))
-        buf.write(struct.pack('>30f', *self.chip3_data[:30]))
+        for i0 in range(6):
+            buf.write(struct.pack('>5f', *self.chip3_data[i0][:5]))
         buf.write(struct.pack('>1i', *self.chip3_flg[:1]))
         buf.write(struct.pack(">q", self.timestamp))
 
@@ -52,11 +55,17 @@ class usb_data_t(object):
 
     def _decode_one(buf):
         self = usb_data_t()
-        self.chip1_data = struct.unpack('>30f', buf.read(120))
+        self.chip1_data = []
+        for i0 in range(6):
+            self.chip1_data.append(struct.unpack('>5f', buf.read(20)))
         self.chip1_flg = struct.unpack('>1i', buf.read(4))
-        self.chip2_data = struct.unpack('>30f', buf.read(120))
+        self.chip2_data = []
+        for i0 in range(6):
+            self.chip2_data.append(struct.unpack('>5f', buf.read(20)))
         self.chip2_flg = struct.unpack('>1i', buf.read(4))
-        self.chip3_data = struct.unpack('>30f', buf.read(120))
+        self.chip3_data = []
+        for i0 in range(6):
+            self.chip3_data.append(struct.unpack('>5f', buf.read(20)))
         self.chip3_flg = struct.unpack('>1i', buf.read(4))
         self.timestamp = struct.unpack(">q", buf.read(8))[0]
         return self
@@ -64,7 +73,7 @@ class usb_data_t(object):
 
     def _get_hash_recursive(parents):
         if usb_data_t in parents: return 0
-        tmphash = (0x3b5ba9ae3fee3fab) & 0xffffffffffffffff
+        tmphash = (0x72e5d7e103d70683) & 0xffffffffffffffff
         tmphash  = (((tmphash<<1)&0xffffffffffffffff) + (tmphash>>63)) & 0xffffffffffffffff
         return tmphash
     _get_hash_recursive = staticmethod(_get_hash_recursive)

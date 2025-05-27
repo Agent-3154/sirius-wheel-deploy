@@ -14,17 +14,17 @@
 class usb_data_t
 {
     public:
-        float      chip1_data[30];
+        float      chip1_data[6][5];
 
         /// 6 motors, 5 commands each
         int32_t    chip1_flg[1];
 
-        float      chip2_data[30];
+        float      chip2_data[6][5];
 
         /// 6 motors, 5 commands each
         int32_t    chip2_flg[1];
 
-        float      chip3_data[30];
+        float      chip3_data[6][5];
 
         /// 6 motors, 5 commands each
         int32_t    chip3_flg[1];
@@ -127,20 +127,26 @@ int usb_data_t::_encodeNoHash(void *buf, int offset, int maxlen) const
 {
     int pos = 0, tlen;
 
-    tlen = __float_encode_array(buf, offset + pos, maxlen - pos, &this->chip1_data[0], 30);
-    if(tlen < 0) return tlen; else pos += tlen;
+    for (int a0 = 0; a0 < 6; a0++) {
+        tlen = __float_encode_array(buf, offset + pos, maxlen - pos, &this->chip1_data[a0][0], 5);
+        if(tlen < 0) return tlen; else pos += tlen;
+    }
 
     tlen = __int32_t_encode_array(buf, offset + pos, maxlen - pos, &this->chip1_flg[0], 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
-    tlen = __float_encode_array(buf, offset + pos, maxlen - pos, &this->chip2_data[0], 30);
-    if(tlen < 0) return tlen; else pos += tlen;
+    for (int a0 = 0; a0 < 6; a0++) {
+        tlen = __float_encode_array(buf, offset + pos, maxlen - pos, &this->chip2_data[a0][0], 5);
+        if(tlen < 0) return tlen; else pos += tlen;
+    }
 
     tlen = __int32_t_encode_array(buf, offset + pos, maxlen - pos, &this->chip2_flg[0], 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
-    tlen = __float_encode_array(buf, offset + pos, maxlen - pos, &this->chip3_data[0], 30);
-    if(tlen < 0) return tlen; else pos += tlen;
+    for (int a0 = 0; a0 < 6; a0++) {
+        tlen = __float_encode_array(buf, offset + pos, maxlen - pos, &this->chip3_data[a0][0], 5);
+        if(tlen < 0) return tlen; else pos += tlen;
+    }
 
     tlen = __int32_t_encode_array(buf, offset + pos, maxlen - pos, &this->chip3_flg[0], 1);
     if(tlen < 0) return tlen; else pos += tlen;
@@ -155,20 +161,26 @@ int usb_data_t::_decodeNoHash(const void *buf, int offset, int maxlen)
 {
     int pos = 0, tlen;
 
-    tlen = __float_decode_array(buf, offset + pos, maxlen - pos, &this->chip1_data[0], 30);
-    if(tlen < 0) return tlen; else pos += tlen;
+    for (int a0 = 0; a0 < 6; a0++) {
+        tlen = __float_decode_array(buf, offset + pos, maxlen - pos, &this->chip1_data[a0][0], 5);
+        if(tlen < 0) return tlen; else pos += tlen;
+    }
 
     tlen = __int32_t_decode_array(buf, offset + pos, maxlen - pos, &this->chip1_flg[0], 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
-    tlen = __float_decode_array(buf, offset + pos, maxlen - pos, &this->chip2_data[0], 30);
-    if(tlen < 0) return tlen; else pos += tlen;
+    for (int a0 = 0; a0 < 6; a0++) {
+        tlen = __float_decode_array(buf, offset + pos, maxlen - pos, &this->chip2_data[a0][0], 5);
+        if(tlen < 0) return tlen; else pos += tlen;
+    }
 
     tlen = __int32_t_decode_array(buf, offset + pos, maxlen - pos, &this->chip2_flg[0], 1);
     if(tlen < 0) return tlen; else pos += tlen;
 
-    tlen = __float_decode_array(buf, offset + pos, maxlen - pos, &this->chip3_data[0], 30);
-    if(tlen < 0) return tlen; else pos += tlen;
+    for (int a0 = 0; a0 < 6; a0++) {
+        tlen = __float_decode_array(buf, offset + pos, maxlen - pos, &this->chip3_data[a0][0], 5);
+        if(tlen < 0) return tlen; else pos += tlen;
+    }
 
     tlen = __int32_t_decode_array(buf, offset + pos, maxlen - pos, &this->chip3_flg[0], 1);
     if(tlen < 0) return tlen; else pos += tlen;
@@ -182,11 +194,11 @@ int usb_data_t::_decodeNoHash(const void *buf, int offset, int maxlen)
 int usb_data_t::_getEncodedSizeNoHash() const
 {
     int enc_size = 0;
-    enc_size += __float_encoded_array_size(NULL, 30);
+    enc_size += 6 * __float_encoded_array_size(NULL, 5);
     enc_size += __int32_t_encoded_array_size(NULL, 1);
-    enc_size += __float_encoded_array_size(NULL, 30);
+    enc_size += 6 * __float_encoded_array_size(NULL, 5);
     enc_size += __int32_t_encoded_array_size(NULL, 1);
-    enc_size += __float_encoded_array_size(NULL, 30);
+    enc_size += 6 * __float_encoded_array_size(NULL, 5);
     enc_size += __int32_t_encoded_array_size(NULL, 1);
     enc_size += __int64_t_encoded_array_size(NULL, 1);
     return enc_size;
@@ -194,7 +206,7 @@ int usb_data_t::_getEncodedSizeNoHash() const
 
 uint64_t usb_data_t::_computeHash(const __lcm_hash_ptr *)
 {
-    uint64_t hash = 0x3b5ba9ae3fee3fabLL;
+    uint64_t hash = 0x72e5d7e103d70683LL;
     return (hash<<1) + ((hash>>63)&1);
 }
 

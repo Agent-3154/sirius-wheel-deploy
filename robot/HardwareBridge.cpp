@@ -41,7 +41,6 @@ HardwareBridge::My_HardwareBridge::~My_HardwareBridge() {
 HardwareBridge::My_HardwareBridge::setup_HardwareBridge(const bool real_imu, const bool real_usb2can,
                                                         const bool real_rc, const bool unitree_) {
     t_usb_ = std::make_shared<Thread::thread_usb_hardwares>("USB Hardwares", 0);
-    std::cout << "run+_here\n";
     if (!unitree_) {
         if (real_imu) {
             imu_handle_ = new USB_HARDWARE::USB_IMU(Config::vendor_id, Config::product_id, Config::endpoint_1, 0x0);
@@ -73,9 +72,6 @@ HardwareBridge::My_HardwareBridge::setup_HardwareBridge(const bool real_imu, con
             // tp_usb_->Schedule([this] { t_usb_->thread_loop(usb_container_); });
             thread_usb_ = std::thread(&My_HardwareBridge::thread_usb_function, this);
         }
-        std::cout << "run+_here\n";
-    } else {
-        std::cout << "run+_here\n";
         if (real_rc) {
             t_rc_ = std::make_shared<Thread::thread_rc>("RC Thread", 200);
             // tp_rc_ = std::make_shared<Utilities::ThreadPool>(1);
@@ -83,7 +79,6 @@ HardwareBridge::My_HardwareBridge::setup_HardwareBridge(const bool real_imu, con
             // tp_rc_->Schedule([this]() { t_rc_->thread_loop(rc_handle_); });
             thread_rc_ = std::thread(&My_HardwareBridge::thread_rc_function, this);
             robot_runner_->runner_rc_ = rc_handle_;
-            std::cout << "run+_here\n";
         } else {
             t_rc_ = nullptr;
             // tp_rc_ = nullptr;
@@ -103,7 +98,6 @@ HardwareBridge::My_HardwareBridge::setup_HardwareBridge(const bool real_imu, con
                 t_robot_runner_->thread_finish_task();
             } //unlimited
         } else if (robot_runner_->sim_ == Config::sim_mj) {
-            std::cout << "run+_here\n";
             robot_runner_->init_robotrunner();
             t_robot_runner_ = std::make_shared<Thread::thread_robot_runner>(
                 "Robot Runner Thread", Config::sim_robot_runner_task_fre);

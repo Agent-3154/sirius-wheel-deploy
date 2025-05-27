@@ -12,9 +12,9 @@ namespace USB_HARDWARE {
         imu_data_ = new usb_imu_rx_data_u();
         imu_lcm_data = new imu_lcmt();
         // z: -90 degree, y: 90 degree.
-        compensated_data_.comp_raw_Matrix_ << 0, 0, 1, 1, 0, 0, 0, 1, 0;
+        // compensated_data_.comp_raw_Matrix_ << 0, 0, 1, 1, 0, 0, 0, 1, 0;
 
-        compensated_data_.comp_Matrix_ << 0, -1.0, 0, 1.0, 0.0, 0.0, 0, 0, 1.0;
+        // compensated_data_.comp_Matrix_ << 0, -1.0, 0, 1.0, 0.0, 0.0, 0, 0, 1.0;
     }
 
     USB_IMU::~USB_IMU() {
@@ -47,31 +47,32 @@ namespace USB_HARDWARE {
                 // memcpy(imu_data_compensated, imu_data_->buffer, imu_in_length - 4);
                 // add installation compensation
 
-                for (int i = 0; i < 3; i++) {
-                    compensated_data_.temp_gyro_(i) = imu_data_->gyro[i];
-                    compensated_data_.temp_accel_(i) = imu_data_->accel[i];
-                    compensated_data_.temp_quat_(i) = imu_data_->q[i];
-                }
-                compensated_data_.temp_quat_(3) = imu_data_->q[3];
-
-                if (first_run_) {
-                    compensated_data_.first_mat_ = ori::quaternionToRotationMatrix(compensated_data_.temp_quat_);
-                    first_run_ = false;
-                }
-                compensated_data_.origin_mat_ = ori::quaternionToRotationMatrix(compensated_data_.temp_quat_);
-                compensated_data_.quat_ = ori::rotationMatrixToQuaternion(
-                    compensated_data_.comp_Matrix_ * compensated_data_.first_mat_.transpose() * compensated_data_.origin_mat_ *
-                    compensated_data_.comp_Matrix_.transpose());
-
-                compensated_data_.accel_ = compensated_data_.comp_raw_Matrix_ * compensated_data_.temp_accel_;
-                compensated_data_.gyro_ = compensated_data_.comp_raw_Matrix_ * compensated_data_.temp_gyro_;
-
-                for (int i = 0; i < 3; i++) {
-                    imu_data_buffer->gyro[i] = compensated_data_.gyro_(i);
-                    imu_data_buffer->accel[i] = compensated_data_.accel_(i);
-                    imu_data_buffer->q[i] = compensated_data_.quat_(i);
-                }
-                imu_data_buffer->q[3] = compensated_data_.quat_(3);
+                // for (int i = 0; i < 3; i++) {
+                //     compensated_data_.temp_gyro_(i) = imu_data_->gyro[i];
+                //     compensated_data_.temp_accel_(i) = imu_data_->accel[i];
+                //     compensated_data_.temp_quat_(i) = imu_data_->q[i];
+                // }
+                // compensated_data_.temp_quat_(3) = imu_data_->q[3];
+                //
+                // if (first_run_) {
+                //     compensated_data_.first_mat_ = ori::quaternionToRotationMatrix(compensated_data_.temp_quat_);
+                //     first_run_ = false;
+                // }
+                // compensated_data_.origin_mat_ = ori::quaternionToRotationMatrix(compensated_data_.temp_quat_);
+                // compensated_data_.quat_ = ori::rotationMatrixToQuaternion(
+                //     compensated_data_.comp_Matrix_ * compensated_data_.first_mat_.transpose() * compensated_data_.origin_mat_ *
+                //     compensated_data_.comp_Matrix_.transpose());
+                //
+                // compensated_data_.accel_ = compensated_data_.comp_raw_Matrix_ * compensated_data_.temp_accel_;
+                // compensated_data_.gyro_ = compensated_data_.comp_raw_Matrix_ * compensated_data_.temp_gyro_;
+                //
+                // for (int i = 0; i < 3; i++) {
+                //     imu_data_buffer->gyro[i] = compensated_data_.gyro_(i);
+                //     imu_data_buffer->accel[i] = compensated_data_.accel_(i);
+                //     imu_data_buffer->q[i] = compensated_data_.quat_(i);
+                // }
+                // imu_data_buffer->q[3] = compensated_data_.quat_(3);
+                memcpy(imu_data_buffer, imu_data_->buffer, sizeof(USB_Imu_t));
 
                 memcpy(imu_lcm_data, imu_data_buffer, sizeof(USB_Imu_t));
                 // timestamp: microseconds

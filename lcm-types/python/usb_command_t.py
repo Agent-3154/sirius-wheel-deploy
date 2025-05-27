@@ -14,14 +14,14 @@ class usb_command_t(object):
 
     __typenames__ = ["float", "int32_t", "float", "int32_t", "float", "int32_t"]
 
-    __dimensions__ = [[30], [1], [30], [1], [30], [1]]
+    __dimensions__ = [[6, 5], [1], [6, 5], [1], [6, 5], [1]]
 
     def __init__(self):
-        self.chip1_cmd = [ 0.0 for dim0 in range(30) ]
+        self.chip1_cmd = [ [ 0.0 for dim1 in range(5) ] for dim0 in range(6) ]
         self.chip1_flg = [ 0 for dim0 in range(1) ]
-        self.chip2_cmd = [ 0.0 for dim0 in range(30) ]
+        self.chip2_cmd = [ [ 0.0 for dim1 in range(5) ] for dim0 in range(6) ]
         self.chip2_flg = [ 0 for dim0 in range(1) ]
-        self.chip3_cmd = [ 0.0 for dim0 in range(30) ]
+        self.chip3_cmd = [ [ 0.0 for dim1 in range(5) ] for dim0 in range(6) ]
         self.chip3_flg = [ 0 for dim0 in range(1) ]
 
     def encode(self):
@@ -31,11 +31,14 @@ class usb_command_t(object):
         return buf.getvalue()
 
     def _encode_one(self, buf):
-        buf.write(struct.pack('>30f', *self.chip1_cmd[:30]))
+        for i0 in range(6):
+            buf.write(struct.pack('>5f', *self.chip1_cmd[i0][:5]))
         buf.write(struct.pack('>1i', *self.chip1_flg[:1]))
-        buf.write(struct.pack('>30f', *self.chip2_cmd[:30]))
+        for i0 in range(6):
+            buf.write(struct.pack('>5f', *self.chip2_cmd[i0][:5]))
         buf.write(struct.pack('>1i', *self.chip2_flg[:1]))
-        buf.write(struct.pack('>30f', *self.chip3_cmd[:30]))
+        for i0 in range(6):
+            buf.write(struct.pack('>5f', *self.chip3_cmd[i0][:5]))
         buf.write(struct.pack('>1i', *self.chip3_flg[:1]))
 
     def decode(data):
@@ -50,18 +53,24 @@ class usb_command_t(object):
 
     def _decode_one(buf):
         self = usb_command_t()
-        self.chip1_cmd = struct.unpack('>30f', buf.read(120))
+        self.chip1_cmd = []
+        for i0 in range(6):
+            self.chip1_cmd.append(struct.unpack('>5f', buf.read(20)))
         self.chip1_flg = struct.unpack('>1i', buf.read(4))
-        self.chip2_cmd = struct.unpack('>30f', buf.read(120))
+        self.chip2_cmd = []
+        for i0 in range(6):
+            self.chip2_cmd.append(struct.unpack('>5f', buf.read(20)))
         self.chip2_flg = struct.unpack('>1i', buf.read(4))
-        self.chip3_cmd = struct.unpack('>30f', buf.read(120))
+        self.chip3_cmd = []
+        for i0 in range(6):
+            self.chip3_cmd.append(struct.unpack('>5f', buf.read(20)))
         self.chip3_flg = struct.unpack('>1i', buf.read(4))
         return self
     _decode_one = staticmethod(_decode_one)
 
     def _get_hash_recursive(parents):
         if usb_command_t in parents: return 0
-        tmphash = (0x4b0674318281283e) & 0xffffffffffffffff
+        tmphash = (0xf499c331bb281864) & 0xffffffffffffffff
         tmphash  = (((tmphash<<1)&0xffffffffffffffff) + (tmphash>>63)) & 0xffffffffffffffff
         return tmphash
     _get_hash_recursive = staticmethod(_get_hash_recursive)
