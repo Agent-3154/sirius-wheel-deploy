@@ -35,7 +35,7 @@
 #include "iceoryx/v/iox/signal_watcher.hpp"
 #endif
 #endif
-#include "../../simulator/sim_memory_share_data.h"
+#include "../../quadruped_share_data/robot_state_protocals.h"
 
 class RobotRunner {
 public:

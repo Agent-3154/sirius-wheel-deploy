@@ -1,5 +1,5 @@
-#ifndef SIM_MEMORY_SHARE_DATA_H
-#define SIM_MEMORY_SHARE_DATA_H
+#ifndef ROBOT_STATE_PROTOCALS_H
+#define ROBOT_STATE_PROTOCALS_H
 
 struct Robot_Control_Motor_Cmd {
     double q[18];
@@ -13,8 +13,8 @@ struct Robot_State{
   double quat[4];
   double gyro[3];
   double acc[3];
-  double q[12];
-  double qd[12];
+  double q[18];
+  double qd[18];
 };
 
 struct Sim_Plot {

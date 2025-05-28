@@ -21,7 +21,7 @@ file(GLOB_RECURSE hardware_sources "hardwares/usb/src/*.cpp"  "../utilities/src/
         "hardwares/usb/src/*.cpp" "robot_runner/*.cpp")
 
 include(GNUInstallDirs)
-include_directories("/home/hb/legged/iceoryx/")
+#include_directories("/home/hb/legged/iceoryx/")
 find_package(iceoryx_platform REQUIRED)
 find_package(iceoryx_posh CONFIG REQUIRED)
 find_package(iceoryx_hoofs CONFIG REQUIRED)
