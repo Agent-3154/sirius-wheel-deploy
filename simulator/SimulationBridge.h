@@ -27,7 +27,7 @@
 #include "iceoryx/v/iceoryx_posh/runtime/posh_runtime.hpp"
 #include "iceoryx/v/iox/signal_watcher.hpp"
 #endif
-#include "../quadruped_share_data/robot_state_protocals.h"
+#include "../quadruped_share_data/robot_state_protocols.h"
 
 namespace Simulation {
     namespace mj = ::mujoco;

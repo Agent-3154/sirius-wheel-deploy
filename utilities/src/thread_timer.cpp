@@ -47,7 +47,7 @@ namespace Thread {
 //        }
         }
         unsigned long long missed = 0;
-        int m = read(timerfd, &missed, sizeof(missed));
+        const int m = read(timerfd, &missed, sizeof(missed));
         (void) m;
     }
 }

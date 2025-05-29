@@ -20,8 +20,8 @@ Simulation::SimulationBridge::SimulationBridge(const std::string &task_name, int
                                                                              usb_2_can_LCM_(getLcmUrl(255)),
                                                                              usb_imu_LCM_(getLcmUrl(255)),
                                                                              sim_(_sim_type),
-                                                                             subscriber({"Robot", "Control", "Motor"}),
-                                                                             publisher({"Robot", "Feedback", "State"}),
+                                                                             subscriber({"Robot", "SIM", "Motor"}),
+                                                                             publisher({"Robot", "SIM", "State"}),
                                                                              plot_subscriber_(
                                                                                  {"Robot", "Plot", "State"}) {
     std::printf("MuJoCo version %s\n", mj_versionString());

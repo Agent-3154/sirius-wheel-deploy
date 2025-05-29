@@ -19,7 +19,7 @@ DATE=$(date +"%Y%m%d%H%M")
 # test nuc ip
 #scp -r mj_robot_software lrl@192.168.137.100:~/
 # super sirius
-scp -r mj_robot_software lingwei@192.168.123.100:~
+scp -r mj_robot_software lingwei@192.168.123.66:~
 # real_nuc ip
 #scp -r mj_robot_software lrl@192.168.123.12:~/
 rm -rf ${DIR}/../mj_robot_software

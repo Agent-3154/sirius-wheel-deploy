@@ -35,7 +35,8 @@
 #include "iceoryx/v/iox/signal_watcher.hpp"
 #endif
 #endif
-#include "../../quadruped_share_data/robot_state_protocals.h"
+#include "../../utilities/inc/thread_timer.h"
+#include "../../quadruped_share_data/robot_state_protocols.h"
 
 class RobotRunner {
 public:
@@ -93,9 +94,10 @@ public:
     void handleRosCMD(const lcm::ReceiveBuffer *rbuf, const std::string &chan, const ros_lowcmd_lcmt *msg);
 
 #if defined(SIMULATOR)
-    iox::popo::Subscriber<Robot_State> subscriber;
-    iox::popo::Publisher<Robot_Control_Motor_Cmd> publisher;
+    iox::popo::Subscriber<Robot_State> sim_state_subscriber;
+    iox::popo::Publisher<Robot_Control_Motor_Cmd> sim_motor_publisher;
     std::thread thread_subscriber_;
+    std::shared_ptr<Thread::thread_timer> robot_runner_timer_;
     void thread_subscriber_function();
 #endif
 };

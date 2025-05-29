@@ -1,5 +1,5 @@
-#ifndef ROBOT_STATE_PROTOCALS_H
-#define ROBOT_STATE_PROTOCALS_H
+#ifndef ROBOT_STATE_PROTOCOLS_H
+#define ROBOT_STATE_PROTOCOLS_H
 
 struct Robot_Control_Motor_Cmd {
     double q[18];

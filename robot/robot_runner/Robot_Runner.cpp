@@ -2,8 +2,7 @@
 // Created by lingwei on 4/30/24.
 //
 #include "Robot_Runner.h"
-#include "../simulator/include/array_safety.h"
-#include "../utilities/types/std_cout_colors.h"
+#include <memory>
 #include "../estimators/OrientationEstimator.h"
 #include "../../utilities/inc/utilities_fun.h"
 #include "../../utilities/inc/debug_tools.h"
@@ -13,11 +12,15 @@ RobotRunner::RobotRunner(std::string &model_name, Robot_Controller_Base *control
       lcm_leg_esti_(getLcmUrl(255)), runner_timer_(0, 2000), lcm_cmd_receive_(getLcmUrl(255)),
       lcm_data_publish_(getLcmUrl(255))
 #if defined(SIMULATOR)
-      , subscriber({"Robot", "Feedback", "State"}),
-      publisher({"Robot", "Control", "Motor"})
+      , sim_state_subscriber({"Robot", "SIM", "State"}),
+      sim_motor_publisher({"Robot", "SIM", "Motor"})
 #endif
 {
     syn_bool_.store(false);
+#if defined(SIMULATOR)
+    robot_runner_timer_ = std::make_shared<Thread::thread_timer>("Robot Runner", 2000);
+#endif
+
 }
 
 // void RobotRunner::lcm_handle_func() {
@@ -128,7 +131,7 @@ void RobotRunner::finalStep() {
         std::lock_guard<std::mutex> lk(sim_mtx);
         leg_controller_->Setup_Command(runner_usbcmd_);
 #if defined(SIMULATOR)
-        publisher.loan().and_then([this](auto &sample) {
+        sim_motor_publisher.loan().and_then([this](auto &sample) {
             for (int i = 0; i < 4; i++) {
                 const int index = i / 2;
                 const int index_shift = index * 2;
@@ -221,7 +224,8 @@ void RobotRunner::finalStep() {
 #if defined(SIMULATOR)
 void RobotRunner::thread_subscriber_function() {
     while (true) {
-        subscriber.take().and_then([this](auto &sample) {
+        this->robot_runner_timer_->thread_enter_task();
+        sim_state_subscriber.take().and_then([this](auto &sample) {
             for (int i = 0; i < 3; i++) {
                 runner_imudata_->accel[i] = sample->acc[i];
                 runner_imudata_->gyro[i] = sample->gyro[i];
@@ -242,6 +246,7 @@ void RobotRunner::thread_subscriber_function() {
                 std::cout << "Error receiving chunk." << std::endl;
             }
         });
+        this->robot_runner_timer_->thread_finish_task();
     }
 }
 #endif

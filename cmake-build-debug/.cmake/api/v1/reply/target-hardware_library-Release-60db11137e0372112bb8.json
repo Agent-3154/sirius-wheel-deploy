@@ -226,12 +226,6 @@
 				"file" : 0,
 				"line" : 14,
 				"parent" : 0
-			},
-			{
-				"command" : 9,
-				"file" : 0,
-				"line" : 24,
-				"parent" : 0
 			}
 		]
 	},
@@ -307,10 +301,6 @@
 				{
 					"backtrace" : 34,
 					"path" : "/home/lingwei/github_repo/dg_fsm/robot/../utilities/types"
-				},
-				{
-					"backtrace" : 35,
-					"path" : "/home/hb/legged/iceoryx"
 				},
 				{
 					"backtrace" : 3,

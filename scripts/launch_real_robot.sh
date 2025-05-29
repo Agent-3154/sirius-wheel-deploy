@@ -1,8 +1,8 @@
 #!/bin/bash
 
 ## my laptop file
-sudo ifconfig enp0s31f6 multicast
-sudo route add -net 224.0.0.0 netmask 240.0.0.0 dev enp0s31f6
+sudo ifconfig enp3s0 multicast
+sudo route add -net 224.0.0.0 netmask 240.0.0.0 dev enp3s0
 #sudo ifconfig lo multicast
 #sudo route add -net 224.0.0.0 netmask 240.0.0.0 dev lo
 

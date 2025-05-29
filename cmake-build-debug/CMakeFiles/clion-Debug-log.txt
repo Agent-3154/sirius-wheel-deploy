@@ -17,6 +17,6 @@ CMake Warning at robot_ctrl/CMakeLists.txt:14 (message):
   Simulator build include iceoryx
 
 
--- Configuring done (0.1s)
+-- Configuring done (0.0s)
 -- Generating done (0.0s)
 -- Build files have been written to: /home/lingwei/github_repo/dg_fsm/cmake-build-debug

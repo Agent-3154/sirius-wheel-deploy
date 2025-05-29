@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = -DDG_ENGINEER -DEIGEN_FAST_MATH=1 -DEIGEN_STACK_ALLOCATION_LIMIT=0 -DICEORYX_PREFIX_V2954 -DSIMULATOR -Dhardware_library_EXPORTS
 
-CXX_INCLUDES = -I/home/lingwei/github_repo/dg_fsm/robot/estimators -I/home/lingwei/github_repo/dg_fsm/robot/leg_controller -I/home/lingwei/github_repo/dg_fsm/robot/robot_model -I/home/lingwei/github_repo/dg_fsm/robot/robot_runner -I/home/lingwei/github_repo/dg_fsm/robot/thread_tasks -I/home/lingwei/github_repo/dg_fsm/robot/thread_tasks/inc -I/home/lingwei/github_repo/dg_fsm/robot/hardwares/usb/include -I/home/lingwei/github_repo/dg_fsm/robot/../robot_ctrl -I/home/lingwei/github_repo/dg_fsm/robot/../utilities/types -I/home/hb/legged/iceoryx -isystem /usr/local/include/iceoryx/v2.95.4
+CXX_INCLUDES = -I/home/lingwei/github_repo/dg_fsm/robot/estimators -I/home/lingwei/github_repo/dg_fsm/robot/leg_controller -I/home/lingwei/github_repo/dg_fsm/robot/robot_model -I/home/lingwei/github_repo/dg_fsm/robot/robot_runner -I/home/lingwei/github_repo/dg_fsm/robot/thread_tasks -I/home/lingwei/github_repo/dg_fsm/robot/thread_tasks/inc -I/home/lingwei/github_repo/dg_fsm/robot/hardwares/usb/include -I/home/lingwei/github_repo/dg_fsm/robot/../robot_ctrl -I/home/lingwei/github_repo/dg_fsm/robot/../utilities/types -isystem /usr/local/include/iceoryx/v2.95.4
 
 CXX_FLAGS = -O3 -fPIC -no-pie -march=native -ggdb -Wall   -Wextra -Wcast-align -Wdisabled-optimization -Wformat=2   -Winit-self -Wmissing-include-dirs -Wno-overloaded-virtual   -Wno-missing-field-initializers -Wno-unused-parameter -O3 -DNDEBUG -std=c++17 -fPIC -fdiagnostics-color=always
 

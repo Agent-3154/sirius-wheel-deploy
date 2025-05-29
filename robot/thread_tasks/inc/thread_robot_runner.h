@@ -13,7 +13,7 @@ namespace Thread {
     public:
         thread_robot_runner(std::string task_name, int task_frequency);
 
-        ~thread_robot_runner() = default;
+        ~thread_robot_runner() override = default;
 
         [[noreturn]]  void thread_loop(RobotRunner *handle);
     };
