@@ -11,6 +11,7 @@
 #include "Control_FSM_Data.h"
 #include "FSM_State_damping.h"
 #include "FSM_State_RL_Walk.h"
+#include "FSM_State_User_Interface.h"
 
 struct FSM_StateList {
     FSM_State_Stand_Up *s_standup;
@@ -18,6 +19,7 @@ struct FSM_StateList {
     FSM_State_Passive *s_passive;
     FSM_State_Damping* s_damping;
     FSM_State_RL_Walk* s_rl_walk;
+    FSM_State_User_Interface *s_user_interface;
 };
 
 class ControlFSM {
