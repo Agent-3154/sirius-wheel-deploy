@@ -18,7 +18,8 @@ enum FSM_StateName {
     RL_WALK,
     RL_RUNNING,
     RL_FALL_RECOVER,
-    RL_WALK_STAIRS
+    RL_WALK_STAIRS,
+    USER_INTERFACE,
 };
 
 class FSM_State {

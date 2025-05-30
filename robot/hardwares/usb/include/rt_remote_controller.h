@@ -63,7 +63,8 @@ namespace usb_controller {
         SITDOWN,
         RL_WALK_STAIRS,
         RL_FALL_RECOVER,
-        DAMPING
+        DAMPING,
+        USER_INTERFACE,
     } RC_MODE_t;
 
     typedef struct xbox_map {

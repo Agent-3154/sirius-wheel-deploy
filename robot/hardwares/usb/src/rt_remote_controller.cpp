@@ -138,6 +138,8 @@ namespace usb_controller {
 
             if (rc_map_.lb && rc_map_.y)
                 rc_control_.mode = RL_WALK;
+            if (rc_map_.lb && rc_map_.start)
+                rc_control_.mode = USER_INTERFACE;
 
             // draw lines in simulation
             if (rc_map_.select) {
@@ -152,7 +154,6 @@ namespace usb_controller {
                     delay_count = 0;
                 }
             }
-
         }
         if (rc_control_.mode == RL_WALK) {
             rc_control_.v_des[0] = static_cast<float>(rc_map_.ly) / 32768;
@@ -199,9 +200,9 @@ namespace usb_controller {
         //         rc_control_.omega_des[2] = static_cast<float>(rc_map_.rx) / 32768.f / 2.f;
         //         rc_control_.rpy_des[0] = 0;
         //     }
-            //             rc_control_.height_variation = (float) rc_map_.ry / 32768;
-            //             if (rc_map_.xx < -30000) rc_control_.step_height -= 0.3;
-            //             if (rc_map_.xx > 30000) rc_control_.step_height += 0.3;   //dm
+        //             rc_control_.height_variation = (float) rc_map_.ry / 32768;
+        //             if (rc_map_.xx < -30000) rc_control_.step_height -= 0.3;
+        //             if (rc_map_.xx > 30000) rc_control_.step_height += 0.3;   //dm
         memcpy(&rc_lcmdata, &rc_control_, sizeof(rc_lcmt));
         rc_LCM.publish("RC_CHANNEL", &rc_lcmdata);
     }
