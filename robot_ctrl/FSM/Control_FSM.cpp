@@ -92,19 +92,23 @@ void ControlFSM::ControlFSM_run() {
     }
 
     // safety check
-    for (auto &i: control_data_.leg_controller_->leg_data) {
-        for (int j = 0; j < 3; j++) {
-            if (i.qd(j) > Config::qd_danger) {
-                danger_times_++;
-            }
-        }
-    }
+    // for (auto &i: control_data_.leg_controller_->leg_data) {
+    //     for (int j = 0; j < 3; j++) {
+    //         if (i.qd(j) > Config::qd_danger) {
+    //             danger_times_++;
+    //         }
+    //     }
+    // }
 
     if (danger_times_ > 10) {
         // LOG(WARNING) << "Reach the danger velocity!";
         state_next_ = state_list_.s_damping;
         danger_times_ = 0;
     }
+
+    // if (state_current_->state_iter_ % 100 == 0) {
+    //     LOG(INFO) << "Current State: " << state_current_->fsm_name_;
+    // }
 
     // switch state
     if (state_next_ != state_current_) {

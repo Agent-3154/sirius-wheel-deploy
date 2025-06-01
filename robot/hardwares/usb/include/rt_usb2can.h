@@ -28,18 +28,22 @@ namespace USB_HARDWARE {
 #define NUM_LEG_MOTORS 12
 #define NUM_WHEEL_MOTORS 0
 #define TIMING_RATIO 2.0f
-    constexpr float leg_side_sign[12] = {
+    constexpr float leg_side_sign[18] = {
         1.f, -1.f, -1.f / TIMING_RATIO,
         1.f, 1.f, 1.f / TIMING_RATIO,
         -1.f, -1.f, -1.f / TIMING_RATIO,
-        -1.f, 1.f, 1.f / TIMING_RATIO
+        -1.f, 1.f, 1.f / TIMING_RATIO,
+        1.f, 1.f, 1.f,
+        -1.f, 1.f, 1.f
     };
     constexpr float whl_side_sign[4] = {-1.f, 1.f, -1.f, 1.f};
-    constexpr float leg_offset[12] = {
+    constexpr float leg_offset[18] = {
         -ABAD_OFFSET_POS, HIP_OFFSET_POS, -KNEE_OFFSET_POS * TIMING_RATIO,
         ABAD_OFFSET_POS, -HIP_OFFSET_POS, KNEE_OFFSET_POS * TIMING_RATIO,
         ABAD_OFFSET_POS, -HIP_OFFSET_POS, KNEE_OFFSET_POS * TIMING_RATIO,
-        -ABAD_OFFSET_POS, HIP_OFFSET_POS, -KNEE_OFFSET_POS * TIMING_RATIO
+        -ABAD_OFFSET_POS, HIP_OFFSET_POS, -KNEE_OFFSET_POS * TIMING_RATIO,
+        1.f, 1.f, 1.f,
+        1.f, 1.f, 1.f
     };
     // const float whl_offset[4] = {0.0f, 0.0f, 0.0f, 0.0f};
 

@@ -32,7 +32,7 @@ private:
 
     void subscriber_thread_func();
 
-    std::mutex cmd_mutex_;
+    std::atomic<bool> data_is_busy_;
     std::atomic<bool> exit_state_{};
     std::shared_ptr<Thread::thread_timer> user_interface_timer_;
     double q_des[18]{}, qd_des[18]{}, kp_joint[18]{}, kd_joint[18]{}, tau_ff[18]{};

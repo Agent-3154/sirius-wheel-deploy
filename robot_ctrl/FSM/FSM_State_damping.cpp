@@ -14,6 +14,7 @@ bool FSM_State_Damping::state_on_enter() {
 }
 
 void FSM_State_Damping::state_on_exit() {
+    state_iter_ = 0;
 }
 
 void FSM_State_Damping::run_state() {
@@ -25,6 +26,7 @@ void FSM_State_Damping::run_state() {
     for (auto &leg: fsm_data_->leg_controller_->leg_command) {
         leg.kd_joint = kd.asDiagonal();
     }
+    state_iter_++;
 }
 
 bool FSM_State_Damping::is_busy() {

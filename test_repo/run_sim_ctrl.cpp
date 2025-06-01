@@ -30,9 +30,7 @@ int main(int argc, char **argv) {
 #if defined (SIMULATOR)
     iox::runtime::PoshRuntime::initRuntime("Sim_Ctrl_Node");
 #endif
-    std::cout << "Run_here\n";
     HardwareBridge::My_HardwareBridge sim_ctrl(model_name, robot_ctrl, type_);
-    std::cout << "Run_here_222\n";
     sim_ctrl.setup_HardwareBridge(launch_imu, launch_usb2can, launch_rc, unitree);
     return 0;
 }

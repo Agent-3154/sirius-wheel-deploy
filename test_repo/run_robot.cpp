@@ -38,7 +38,7 @@ int main(int argc, char **argv) {
 
     auto *robot_ctrl = new My_Controller();
     Eigen::setNbThreads(1);
-
+    iox::runtime::PoshRuntime::initRuntime("Robot_Ctrl_Node");
     HardwareBridge::My_HardwareBridge test_hardware(model_name, robot_ctrl, type_);
     test_hardware.setup_HardwareBridge(launch_imu, launch_usb2can, launch_rc, unitree);
     return 0;

@@ -21,6 +21,7 @@ void FSM_State_Passive::run_state() {
     contactState << 0.5, 0.5, 0.5, 0.5;
     this->fsm_data_->estimators_->setContactPhase(contactState);
     this->fsm_data_->leg_controller_->Zero_Command();
+    state_iter_++;
 }
 
 bool FSM_State_Passive::is_busy() {
