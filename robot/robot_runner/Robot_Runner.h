@@ -20,21 +20,13 @@
 #include "../../config/Config.h"
 
 #include "../../utilities/inc/debug_tools.h"
-#if defined (ICEORYX_PREFIX_V2954)
 #if defined(SIMULATOR)
-#include "iceoryx/v2.95.4/iceoryx_posh/popo/publisher.hpp"
-#include "iceoryx/v2.95.4/iceoryx_posh/popo/subscriber.hpp"
-#include "iceoryx/v2.95.4/iceoryx_posh/runtime/posh_runtime.hpp"
-#include "iceoryx/v2.95.4/iox/signal_watcher.hpp"
+#include "iceoryx_posh/popo/publisher.hpp"
+#include "iceoryx_posh/popo/subscriber.hpp"
+#include "iceoryx_posh/runtime/posh_runtime.hpp"
+#include "iox/signal_watcher.hpp"
 #endif
-#elif defined(ICEORYX_PREFIX_V)
-#if defined(SIMULATOR)
-#include "iceoryx/v/iceoryx_posh/popo/publisher.hpp"
-#include "iceoryx/v/iceoryx_posh/popo/subscriber.hpp"
-#include "iceoryx/v/iceoryx_posh/runtime/posh_runtime.hpp"
-#include "iceoryx/v/iox/signal_watcher.hpp"
-#endif
-#endif
+
 #include "../../utilities/inc/thread_timer.h"
 #include "../../quadruped_share_data/robot_state_protocols.h"
 
