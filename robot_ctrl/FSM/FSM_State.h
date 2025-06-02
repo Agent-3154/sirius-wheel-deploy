@@ -16,6 +16,7 @@ enum FSM_StateName {
     SIT_DOWN,
     DAMPING,
     RL_WALK,
+    RL_WALK_2,
     RL_RUNNING,
     RL_FALL_RECOVER,
     RL_WALK_STAIRS,

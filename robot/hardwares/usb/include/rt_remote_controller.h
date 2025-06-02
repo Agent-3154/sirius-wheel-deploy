@@ -14,8 +14,8 @@
 namespace usb_controller {
 #define XBOX_BUTTON_A       0x00
 #define XBOX_BUTTON_B       0x01
-#define XBOX_BUTTON_X       0x02
-#define XBOX_BUTTON_Y       0x03
+#define XBOX_BUTTON_X       0x03
+#define XBOX_BUTTON_Y       0x02
 #define XBOX_BUTTON_LB      0x04
 #define XBOX_BUTTON_RB      0x05
 // MOCUTE
@@ -58,6 +58,7 @@ namespace usb_controller {
     typedef enum RC_MODE {
         PASSIVE = 0,
         RL_WALK,
+        RL_WALK_2,
         RL_RUN,
         RECOVER_STAND,
         SITDOWN,
