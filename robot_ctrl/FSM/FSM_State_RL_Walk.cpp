@@ -4,11 +4,11 @@
 FSM_State_RL_Walk::FSM_State_RL_Walk(Control_FSM_Data *_controlFSMData, Control_Parameters_t *control_para): FSM_State(
     _controlFSMData, control_para, RL_WALK) {
     rl_controller_ = std::make_shared<RLController>();
+    rl_controller_->init();
 }
 
 bool FSM_State_RL_Walk::state_on_enter() {
     std::cout << YELLOW << "[FSM State]: Enter RL WALK.\n" << RESET;
-    rl_controller_->init();
     return true;
 }
 
@@ -43,6 +43,7 @@ void FSM_State_RL_Walk::run_state() {
         leg.qd_des = Vec3<double>(0, 0, 0);
         i++;
     }
+    // std::cout<<"leg.q_des: "<<this->fsm_data_->leg_controller_->leg_command[0].q_des.transpose()<<std::endl;
 }
 
 bool FSM_State_RL_Walk::is_busy() {
