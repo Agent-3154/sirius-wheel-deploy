@@ -92,7 +92,7 @@ namespace Config {
     constexpr double mpc_height = 0.3; //belt 0.38 go1:0.3
     constexpr double mpc_weight = 8; //belt 23.7 go1:8
 #elif defined DG_ENGINEER
-    constexpr double Stand_Up_Height = 0.4;
+    constexpr double Stand_Up_Height = 0.45;
     constexpr double Sit_Down_Height = 0.07;
     constexpr double mpc_inertia[9] = {
         0.10767656, 0.00000033, -0.00871520,

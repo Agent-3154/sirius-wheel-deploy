@@ -287,16 +287,14 @@ void Simulation::SimulationBridge::setup_simulation_bridge(bool real_imu, bool r
     real_control_ = real_control;
     if (sim_ == Config::sim_show) {
         std::cout << GREEN << "[SIM]: " << "Subscribe USB DATA Channel\n" << RESET;
-        usb_2_can_LCM_.subscribe("MOTOR DATA", &SimulationBridge::USB_DATA_LCM_HANDLE, this);
+        usb_2_can_LCM_.subscribe("MOTOR DATA Serial", &SimulationBridge::USB_DATA_LCM_HANDLE, this);
     }
 
     sim_handle_ = std::make_unique<
         mj::Simulate>(std::make_unique<mj::GlfwAdapter>(), false, real_imu, real_control);
     // start thread
-    std::cout << "run here\n";
     physics_handle_ = std::thread(&SimulationBridge::PhysicsThread, this);
     // start simulation UI loop (blocking call)
-    std::cout << "run here\n";
     sim_handle_->RenderLoop();
     physics_handle_.join();
 }
