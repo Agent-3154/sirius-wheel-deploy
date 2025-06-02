@@ -1,5 +1,6 @@
 devel/
 build
+scripts/model_file.md
 *.log
 logs/
 build/

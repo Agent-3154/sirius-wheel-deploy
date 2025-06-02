@@ -6,10 +6,10 @@
 #include <eigen3/Eigen/Dense>
 #include <iostream>
 #include "onnxruntime_cxx_api.h"
-class RLController {
+class RLController2 {
 public:
-    RLController() = default;
-    ~RLController() = default;
+    RLController2() = default;
+    ~RLController2() = default;
 
     /**
      * Initialize the RL controller

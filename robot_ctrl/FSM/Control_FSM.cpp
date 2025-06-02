@@ -23,6 +23,7 @@ ControlFSM::ControlFSM(usb_controller::logic_remote_controller *rc,
     state_list_.s_passive = new FSM_State_Passive(&control_data_, &control_para_);
     state_list_.s_damping = new FSM_State_Damping(&control_data_, &control_para_);
     state_list_.s_rl_walk = new FSM_State_RL_Walk(&control_data_, &control_para_);
+    state_list_.s_rl_walk_2 = new FSM_State_RL_Walk_2(&control_data_, &control_para_);
     state_list_.s_user_interface = new FSM_State_User_Interface(&control_data_, &control_para_);
     //    std::cout << "ok\n";
 
@@ -49,6 +50,8 @@ void ControlFSM::ControlFSM_run() {
                     state_next_ = state_list_.s_damping;
                 } else if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::RL_WALK) {
                     state_next_ = state_list_.s_rl_walk;
+                } else if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::RL_WALK_2) {
+                    state_next_ = state_list_.s_rl_walk_2;
                 } else {
                     control_data_.rc_->rc_control_.mode = usb_controller::RC_MODE::RECOVER_STAND;
                 }
@@ -79,6 +82,16 @@ void ControlFSM::ControlFSM_run() {
                     state_next_ = state_list_.s_damping;
                 } else {
                     control_data_.rc_->rc_control_.mode = usb_controller::RC_MODE::RL_WALK;
+                }
+                break;
+            case RL_WALK_2:
+                if (state_current_->is_busy()) break;
+                if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::RECOVER_STAND) {
+                    state_next_ = state_list_.s_standup;
+                } else if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::DAMPING) {
+                    state_next_ = state_list_.s_damping;
+                } else {
+                    control_data_.rc_->rc_control_.mode = usb_controller::RC_MODE::RL_WALK_2;
                 }
                 break;
             case USER_INTERFACE:

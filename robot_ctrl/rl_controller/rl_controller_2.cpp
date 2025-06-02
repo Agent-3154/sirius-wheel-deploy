@@ -1,6 +1,6 @@
-#include "rl_controller.h"
+#include "rl_controller_2.h"
 
-bool RLController::init() {
+bool RLController2::init() {
     // Initialize default joint positions
     // Initialize leg phase angles based on gait schedule
     // Clear all vectors to zero
@@ -14,14 +14,14 @@ bool RLController::init() {
     }
     initialized_ = true;
     running_ = false;
-    loadPolicy("../models/policy.onnx");
+    loadPolicy("../models/policy_2.onnx");
     std::cout << "Policy Loaded" << std::endl;
 
     return true;
 }
 
-bool RLController::step(Vec19<double>* joint_q, Vec18<double>* joint_qd, Vec3<double>* accel, Vec3<double>* desired_vel_xyw) {
-    
+bool RLController2::step(Vec19<double>* joint_q, Vec18<double>* joint_qd, Vec3<double>* accel, Vec3<double>* desired_vel_xyw) {
+    //step_counter++;
 if (step_counter % 10 == 0) {
 
     // Extract quaternion from joint_q (indices 3-6 contain q_w, q_x, q_y, q_z)
@@ -118,7 +118,6 @@ if (step_counter % 10 == 0) {
 
     // Create input tensor
     std::vector<float> input_tensor_values(observation_history.size());
-    // std::cout << "Observation History: " << observation_history.transpose() << std::endl;
     for (int i = 0; i < observation_history.size(); i++) {
         input_tensor_values[i] = static_cast<float>(observation_history[i]);
     }
@@ -159,11 +158,11 @@ if (step_counter % 10 == 0) {
     return true;
 }
 
-bool RLController::stop() {
+bool RLController2::stop() {
     return true;
 }
 
-bool RLController::loadPolicy(const std::string& policy_path) {
+bool RLController2::loadPolicy(const std::string& policy_path) {
     // 1. Initialize ONNX Runtime environment 
     env_ = std::make_unique<Ort::Env>(ORT_LOGGING_LEVEL_WARNING, "PolicyInference");
     session_options_ = std::make_unique<Ort::SessionOptions>();

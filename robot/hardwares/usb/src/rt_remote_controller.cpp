@@ -21,18 +21,23 @@ namespace usb_controller {
             switch (number) {
                 case XBOX_BUTTON_A:
                     map->a = value;
+                    //std::cout << "a" << "\n" << std::endl;
                     break;
                 case XBOX_BUTTON_B:
                     map->b = value;
+                    //std::cout << "b" << "\n" << std::endl;
                     break;
                 case XBOX_BUTTON_X:
                     map->x = value;
+                    //std::cout << "x" << "\n" << std::endl;
                     break;
                 case XBOX_BUTTON_Y:
                     map->y = value;
+                    //std::cout << "y" << "\n" << std::endl;
                     break;
                 case XBOX_BUTTON_LB:
                     map->lb = value;
+                    //std::cout << "lb" << "\n" << std::endl;
                     break;
                 case XBOX_BUTTON_RB:
                     map->rb = value;
@@ -133,11 +138,15 @@ namespace usb_controller {
             if (rc_map_.lb && rc_map_.rb) {
                 rc_control_.mode = DAMPING;
             }
+            // if (rc_map_.lb && rc_map_.b)
+            //     rc_control_.mode = RL_RUN;
             if (rc_map_.lb && rc_map_.b)
-                rc_control_.mode = RL_RUN;
+                rc_control_.mode = RL_WALK_2;
 
             if (rc_map_.lb && rc_map_.y)
                 rc_control_.mode = RL_WALK;
+            // if (rc_map_.lb && rc_map_.y)
+            //     rc_control_.mode = RL_WALK_2;
             if (rc_map_.lb && rc_map_.start)
                 rc_control_.mode = USER_INTERFACE;
 
@@ -155,7 +164,7 @@ namespace usb_controller {
                 }
             }
         }
-        if (rc_control_.mode == RL_WALK) {
+        if (rc_control_.mode == RL_WALK || rc_control_.mode == RL_WALK_2) {
             rc_control_.v_des[0] = static_cast<float>(rc_map_.ly) / 32768;
             rc_control_.v_des[1] = -static_cast<float>(rc_map_.rx) / 32768;
             rc_control_.v_des[2] = -static_cast<float>(rc_map_.lx) / 32768;
