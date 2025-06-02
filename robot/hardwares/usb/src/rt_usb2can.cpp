@@ -131,15 +131,15 @@ namespace USB_HARDWARE {
             //WARNING copy the data of can5 to can1
             for (int i = 0; i < 3; i++) {
                 control_data_serial_offset->chip_datas[0].motor_datas[i].q =
-                    control_data_serial_offset->chip_datas[2].motor_datas[i].q;
+                        control_data_serial_offset->chip_datas[2].motor_datas[i].q;
                 control_data_serial_offset->chip_datas[0].motor_datas[i].qd =
-                    control_data_serial_offset->chip_datas[2].motor_datas[i].qd;
+                        control_data_serial_offset->chip_datas[2].motor_datas[i].qd;
                 control_data_serial_offset->chip_datas[0].motor_datas[i].tau =
-                    control_data_serial_offset->chip_datas[2].motor_datas[i].tau;
+                        control_data_serial_offset->chip_datas[2].motor_datas[i].tau;
                 control_data_serial_offset->chip_datas[0].motor_datas[i].ud =
-                    control_data_serial_offset->chip_datas[2].motor_datas[i].ud;
+                        control_data_serial_offset->chip_datas[2].motor_datas[i].ud;
                 control_data_serial_offset->chip_datas[0].motor_datas[i].uq =
-                    control_data_serial_offset->chip_datas[2].motor_datas[i].uq;
+                        control_data_serial_offset->chip_datas[2].motor_datas[i].uq;
             }
 
             memcpy(p_usbdata_serial_lcmdata, control_data_serial_offset, sizeof(USB_Data_t));
@@ -186,9 +186,9 @@ namespace USB_HARDWARE {
                             chip_cmd->motor_cmds[chip_motor_id].qd_des +
                             chip_cmd->motor_cmds[chip_motor_id + 1].qd_des;
                     usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[chip_motor_id].kp_ = chip_cmd->motor_cmds[
-                        chip_motor_id].kp;
+                            chip_motor_id].kp / 2.f;
                     usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[chip_motor_id].kd_ = chip_cmd->motor_cmds[
-                        chip_motor_id].kd;
+                            chip_motor_id].kd / 2.f;
                     usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[chip_motor_id].t_ff_ =
                     (chip_cmd->motor_cmds[chip_motor_id].tau_ff +
                      chip_cmd->motor_cmds[chip_motor_id + 1].tau_ff) / 2.f;
@@ -201,9 +201,9 @@ namespace USB_HARDWARE {
                             -(chip_cmd->motor_cmds[chip_motor_id - 1].qd_des - chip_cmd->motor_cmds[chip_motor_id].
                               qd_des);
                     usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[chip_motor_id].kp_ = chip_cmd->motor_cmds[
-                        chip_motor_id].kp;
+                            chip_motor_id].kp / 2.;
                     usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[chip_motor_id].kd_ = chip_cmd->motor_cmds[
-                        chip_motor_id].kd;
+                            chip_motor_id].kd / 2.f;
                     usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[chip_motor_id].t_ff_ =
                             -(chip_cmd->motor_cmds[chip_motor_id - 1].tau_ff - chip_cmd->motor_cmds[chip_motor_id].
                               tau_ff) / 2.f;
@@ -214,9 +214,9 @@ namespace USB_HARDWARE {
                     usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[chip_motor_id].v_cmd_ =
                             chip_cmd->motor_cmds[chip_motor_id].qd_des;
                     usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[chip_motor_id].kp_ =
-                            chip_cmd->motor_cmds[chip_motor_id].kp;
+                            chip_cmd->motor_cmds[chip_motor_id].kp / 4.f;
                     usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[chip_motor_id].kd_ =
-                            chip_cmd->motor_cmds[chip_motor_id].kd;
+                            chip_cmd->motor_cmds[chip_motor_id].kd / 4.f;
                     usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[chip_motor_id].t_ff_ =
                             chip_cmd->motor_cmds[chip_motor_id].tau_ff;
                     break;
