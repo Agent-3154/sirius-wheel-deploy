@@ -57,5 +57,5 @@ private:
     std::unique_ptr<Ort::SessionOptions> session_options_;
     std::unique_ptr<Ort::Session> session_;
 
-    int step_counter = 0;
+    uint64_t step_counter = 0;
 };

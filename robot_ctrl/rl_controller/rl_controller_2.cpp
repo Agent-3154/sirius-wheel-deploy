@@ -21,7 +21,7 @@ bool RLController2::init() {
 }
 
 bool RLController2::step(Vec19<double>* joint_q, Vec18<double>* joint_qd, Vec3<double>* accel, Vec3<double>* desired_vel_xyw) {
-    step_counter++;
+    //step_counter++;
 if (step_counter % 10 == 0) {
 
     // Extract quaternion from joint_q (indices 3-6 contain q_w, q_x, q_y, q_z)
@@ -101,6 +101,14 @@ if (step_counter % 10 == 0) {
             observation_history[j*observation.size() + i] = observation_history[(j+1)*observation.size() + i];
         }
     }
+    if(step_counter <= num_history_steps) {
+        // Fill all history steps with current observation during initialization
+        for(int j = 0; j < num_history_steps; j++) {
+            for(int i = 0; i < observation.size(); i++) {
+                observation_history[j*observation.size() + i] = observation[i];
+            }
+        }
+    }
     // Add new observation at the end
     for(int i = 0; i < observation.size(); i++) {
         observation_history[(num_history_steps-1)*observation.size() + i] = observation[i];
@@ -146,6 +154,7 @@ if (step_counter % 10 == 0) {
     desired_positions.segment<3>(6) = scaled_actions.segment<3>(9);  // RR leg
     desired_positions.segment<3>(9) = scaled_actions.segment<3>(3);  // RL leg
 }
+    step_counter++;
     return true;
 }
 
