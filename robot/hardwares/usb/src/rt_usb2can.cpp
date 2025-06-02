@@ -189,6 +189,9 @@ namespace USB_HARDWARE {
                     break;
             }
         }
+        usb_cmd_u->usb_cmd_.usb_chip_cmd_[0].chip_flag[0] = control_cmd_serial->chip_cmds[0].chip_flg;
+        usb_cmd_u->usb_cmd_.usb_chip_cmd_[1].chip_flag[0] = control_cmd_serial->chip_cmds[1].chip_flg;
+        usb_cmd_u->usb_cmd_.usb_chip_cmd_[2].chip_flag[0] = control_cmd_serial->chip_cmds[2].chip_flg;
         usb_cmd_u->usb_cmd_.checksum = data_checksum((uint32_t *) usb_cmd_u, usb_motors_out_check_length);
         memcpy(p_usbcmd_diff_lcmdata, usb_cmd_u, sizeof(usb_command_t));
         memcpy(p_usbcmd_serial_lcmdata, control_cmd_serial, sizeof(usb_command_t));

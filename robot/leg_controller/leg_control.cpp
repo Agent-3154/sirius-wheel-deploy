@@ -97,8 +97,10 @@ void Leg_Controller<T>::Setup_Command(USB_Command_t *usb_cmd) {
     if (enable_counter < 50) {
         usb_cmd->chip_cmds[0].chip_flg = 0x01 << 1;
         usb_cmd->chip_cmds[1].chip_flg = 0x01 << 1;
+        usb_cmd->chip_cmds[2].chip_flg = 0x01 << 1;
     } else {
-        usb_cmd->chip_cmds[0].chip_flg = usb_cmd->chip_cmds[1].chip_flg = 0x01 | (0x01 << 2); // mit mode
+        usb_cmd->chip_cmds[0].chip_flg = usb_cmd->chip_cmds[1].chip_flg =
+                                         usb_cmd->chip_cmds[2].chip_flg = 0x01 | (0x01 << 2); // mit mode
     }
     if (enable_counter > 80) enable_counter = 80;
 }
@@ -152,7 +154,7 @@ void Leg_Controller<T>::setLcm(leg_control_data_lcmt *lcmData, leg_control_comma
 
 static int getSideSign(int leg) {
     const int sideSign[4] = {-1, 1, -1, 1};
-    assert(leg >= 0 && leg < 4);
+    // assert(leg >= 0 && leg < 4);
     return sideSign[leg];
 }
 
