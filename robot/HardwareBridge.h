@@ -24,12 +24,14 @@ namespace HardwareBridge {
         [[noreturn]] void setup_HardwareBridge(bool real_imu, bool real_usb2can, bool real_rc, bool unitree_);
         //todo Add robot controller
     private:
-        std::thread thread_usb_;
+        std::thread thread_usb2can_;
+        std::thread thread_imu_;
         std::thread thread_rc_;
         std::thread thread_free_sdk_;
 
-        void thread_usb_function();
+        void thread_usb2can_function();
         void thread_rc_function();
+        void thread_imu_function();
         // std::shared_ptr<Utilities::ThreadPool> tp_usb_;
         // std::shared_ptr<Utilities::ThreadPool> tp_rc_;
         // std::shared_ptr<Utilities::ThreadPool> tp_robot_runner_;

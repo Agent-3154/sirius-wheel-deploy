@@ -4,11 +4,12 @@
 FSM_State_RL_Walk::FSM_State_RL_Walk(Control_FSM_Data *_controlFSMData, Control_Parameters_t *control_para): FSM_State(
     _controlFSMData, control_para, RL_WALK) {
     rl_controller_ = std::make_shared<RLController>();
-    rl_controller_->init();
+
 }
 
 bool FSM_State_RL_Walk::state_on_enter() {
     std::cout << YELLOW << "[FSM State]: Enter RL WALK.\n" << RESET;
+    rl_controller_->init();
     return true;
 }
 

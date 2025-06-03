@@ -165,9 +165,9 @@ namespace usb_controller {
             }
         }
         if (rc_control_.mode == RL_WALK || rc_control_.mode == RL_WALK_2) {
-            rc_control_.v_des[0] = static_cast<float>(rc_map_.ly) / 32768;
-            rc_control_.v_des[1] = -static_cast<float>(rc_map_.rx) / 32768;
-            rc_control_.v_des[2] = -static_cast<float>(rc_map_.lx) / 32768;
+            rc_control_.v_des[0] = -static_cast<float>(rc_map_.ly) / 32768;
+            rc_control_.v_des[1] = -static_cast<float>(rc_map_.lx) / 32768;
+            rc_control_.v_des[2] = -static_cast<float>(rc_map_.rx) / 32768;
             rc_control_.height_variation = -static_cast<float>(rc_map_.ly) / 32768;
             rc_control_.omega_des[0] = 0;
             rc_control_.omega_des[1] = 0;

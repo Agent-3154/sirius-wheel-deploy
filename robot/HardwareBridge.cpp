@@ -70,7 +70,8 @@ HardwareBridge::My_HardwareBridge::setup_HardwareBridge(const bool real_imu, con
             std::cout << RED << "[USB Hardware Thread]:" << RESET << "No device added\n";
         } else {
             // tp_usb_->Schedule([this] { t_usb_->thread_loop(usb_container_); });
-            thread_usb_ = std::thread(&My_HardwareBridge::thread_usb_function, this);
+            thread_usb2can_ = std::thread(&My_HardwareBridge::thread_usb2can_function, this);
+            thread_imu_ = std::thread(&My_HardwareBridge::thread_imu_function, this);
         }
         if (real_rc) {
             t_rc_ = std::make_shared<Thread::thread_rc>("RC Thread", 200);
@@ -89,14 +90,14 @@ HardwareBridge::My_HardwareBridge::setup_HardwareBridge(const bool real_imu, con
         //TODO Robot runner thread can also be created by simulation
         if (robot_runner_->sim_ == Config::real_usb) {
             std::cout << RED << "[Robot Runner Thread]: " << RESET
-                      << "Initialize robot runner thread!\n";
+                    << "Initialize robot runner thread!\n";
             robot_runner_->init_robotrunner();
             std::cout << RED << "[Robot Runner Thread]: " << RESET
-                      << "Initialize robot runner thread!\n";
+                    << "Initialize robot runner thread!\n";
             t_robot_runner_ = std::make_shared<Thread::thread_robot_runner>(
                 "Robot Runner Thread", Config::real_control_thread_fre);
             std::cout << GREEN << "[Robot Runner Thread]: " << RESET
-                      << "Start running robot runner thread!\n";
+                    << "Start running robot runner thread!\n";
             // tp_robot_runner_ = std::make_shared<Utilities::ThreadPool>(1);
             for (;;) {
                 t_robot_runner_->thread_enter_task();
@@ -116,21 +117,28 @@ HardwareBridge::My_HardwareBridge::setup_HardwareBridge(const bool real_imu, con
     }
 }
 
-void HardwareBridge::My_HardwareBridge::thread_usb_function() {
+void HardwareBridge::My_HardwareBridge::thread_usb2can_function() {
     struct timeval timestruc{};
     timestruc.tv_sec = 0;
-    timestruc.tv_usec = 0; // return immediately
+    timestruc.tv_usec = 500; // return immediately
     int compelte = 0;
+    usb2can_board_handle_->start_transfer();
 
-    for (auto usb_device: usb_container_->usb_container_) {
-        usb_device->start_transfer();
-    }
-
-    std::cout << GREEN << "[Thread USB hardware OK]: " << RESET << "Initialize usb hardware thread!\n";
+    std::cout << GREEN << "[Thread USB2CAN hardware OK]: " << RESET << "Initialize usb2can hardware thread!\n";
     while (true) {
-        for (auto usb_device: usb_container_->usb_container_) {
-            libusb_handle_events_timeout_completed(usb_device->ctx, &timestruc, &compelte);
-        }
+        libusb_handle_events_timeout_completed(usb2can_board_handle_->ctx, &timestruc, &compelte);
+    }
+}
+
+void HardwareBridge::My_HardwareBridge::thread_imu_function() {
+    struct timeval timestruc{};
+    timestruc.tv_sec = 0;
+    timestruc.tv_usec = 1000; // return immediately
+    int compelte = 0;
+    imu_handle_->start_transfer();
+    std::cout << GREEN << "[Thread IMU hardware OK]: " << RESET << "Initialize IMU hardware thread!\n";
+    while (true) {
+        libusb_handle_events_timeout_completed(imu_handle_->ctx, &timestruc, &compelte);
     }
 }
 
