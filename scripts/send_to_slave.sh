@@ -12,14 +12,13 @@ cp -r ${DIR}/../robot mj_robot_software
 cp -r ${DIR}/../models mj_robot_software
 cp -r ${DIR}/../onnxruntime-linux-x64-1-16-1 mj_robot_software
 cp -r ${DIR}/launch_real_robot.sh mj_robot_software/build
-cp -r ${DIR}/launch_ros_robot.sh mj_robot_software/build
 
 DATE=$(date +"%Y%m%d%H%M")
 
 # test n100 ip
-scp -r mj_robot_software cuhk@192.168.123.26:~/
+#scp -r mj_robot_software cuhk@192.168.123.26:~/
 # super sirius
-#scp -r mj_robot_software lingwei@192.168.123.66:~
+scp -r mj_robot_software lingwei@192.168.123.66:~
 # real_nuc ip
 #scp -r mj_robot_software lrl@192.168.123.12:~/
 rm -rf ${DIR}/../mj_robot_software

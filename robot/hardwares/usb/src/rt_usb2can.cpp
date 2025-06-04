@@ -6,7 +6,9 @@
 #include "../../utilities/inc/utilities_fun.h"
 #include "iostream"
 #include <cstdlib>
+#include <mutex>
 #include <thread>
+#include <iox/mutex.hpp>
 
 namespace USB_HARDWARE {
     Beast_USB2CAN::Beast_USB2CAN(uint16_t vendor_id, uint16_t product_id, uint8_t _motors_epin,
@@ -74,7 +76,7 @@ namespace USB_HARDWARE {
         if (usb_data_u->usb_data_.checksum == t) {
             //cpy the original data to lcm diff channel
             memcpy(p_usbdata_diff_lcmdata, usb_data_u, sizeof(USB_Data_U));
-            for (uint8_t i = 0; i < 6 * NUMBER_CHIPS; i++) {
+            for (int i = 0; i < 6 * NUMBER_CHIPS; i++) {
                 const int chip_id = i / 6;
                 const int chip_motor_id = i % 6;
                 const int diff_convert = chip_motor_id % 3;
@@ -114,6 +116,12 @@ namespace USB_HARDWARE {
                         break;
                 }
                 // diff convert done, add offset
+            }
+            std::unique_lock<std::shared_mutex> lock(usb_shared_in_mutex);
+            for (int i = 0; i < 6 * NUMBER_CHIPS; i++) {
+                const int chip_id = i / 6;
+                const int chip_motor_id = i % 6;
+                const USB_CHIP_DATA_T *chip_data = &usb_data_u->usb_data_.usb_chip_data_[chip_id];
                 control_data_serial_offset->chip_datas[chip_id].motor_datas[chip_motor_id].q =
                         (control_data_serial->chip_datas[chip_id].motor_datas[chip_motor_id].q - leg_offset[i]) *
                         leg_side_sign[i];
@@ -127,7 +135,6 @@ namespace USB_HARDWARE {
                 control_data_serial_offset->chip_datas[chip_id].motor_datas[chip_motor_id].ud = chip_data->data_pack[
                     chip_motor_id].ud_;
             }
-
             //WARNING copy the data of can5 to can1
             for (int i = 0; i < 3; i++) {
                 control_data_serial_offset->chip_datas[0].motor_datas[i].q =
@@ -141,8 +148,8 @@ namespace USB_HARDWARE {
                 control_data_serial_offset->chip_datas[0].motor_datas[i].uq =
                         control_data_serial_offset->chip_datas[2].motor_datas[i].uq;
             }
-
             memcpy(p_usbdata_serial_lcmdata, control_data_serial_offset, sizeof(USB_Data_t));
+            lock.unlock();
             p_usbdata_serial_lcmdata->timestamp = std::chrono::duration_cast<std::chrono::microseconds>(
                 std::chrono::steady_clock::now().time_since_epoch()).count();
             usb_data_LCM.publish("MOTOR DATA Serial", p_usbdata_serial_lcmdata);
@@ -157,7 +164,8 @@ namespace USB_HARDWARE {
      */
     void Beast_USB2CAN::Deal_Usb_Out_Cmd() {
         // offset first, then serial to diff
-        for (uint8_t i = 0; i < 6 * NUMBER_CHIPS; i++) {
+        std::shared_lock<std::shared_mutex> lock(usb_shared_out_mutex);
+        for (int i = 0; i < 6 * NUMBER_CHIPS; i++) {
             const int chip_id = i / 6;
             const int chip_motor_id = i % 6;
             control_cmd_serial_offset->chip_cmds[chip_id].motor_cmds[chip_motor_id].q_des =
@@ -172,7 +180,12 @@ namespace USB_HARDWARE {
             control_cmd_serial_offset->chip_cmds[chip_id].motor_cmds[chip_motor_id].tau_ff =
                     control_cmd_serial->chip_cmds[chip_id].motor_cmds[chip_motor_id].tau_ff * leg_side_sign[i];
         }
-        for (uint8_t i = 0; i < 6 * NUMBER_CHIPS; i++) {
+        usb_cmd_u->usb_cmd_.usb_chip_cmd_[0].chip_flag[0] = control_cmd_serial->chip_cmds[0].chip_flg;
+        usb_cmd_u->usb_cmd_.usb_chip_cmd_[1].chip_flag[0] = control_cmd_serial->chip_cmds[1].chip_flg;
+        usb_cmd_u->usb_cmd_.usb_chip_cmd_[2].chip_flag[0] = control_cmd_serial->chip_cmds[2].chip_flg;
+        memcpy(p_usbcmd_serial_lcmdata, control_cmd_serial, sizeof(usb_command_t));
+        lock.unlock();
+        for (int i = 0; i < 6 * NUMBER_CHIPS; i++) {
             const int chip_id = i / 6;
             const int chip_motor_id = i % 6;
             const int diff_convert = chip_motor_id % 3;
@@ -186,9 +199,9 @@ namespace USB_HARDWARE {
                             chip_cmd->motor_cmds[chip_motor_id].qd_des +
                             chip_cmd->motor_cmds[chip_motor_id + 1].qd_des;
                     usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[chip_motor_id].kp_ = chip_cmd->motor_cmds[
-                            chip_motor_id].kp / 2.f;
+                                                                                                 chip_motor_id].kp / 2.f;
                     usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[chip_motor_id].kd_ = chip_cmd->motor_cmds[
-                            chip_motor_id].kd / 2.f;
+                                                                                                 chip_motor_id].kd / 2.f;
                     usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[chip_motor_id].t_ff_ =
                     (chip_cmd->motor_cmds[chip_motor_id].tau_ff +
                      chip_cmd->motor_cmds[chip_motor_id + 1].tau_ff) / 2.f;
@@ -201,9 +214,9 @@ namespace USB_HARDWARE {
                             -(chip_cmd->motor_cmds[chip_motor_id - 1].qd_des - chip_cmd->motor_cmds[chip_motor_id].
                               qd_des);
                     usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[chip_motor_id].kp_ = chip_cmd->motor_cmds[
-                            chip_motor_id].kp / 2.;
+                                                                                                 chip_motor_id].kp / 2.;
                     usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[chip_motor_id].kd_ = chip_cmd->motor_cmds[
-                            chip_motor_id].kd / 2.f;
+                                                                                                 chip_motor_id].kd / 2.f;
                     usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[chip_motor_id].t_ff_ =
                             -(chip_cmd->motor_cmds[chip_motor_id - 1].tau_ff - chip_cmd->motor_cmds[chip_motor_id].
                               tau_ff) / 2.f;
@@ -237,12 +250,10 @@ namespace USB_HARDWARE {
             usb_cmd_u->usb_cmd_.usb_chip_cmd_[2].cmd_pack[i].t_ff_ =
                     usb_cmd_u->usb_cmd_.usb_chip_cmd_[0].cmd_pack[i].t_ff_;
         }
-        usb_cmd_u->usb_cmd_.usb_chip_cmd_[0].chip_flag[0] = control_cmd_serial->chip_cmds[0].chip_flg;
-        usb_cmd_u->usb_cmd_.usb_chip_cmd_[1].chip_flag[0] = control_cmd_serial->chip_cmds[1].chip_flg;
-        usb_cmd_u->usb_cmd_.usb_chip_cmd_[2].chip_flag[0] = control_cmd_serial->chip_cmds[2].chip_flg;
+
         usb_cmd_u->usb_cmd_.checksum = data_checksum((uint32_t *) usb_cmd_u, usb_motors_out_check_length);
         memcpy(p_usbcmd_diff_lcmdata, usb_cmd_u, sizeof(usb_command_t));
-        memcpy(p_usbcmd_serial_lcmdata, control_cmd_serial, sizeof(usb_command_t));
+
         usb_cmd_LCM.publish("MOTOR COMMAND Diff", p_usbcmd_diff_lcmdata);
         usb_cmd_LCM.publish("MOTOR COMMAND Serial", p_usbcmd_serial_lcmdata);
     }

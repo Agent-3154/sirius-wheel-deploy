@@ -10,7 +10,8 @@
 #include "../../lcm-types/cpp/usb_command_t.hpp"
 #include "../../lcm-types/cpp/usb_data_t.hpp"
 #include "lcm/lcm-cpp.hpp"
-#include <mutex>
+#include <shared_mutex>
+
 #include "rt_usb_base.h"
 
 namespace USB_HARDWARE {
@@ -110,8 +111,8 @@ namespace USB_HARDWARE {
 
         void motor_epout_callback(struct libusb_transfer *_transfer);
 
-        std::mutex usb_in_mutex;
-        std::mutex usb_out_mutex;
+        std::shared_mutex usb_shared_in_mutex;
+        std::shared_mutex usb_shared_out_mutex;
 
         static double clampMinMax(double value, double min, double max) {
             if (value < min) return min;

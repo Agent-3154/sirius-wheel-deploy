@@ -66,8 +66,9 @@ void RobotRunner::init_robotrunner() {
 
 void RobotRunner::setupStep() {
     if (sim_ == Config::real_usb) {
-        std::lock_guard<std::mutex> lk(runner_usb2can_->usb_in_mutex);
+        std::shared_lock<std::shared_mutex> usb2can_in_read_lk(runner_usb2can_->usb_shared_in_mutex);
         leg_controller_->Update_Data(runner_usbdata_);
+        usb2can_in_read_lk.unlock();
     } else if (sim_ == Config::sim_mj) {
         std::lock_guard<std::mutex> lk(sim_mtx);
         leg_controller_->Update_Data(runner_usbdata_);
@@ -125,8 +126,9 @@ void RobotRunner::run() {
 void RobotRunner::finalStep() {
     // runner_timer_.timer_record();
     if (sim_ == Config::real_usb) {
-        std::lock_guard<std::mutex> lk(runner_usb2can_->usb_out_mutex);
+        std::unique_lock<std::shared_mutex> lk(runner_usb2can_->usb_shared_out_mutex);
         leg_controller_->Setup_Command(runner_usbcmd_);
+        lk.unlock();
     } else if (sim_ == Config::sim_mj) {
         std::lock_guard<std::mutex> lk(sim_mtx);
         leg_controller_->Setup_Command(runner_usbcmd_);
@@ -180,8 +182,8 @@ void RobotRunner::finalStep() {
     // std::cout << "Robot Runner:Finish!\n";
     // runner_timer_.timer_record();
     if (sim_ == Config::real_ros_ctrl) {
-        std::lock_guard<std::mutex> lk(runner_usb2can_->usb_out_mutex);
-        leg_controller_->Setup_Command(runner_usbcmd_);
+        // std::lock_guard<std::mutex> lk(runner_usb2can_->usb_out_mutex);
+        // leg_controller_->Setup_Command(runner_usbcmd_);
     } else {
         syn_bool_.store(true);
         leg_controller_->setLcm(&lcm_leg_control_data, &lcm_leg_control_cmd);
