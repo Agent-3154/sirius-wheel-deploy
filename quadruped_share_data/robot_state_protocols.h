@@ -9,12 +9,32 @@ struct Robot_Control_Motor_Cmd {
     double tau_ff[18];
 };
 
-struct Robot_State{
-  double quat[4];
-  double gyro[3];
-  double acc[3];
-  double q[18];
-  double qd[18];
+struct Robot_State {
+    double quat[4];
+    double gyro[3];
+    double acc[3];
+    double q[18];
+    double qd[18];
+    int a;
+    int b;
+    int x;
+    int y;
+    int lb;
+    int rb;
+    int start;
+    int back;
+    int select;
+    int home;
+    int lo;
+    int ro;
+    int lx;
+    int ly;
+    int rx;
+    int ry;
+    int lt;
+    int rt;
+    int xx;
+    int yy;
 };
 
 struct Sim_Plot {

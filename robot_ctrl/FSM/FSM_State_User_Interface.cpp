@@ -43,6 +43,26 @@ void FSM_State_User_Interface::run_state() {
                     sample->q[i] = state_q_(i + 7);
                     sample->qd[i] = state_qd_(i + 6);
                 }
+                sample->a = this->fsm_data_->rc_->rc_map_.a;
+                sample->b = this->fsm_data_->rc_->rc_map_.b;
+                sample->x = this->fsm_data_->rc_->rc_map_.x;
+                sample->y = this->fsm_data_->rc_->rc_map_.y;
+                sample->lb = this->fsm_data_->rc_->rc_map_.lb;
+                sample->rb = this->fsm_data_->rc_->rc_map_.rb;
+                sample->start = this->fsm_data_->rc_->rc_map_.start;
+                sample->back = this->fsm_data_->rc_->rc_map_.back;
+                sample->select = this->fsm_data_->rc_->rc_map_.select;
+                sample->home = this->fsm_data_->rc_->rc_map_.home;
+                sample->lo = this->fsm_data_->rc_->rc_map_.lo;
+                sample->ro = this->fsm_data_->rc_->rc_map_.ro;
+                sample->lx = this->fsm_data_->rc_->rc_map_.lx;
+                sample->ly = this->fsm_data_->rc_->rc_map_.ly;
+                sample->rx = this->fsm_data_->rc_->rc_map_.rx;
+                sample->ry = this->fsm_data_->rc_->rc_map_.ry;
+                sample->lt = this->fsm_data_->rc_->rc_map_.lt;
+                sample->rt = this->fsm_data_->rc_->rc_map_.rt;
+                sample->xx = this->fsm_data_->rc_->rc_map_.xx;
+                sample->yy = this->fsm_data_->rc_->rc_map_.yy;
                 sample.publish();
             })
             .or_else([](auto &result) {
