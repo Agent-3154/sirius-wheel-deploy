@@ -147,9 +147,13 @@ namespace usb_controller {
                 rc_control_.mode = RL_WALK;
             // if (rc_map_.lb && rc_map_.y)
             //     rc_control_.mode = RL_WALK_2;
+#ifdef GAME_STAR
+            if (rc_map_.lb && rc_map_.ro)
+                rc_control_.mode = USER_INTERFACE;
+#else
             if (rc_map_.lb && rc_map_.start)
                 rc_control_.mode = USER_INTERFACE;
-
+#endif
             // draw lines in simulation
             if (rc_map_.select) {
                 delay_count++;

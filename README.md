@@ -34,7 +34,7 @@ rename `onnxruntime-linux-x64-1.16.1` to `onnxruntime-linux-x64-1-16-1`
 mkdir build && cd build
 # if you want to run on real robot
 # the cmake will show (Real_Robot build exclude iceoryx)
-cmake -DREAL_ROBOT=true .. 
+cmake -DREAL_ROBOT=true -DGAME_STAR=true .. # choose your rc, Logic or Gaishi Chicken
 # the cmake will show (Simulator build include iceoryx)
 cmake .. # just for simulation
 make -jn
@@ -54,7 +54,7 @@ make -jn
 * LB + X = PASSIVE
 * LB + B = WeiPeng's Policy
 * LB + Logitech = SITDOWN
-* LB + START = USER_INTERFACE.
+* LB + RO (the small right-top button) = USER_INTERFACE.
 
 ```mermaid
 graph TD;

@@ -24,6 +24,13 @@ else ()
     add_compile_definitions(SIMULATOR)
     message(WARNING "\nSimulator define included!")
 endif ()
+
+if(GAME_STAR)
+    message(WARNING "Remote Controller: Game Star\n")
+    add_compile_definitions(GAME_STAR)
+else ()
+    message(WARNING "Remote Controller: LOGIC Gamepad\n")
+endif ()
 # *********************************************************************************************************************
 
 
