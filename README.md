@@ -60,7 +60,7 @@ make -jn
 graph TD;
     PASSIVE-->STAND;
     STAND-->SITDOWN;
-    STAND-->Policies;
+    STAND<-->Policies;
     Policies--> STAND;
     Policies--> DAMPING;
     SITDOWN-->PASSIVE;
