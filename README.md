@@ -56,8 +56,17 @@ make -jn
 * LB + Logitech = SITDOWN
 * LB + START = USER_INTERFACE.
 
-graph TD
-   A --> B
+```mermaid
+graph TD;
+    PASSIVE-->STAND;
+    STAND-->SITDOWN;
+    STAND-->Policies;
+    Policies--> STAND;
+    Policies--> DAMPING;
+    SITDOWN-->PASSIVE;
+    PASSIVE-->USER_INTERFACE;
+    USER_INTERFACE-->DAMPING
+```
 
 #### Run the Project
 *Simulate your controller in Mujoco Simulator*
