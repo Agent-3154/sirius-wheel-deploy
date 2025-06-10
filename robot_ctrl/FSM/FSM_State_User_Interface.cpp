@@ -16,9 +16,8 @@ FSM_State_User_Interface::FSM_State_User_Interface(Control_FSM_Data_t *controlFS
 }
 
 bool FSM_State_User_Interface::state_on_enter() {
-    std::cout << YELLOW << "[FSM State]: Enter User Interface State.\n" << RESET;
+    std::cout << YELLOW << "[FSM State]:" << RESET << " Enter User Interface State.\n";
     subscriber_thread_ = std::thread(&FSM_State_User_Interface::subscriber_thread_func, this);
-    std::cout << "User Interface Thread Started." << std::endl;
     exit_state_.store(false);
     return true;
 }
@@ -26,6 +25,7 @@ bool FSM_State_User_Interface::state_on_enter() {
 void FSM_State_User_Interface::state_on_exit() {
     exit_state_.store(true);
     state_iter_ = 0;
+    subscriber_thread_.join();
 }
 
 void FSM_State_User_Interface::run_state() {
@@ -43,26 +43,6 @@ void FSM_State_User_Interface::run_state() {
                     sample->q[i] = state_q_(i + 7);
                     sample->qd[i] = state_qd_(i + 6);
                 }
-                sample->a = this->fsm_data_->rc_->rc_map_.a;
-                sample->b = this->fsm_data_->rc_->rc_map_.b;
-                sample->x = this->fsm_data_->rc_->rc_map_.x;
-                sample->y = this->fsm_data_->rc_->rc_map_.y;
-                sample->lb = this->fsm_data_->rc_->rc_map_.lb;
-                sample->rb = this->fsm_data_->rc_->rc_map_.rb;
-                sample->start = this->fsm_data_->rc_->rc_map_.start;
-                sample->back = this->fsm_data_->rc_->rc_map_.back;
-                sample->select = this->fsm_data_->rc_->rc_map_.select;
-                sample->home = this->fsm_data_->rc_->rc_map_.home;
-                sample->lo = this->fsm_data_->rc_->rc_map_.lo;
-                sample->ro = this->fsm_data_->rc_->rc_map_.ro;
-                sample->lx = this->fsm_data_->rc_->rc_map_.lx;
-                sample->ly = this->fsm_data_->rc_->rc_map_.ly;
-                sample->rx = this->fsm_data_->rc_->rc_map_.rx;
-                sample->ry = this->fsm_data_->rc_->rc_map_.ry;
-                sample->lt = this->fsm_data_->rc_->rc_map_.lt;
-                sample->rt = this->fsm_data_->rc_->rc_map_.rt;
-                sample->xx = this->fsm_data_->rc_->rc_map_.xx;
-                sample->yy = this->fsm_data_->rc_->rc_map_.yy;
                 sample.publish();
             })
             .or_else([](auto &result) {
@@ -100,11 +80,11 @@ void FSM_State_User_Interface::subscriber_thread_func() {
                 tau_ff[i] = sample->tau_ff[i];
             }
             std::cout << "Received Motor Command: "
-                      << "q_des: " << Vec18<double>(q_des).transpose() << ", "
-                      << "qd_des: " << Vec18<double>(qd_des).transpose() << ", "
-                      << "kp_joint: " << Vec18<double>(kp_joint).transpose() << ", "
-                      << "kd_joint: " << Vec18<double>(kd_joint).transpose() << ", "
-                      << "tau_ff: " << Vec18<double>(tau_ff).transpose() << std::endl;
+                    << "q_des: " << Vec18<double>(q_des).transpose() << ", "
+                    << "qd_des: " << Vec18<double>(qd_des).transpose() << ", "
+                    << "kp_joint: " << Vec18<double>(kp_joint).transpose() << ", "
+                    << "kd_joint: " << Vec18<double>(kd_joint).transpose() << ", "
+                    << "tau_ff: " << Vec18<double>(tau_ff).transpose() << std::endl;
         }).or_else([](auto &result) {
             if (result != iox::popo::ChunkReceiveResult::NO_CHUNK_AVAILABLE) {
                 std::cout << "Error receiving chunk." << std::endl;
@@ -112,4 +92,5 @@ void FSM_State_User_Interface::subscriber_thread_func() {
         });
         user_interface_timer_->thread_finish_task();
     }
+    LOG(INFO) << "Exit Thread";
 }

@@ -70,6 +70,8 @@ void ControlFSM::ControlFSM_run() {
                 if (state_current_->is_busy()) break;
                 if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::RECOVER_STAND) {
                     state_next_ = state_list_.s_standup;
+                } else if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::PASSIVE) {
+                    state_next_ = state_list_.s_passive;
                 } else {
                     control_data_.rc_->rc_control_.mode = usb_controller::RC_MODE::DAMPING;
                 }
@@ -114,7 +116,7 @@ void ControlFSM::ControlFSM_run() {
     }
 
     if (danger_times_ > 10) {
-        // LOG(WARNING) << "Reach the danger velocity!";
+        LOG(WARNING) << "Reach the danger velocity!";
         state_next_ = state_list_.s_damping;
         danger_times_ = 0;
     }

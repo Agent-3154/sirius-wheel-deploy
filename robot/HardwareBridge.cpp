@@ -89,11 +89,7 @@ HardwareBridge::My_HardwareBridge::setup_HardwareBridge(const bool real_imu, con
         // create robot runner thread only if all flags true
         //TODO Robot runner thread can also be created by simulation
         if (robot_runner_->sim_ == Config::real_usb) {
-            std::cout << RED << "[Robot Runner Thread]: " << RESET
-                    << "Initialize robot runner thread!\n";
             robot_runner_->init_robotrunner();
-            std::cout << RED << "[Robot Runner Thread]: " << RESET
-                    << "Initialize robot runner thread!\n";
             t_robot_runner_ = std::make_shared<Thread::thread_robot_runner>(
                 "Robot Runner Thread", Config::real_control_thread_fre);
             std::cout << GREEN << "[Robot Runner Thread]: " << RESET
