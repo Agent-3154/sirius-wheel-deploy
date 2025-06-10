@@ -41,11 +41,33 @@ make -jn
 ```
 ### Running the project
 #### Remote FSM:
+##### LOGIC REMOTE CONTROLLER
 * LB + A = STAND
-* LB + X = PASSIVE
-* LB + Y = RL_WALK
-* LB + B = ?
+* LB + X = RL WALK
+* LB + Y = PASSIVE
+* LB + B = WeiPeng's Policy
 * LB + Logitech = SITDOWN
+* LB + START = USER_INTERFACE.
+##### Gaishi Chicken Remote Controller
+* LB + A = STAND
+* LB + Y = RL WALK
+* LB + X = PASSIVE
+* LB + B = WeiPeng's Policy
+* LB + Logitech = SITDOWN
+* LB + START = USER_INTERFACE.
+
+```mermaid
+graph TD;
+    PASSIVE-->STAND;
+    STAND-->SITDOWN;
+    STAND<-->POLICIES;
+    Policies--> DAMPING;
+    SITDOWN-->PASSIVE;
+    PASSIVE-->USER_INTERFACE;
+    USER_INTERFACE-->DAMPING;
+    DAMPING-->STAND
+```
+
 #### Run the Project
 *Simulate your controller in Mujoco Simulator*
 ```angular2html
