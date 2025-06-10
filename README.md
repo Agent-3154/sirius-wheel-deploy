@@ -60,12 +60,12 @@ make -jn
 graph TD;
     PASSIVE-->STAND;
     STAND-->SITDOWN;
-    STAND<-->Policies;
-    Policies--> STAND;
+    STAND<-->POLICIES;
     Policies--> DAMPING;
     SITDOWN-->PASSIVE;
     PASSIVE-->USER_INTERFACE;
-    USER_INTERFACE-->DAMPING
+    USER_INTERFACE-->DAMPING;
+    DAMPING-->STAND
 ```
 
 #### Run the Project
