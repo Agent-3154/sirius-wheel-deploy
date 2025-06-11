@@ -50,7 +50,7 @@ void FSM_State_User_Interface::run_state() {
             });
 
     // second execute the command
-    data_is_busy_.store(true);
+    std::shared_lock<std::shared_mutex> lock(state_mutex_);
     for (int i = 0; i < 4; i++) {
         this->fsm_data_->leg_controller_->leg_command[i].q_des = Vec3<double>(q_des[3 * i], q_des[3 * i + 1], q_des[3 * i + 2]);
         this->fsm_data_->leg_controller_->leg_command[i].qd_des = Vec3<double>(qd_des[3 * i], qd_des[3 * i + 1], qd_des[3 * i + 2]);
@@ -59,8 +59,8 @@ void FSM_State_User_Interface::run_state() {
         this->fsm_data_->leg_controller_->leg_command[i].kd_joint = Vec3<double>(kd_joint[3 * i], kd_joint[3 * i + 1], kd_joint[3 * i + 2]).
                 asDiagonal();
         this->fsm_data_->leg_controller_->leg_command[i].tau_ff = Vec3<double>(tau_ff[3 * i], tau_ff[3 * i + 1], tau_ff[3 * i + 2]);
-        data_is_busy_.store(false);
     }
+    lock.unlock();
     state_iter_++;
 }
 
@@ -69,8 +69,9 @@ bool FSM_State_User_Interface::is_busy() {
 }
 
 void FSM_State_User_Interface::subscriber_thread_func() {
-    while (!exit_state_.load() && !data_is_busy_.load()) {
+    while (!exit_state_.load()) {
         user_interface_timer_->thread_enter_task();
+        std::unique_lock<std::shared_mutex> lock(state_mutex_);
         iceoryx_motor_subscriber_.take().and_then([this](auto &sample) {
             for (int i = 0; i < 18; i++) {
                 q_des[i] = sample->q[i];
@@ -90,7 +91,9 @@ void FSM_State_User_Interface::subscriber_thread_func() {
                 std::cout << "Error receiving chunk." << std::endl;
             }
         });
+        lock.unlock();
         user_interface_timer_->thread_finish_task();
+        // LOG(INFO) << "Exit Thread" << " Exit: " << exit_state_.load();
     }
-    LOG(INFO) << "Exit Thread";
+
 }
