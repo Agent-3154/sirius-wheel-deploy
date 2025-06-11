@@ -155,6 +155,7 @@ void HardwareBridge::My_HardwareBridge::thread_rc_function() {
         if (game_pad_connecting) {
             int ret = rc_handle_->rc_open("/dev/input/js0");
             if (ret != -1) {
+                rc_handle_->rc_fd_ = ret;
                 game_pad_lost = 0;
                 game_pad_connecting = false;
                 LOG(INFO) << GREEN << "Reconnecting Gamesir success!" << RESET;
