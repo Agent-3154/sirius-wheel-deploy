@@ -5,6 +5,8 @@
 #include "../../utilities/types/std_cout_colors.h"
 #include <iostream>
 
+#include "../../../utilities/inc/easylogging++.h"
+
 namespace Thread {
 
     thread_rc::thread_rc(const std::string &task_name, int task_frequency) : thread_timer(task_name,
@@ -17,7 +19,7 @@ namespace Thread {
         std::cout << GREEN << "[Thread RC OK]: " << RESET << "Initialize RC thread!\n";
         while (true) {
             this->thread_enter_task();
-            handle->rc_complete();
+            ssize_t read_bit = handle->rc_complete();
             this->thread_finish_task();
         }
 

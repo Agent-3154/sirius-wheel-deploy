@@ -106,7 +106,7 @@ namespace usb_controller {
     int logic_remote_controller::rc_open(const char *file_name) {
         int local_rc_fd = open(file_name, O_RDONLY | O_NONBLOCK);
         if (local_rc_fd < 0) {
-            std::cout << RED << "[RC ERROR]: " << RESET << "Can not open joystick!\n";
+            // std::cout << RED << "[RC ERROR]: " << RESET << "Can not open joystick!\n";
             return -1;
         }
         return local_rc_fd;
@@ -114,10 +114,10 @@ namespace usb_controller {
 
     void logic_remote_controller::rc_close() const {
         close(rc_fd_);
-        std::cout << GREEN << "[RC SUCCESS]: " << RESET << "Close the rc controller!\n";
+        // std::cout << GREEN << "[RC SUCCESS]: " << RESET << "Close the rc controller!\n";
     }
 
-    void logic_remote_controller::rc_complete() {
+    ssize_t logic_remote_controller::rc_complete() {
         // rt and lt range:-32767~32767, starts from -32767
         // button and direction(lxy and rxy): -32767 -32767^ 32767_ 32767
         ssize_t length = rc_map_read(rc_fd_, &rc_map_);
@@ -218,6 +218,7 @@ namespace usb_controller {
         //             if (rc_map_.xx > 30000) rc_control_.step_height += 0.3;   //dm
         memcpy(&rc_lcmdata, &rc_control_, sizeof(rc_lcmt));
         rc_LCM.publish("RC_CHANNEL", &rc_lcmdata);
+        return length;
     }
 
 

@@ -119,7 +119,7 @@ namespace usb_controller {
 
         void rc_close() const;
 
-        void rc_complete();
+        ssize_t rc_complete();
     };
 }
 

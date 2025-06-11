@@ -5,6 +5,7 @@
 #include "../utilities/types/std_cout_colors.h"
 #include "../config/Config.h"
 #include "../config/robots_config.h"
+#include "../utilities/inc/easylogging++.h"
 /**
  * @note components initiate in robot runner
  * @param model_name
@@ -140,9 +141,26 @@ void HardwareBridge::My_HardwareBridge::thread_imu_function() {
 
 void HardwareBridge::My_HardwareBridge::thread_rc_function() {
     std::cout << GREEN << "[Thread RC OK]: " << RESET << "Initialize RC thread!\n";
+    bool game_pad_connecting = false;
+    struct stat buffer;
     while (true) {
         t_rc_->thread_enter_task();
-        rc_handle_->rc_complete();
+        (void) rc_handle_->rc_complete();
+        int game_pad_lost = stat("/dev/input/js0", &buffer);
+        if (game_pad_lost==-1 && !game_pad_connecting) {
+            rc_handle_->rc_close();
+            game_pad_connecting = true;
+            LOG(WARNING) << RED <<"Gamesir Lost, reconnecting" << RESET;
+        }
+        if (game_pad_connecting) {
+            int ret = rc_handle_->rc_open("/dev/input/js0");
+            if (ret != -1) {
+                game_pad_lost = 0;
+                game_pad_connecting = false;
+                LOG(INFO) << GREEN << "Reconnecting Gamesir success!" << RESET;
+            }
+        }
+        // std::cout  << "RC Read: " << read_bit << "\n"<< std::flush;
         t_rc_->thread_finish_task();
     }
 }
