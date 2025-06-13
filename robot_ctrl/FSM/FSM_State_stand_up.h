@@ -17,11 +17,12 @@ public:
 
     bool is_busy() override;
 
+    bool fold_flag_ = false;
+
 private:
     std::vector<Vec3<double> > joint_pos_ini_;
     std::vector<Vec3<double> > joint_pos_stand_;
     std::vector<Vec3<double> > joint_pos_fold_;
-    bool fold_flag_ = false;
 };
 
 

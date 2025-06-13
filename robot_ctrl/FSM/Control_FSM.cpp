@@ -37,6 +37,7 @@ void ControlFSM::ControlFSM_run() {
         switch (state_current_->fsm_name_) {
             case PASSIVE:
                 if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::RECOVER_STAND) {
+                    state_list_.s_standup->fold_flag_ = true;
                     state_next_ = state_list_.s_standup;
                 } else if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::USER_INTERFACE) {
                     state_next_ = state_list_.s_user_interface;
@@ -61,6 +62,7 @@ void ControlFSM::ControlFSM_run() {
                 if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::PASSIVE) {
                     state_next_ = state_list_.s_passive;
                 } else if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::RECOVER_STAND) {
+                    state_list_.s_standup->fold_flag_ = true;
                     state_next_ = state_list_.s_standup;
                 } else {
                     control_data_.rc_->rc_control_.mode = usb_controller::RC_MODE::SITDOWN;
@@ -69,6 +71,7 @@ void ControlFSM::ControlFSM_run() {
             case DAMPING:
                 if (state_current_->is_busy()) break;
                 if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::RECOVER_STAND) {
+                    state_list_.s_standup->fold_flag_ = true;
                     state_next_ = state_list_.s_standup;
                 } else if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::PASSIVE) {
                     state_next_ = state_list_.s_passive;
@@ -79,6 +82,7 @@ void ControlFSM::ControlFSM_run() {
             case RL_WALK:
                 if (state_current_->is_busy()) break;
                 if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::RECOVER_STAND) {
+                    state_list_.s_standup->fold_flag_ = false;
                     state_next_ = state_list_.s_standup;
                 } else if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::DAMPING) {
                     state_next_ = state_list_.s_damping;
@@ -89,6 +93,7 @@ void ControlFSM::ControlFSM_run() {
             case RL_WALK_2:
                 if (state_current_->is_busy()) break;
                 if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::RECOVER_STAND) {
+                    state_list_.s_standup->fold_flag_ = false;
                     state_next_ = state_list_.s_standup;
                 } else if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::DAMPING) {
                     state_next_ = state_list_.s_damping;

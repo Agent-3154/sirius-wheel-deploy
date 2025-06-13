@@ -57,9 +57,9 @@ bool FSM_State_Stand_Up::state_on_enter() {
     }
 #endif
 
-    if (fsm_data_->estimators_->get_result_world_position()(2) < 0.2) {
-        fold_flag_ = true;
-    }
+    // if (fsm_data_->estimators_->get_result_world_position()(2) < 0.2) {
+        // fold_flag_ = true;
+    // }
     return true;
 }
 

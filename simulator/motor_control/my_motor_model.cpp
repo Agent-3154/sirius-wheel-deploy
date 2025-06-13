@@ -71,6 +71,7 @@ void Motor_Control::Motor_Model::pack_motor_cmd(const USB_Command_t *usb_cmd, co
         kd_mat_(3 * i + 1, 3 * i + 1) = usb_cmd->chip_cmds[index].motor_cmds[3 * (i - index_shift) + 1].kd;
         kd_mat_(3 * i + 2, 3 * i + 2) = usb_cmd->chip_cmds[index].motor_cmds[3 * (i - index_shift) + 2].kd;
     }
+    // std::cout << kp_mat_ << std::endl;
 
     torq_out_ = kp_mat_ * (q_cmd_ - q_data_) + kd_mat_ * (qd_cmd_ - qd_data_) + t_ff_;
 }
