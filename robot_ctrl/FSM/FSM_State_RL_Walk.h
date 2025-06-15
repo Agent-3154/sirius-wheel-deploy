@@ -23,6 +23,8 @@ private:
     std::vector<Vec3<double> > joint_pos_end_;
     std::shared_ptr<RLController> rl_controller_;
     
+    // Used for filter
+    Vec3<double> desired_vel_xyw_last;
 };
 
 #endif  // FSM_STATE_RL_WALK_H_

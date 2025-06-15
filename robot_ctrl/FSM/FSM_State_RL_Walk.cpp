@@ -4,12 +4,12 @@
 FSM_State_RL_Walk::FSM_State_RL_Walk(Control_FSM_Data *_controlFSMData, Control_Parameters_t *control_para): FSM_State(
     _controlFSMData, control_para, RL_WALK) {
     rl_controller_ = std::make_shared<RLController>();
-
+    rl_controller_->init();
 }
 
 bool FSM_State_RL_Walk::state_on_enter() {
     std::cout << YELLOW << "[FSM State]: Enter RL WALK.\n" << RESET;
-    rl_controller_->init();
+    desired_vel_xyw_last.setZero();
     return true;
 }
 
@@ -25,10 +25,14 @@ void FSM_State_RL_Walk::run_state() {
     Vec18<double> joint_qd;
     Vec3<double> accel;
     Vec3<double> desired_vel_xyw;
+    Vec3<double> desired_vel_xyw_command;
     //x y z | q_w q_x q_y q_z | joint data |
     get_joint_state(joint_q, joint_qd, accel);
-    desired_vel_xyw << fsm_data_->rc_->rc_control_.v_des[0], fsm_data_->rc_->rc_control_.v_des[1]*0.5, fsm_data_->rc_->rc_control_.v_des[2]*1.5;
+    // desired_vel_xyw << fsm_data_->rc_->rc_control_.v_des[0], fsm_data_->rc_->rc_control_.v_des[1]*0.5, fsm_data_->rc_->rc_control_.v_des[2]*1.5;
     // std::cout << "desired_vel_xyw: " << desired_vel_xyw.transpose() << std::endl;
+    desired_vel_xyw_command << fsm_data_->rc_->rc_control_.v_des[0]*1, fsm_data_->rc_->rc_control_.v_des[1]*0.3, fsm_data_->rc_->rc_control_.v_des[2]*1.5;
+    desired_vel_xyw = desired_vel_xyw_last*0.99 + desired_vel_xyw_command*0.01;
+    desired_vel_xyw_last = desired_vel_xyw;
     //please note the position and velocity respect to the inertial frame are null
     // 2. get from estimators
     (void) this->fsm_data_->estimators_->get_result_quat();
