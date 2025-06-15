@@ -132,7 +132,7 @@ namespace usb_controller {
             // if (rc_map_.lb && rc_map_.lo) {
             //     rc_control_.mode = SITDOWN;
             // }
-            if (rc_map_.lb && rc_map_.rb) {
+            if (rc_map_.lb && rc_map_.x) {
                 rc_control_.mode = SITDOWN;
             }
             // if (rc_map_.lb && rc_map_.x) {
@@ -144,7 +144,7 @@ namespace usb_controller {
             // if (rc_map_.lb && rc_map_.rb) {
             //     rc_control_.mode = DAMPING;
             // }
-            if (rc_map_.lb && rc_map_.x) {
+            if (rc_map_.lb && rc_map_.rb) {
                 rc_control_.mode = DAMPING;
             }
             // if (rc_map_.lb && rc_map_.b)

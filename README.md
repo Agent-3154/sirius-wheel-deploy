@@ -51,9 +51,9 @@ make -jn
 ##### Gaishi Chicken Remote Controller
 * LB + A = STAND
 * LB + Y = RL WALK
-* LB + X = DAMPING
+* LB + X = SITDOWN
 * LB + B = WeiPeng's Policy
-* LB + RB = SITDOWN
+* LB + RB = DAMPING
 * RB + X = PASSIVE
 * LB + RO (the small right-top button) = USER_INTERFACE.
 
