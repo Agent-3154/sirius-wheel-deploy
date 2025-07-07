@@ -24,10 +24,12 @@ namespace USB_HARDWARE {
     // only used for actual robot
 
 #define KNEE_OFFSET_POS (M_PI - 0.18f) //note pos_offset from the motor perspective
-#define HIP_OFFSET_POS (M_PI / 2.f)
-#define ABAD_OFFSET_POS (0.0f)
+#define HIP_OFFSET_POS (M_PI / 2.f - 0.411f)
+// #define HIP_OFFSET_POS (M_PI / 2.f)
+#define ABAD_OFFSET_POS (-0.39f)
+// #define ABAD_OFFSET_POS (-0.0f)
 #define NUM_LEG_MOTORS 12
-#define NUM_WHEEL_MOTORS 0
+#define NUM_WHEEL_MOTORS 4
 #define TIMING_RATIO 2.0f
     // can5 the same as can1
     constexpr float leg_side_sign[18] = {

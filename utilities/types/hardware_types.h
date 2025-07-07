@@ -77,12 +77,22 @@ using Vec10 = Eigen::Matrix<T, 10, 1>;
 template<typename T>
 using Vec12 = Eigen::Matrix<T, 12, 1>;
 
+// 16x1 Vector
+template<typename T>
+using Vec16 = Eigen::Matrix<T, 16, 1>;
+
 // 18x1 Vector
 template<typename T>
 using Vec18 = Eigen::Matrix<T, 18, 1>;
 
 template<typename T>
 using Vec19 = Eigen::Matrix<T, 19, 1>;
+
+template<typename T>
+using Vec22 = Eigen::Matrix<T, 22, 1>;
+
+template<typename T>
+using Vec23 = Eigen::Matrix<T, 23, 1>;
 
 // 28x1 vector
 template<typename T>

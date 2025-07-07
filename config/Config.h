@@ -42,7 +42,7 @@ namespace Config {
     };
 
     // TODO: Is the abad axis inverse?
-    constexpr double damping_kd = 3;
+    constexpr double damping_kd = 4;
     constexpr double qd_danger = 18.;
     // Task frequency
     constexpr int sim_remote_controller_task_fre = 200;
@@ -58,9 +58,12 @@ namespace Config {
     constexpr int abad_pos_addr_offset = 7;
     constexpr int hip_pos_addr_offset = 8;
     constexpr int knee_pos_addr_offset = 9;
+    constexpr int whl_pos_addr_offset = 10;
+    
     constexpr int abad_vel_addr_offset = 6;
     constexpr int hip_vel_addr_offset = 7;
     constexpr int knee_vel_addr_offset = 8;
+    constexpr int whl_vel_addr_offset = 9;
 
     // real robot config
     constexpr uint16_t usb2can_vendor_id = 0x1111;

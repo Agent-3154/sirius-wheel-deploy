@@ -18,6 +18,11 @@ struct Leg_Control_Command {
     Vec3<T> qd_des;
     Vec3<T> tau_ff;
     Vec3<T> foot_force;
+    T whl_q_des;
+    T whl_qd_des;
+    T whl_tau_ff;
+    T whl_kp_joint;
+    T whl_kd_joint;
     //foot
     Vec3<T> p_des;
     Vec3<T> v_des;
@@ -36,6 +41,9 @@ struct Leg_Control_Data {
     Vec3<T> p;
     Vec3<T> v;
     Mat3<T> J;
+    T whl_q;
+    T whl_qd;
+    T whl_tau;
 };
 
 template<typename T>

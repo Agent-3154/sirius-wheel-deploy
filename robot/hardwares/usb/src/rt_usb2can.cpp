@@ -71,85 +71,129 @@ namespace USB_HARDWARE {
      * @brief usb data receiving handler
      */
     void Beast_USB2CAN::Deal_Usb_In_Data() {
-        // data diff to serial, serial add offset.
         const uint32_t t = data_checksum((uint32_t *) usb_data_u, usb_motors_in_check_length);
         if (usb_data_u->usb_data_.checksum == t) {
-            //cpy the original data to lcm diff channel
+            // 1. Make copy of raw data for LCM and processing
             memcpy(p_usbdata_diff_lcmdata, usb_data_u, sizeof(USB_Data_U));
-            for (int i = 0; i < 6 * NUMBER_CHIPS; i++) {
+            USB_Data_U raw_data;
+            memcpy(&raw_data, usb_data_u, sizeof(USB_Data_U));
+
+            // 2. Perform the specific four motor swaps (like old code)
+            // Chip 0 motor 0 ↔ Chip 2 motor 0
+            std::swap(raw_data.usb_data_.usb_chip_data_[0].data_pack[0],
+                     raw_data.usb_data_.usb_chip_data_[2].data_pack[0]);
+            
+            // Chip 0 motor 3 ↔ Chip 2 motor 1
+            std::swap(raw_data.usb_data_.usb_chip_data_[0].data_pack[3],
+                     raw_data.usb_data_.usb_chip_data_[2].data_pack[1]);
+            
+            // Chip 1 motor 0 ↔ Chip 2 motor 3
+            std::swap(raw_data.usb_data_.usb_chip_data_[1].data_pack[0],
+                     raw_data.usb_data_.usb_chip_data_[2].data_pack[3]);
+            
+            // Chip 1 motor 3 ↔ Chip 2 motor 4
+            std::swap(raw_data.usb_data_.usb_chip_data_[1].data_pack[3],
+                     raw_data.usb_data_.usb_chip_data_[2].data_pack[4]);
+
+            // memcpy(p_usbdata_diff_lcmdata, raw_data, sizeof(USB_Data_U));
+
+            // 3. Convert differential to serial data
+            for (int i = 0; i < 6 * (NUMBER_CHIPS - 1); i++) {
                 const int chip_id = i / 6;
                 const int chip_motor_id = i % 6;
                 const int diff_convert = chip_motor_id % 3;
-                const USB_CHIP_DATA_T *chip_data = &usb_data_u->usb_data_.usb_chip_data_[chip_id];
+                const USB_CHIP_DATA_T *chip_data = &raw_data.usb_data_.usb_chip_data_[chip_id];
+
                 switch (diff_convert) {
                     case 0:
                         control_data_serial->chip_datas[chip_id].motor_datas[chip_motor_id].q =
-                        (chip_data->data_pack[chip_motor_id].p_data_ - chip_data->data_pack[chip_motor_id + 1].
-                         p_data_) / 2.f;
+                            (chip_data->data_pack[chip_motor_id].p_data_ - 
+                             chip_data->data_pack[chip_motor_id + 1].p_data_) / 2.f;
                         control_data_serial->chip_datas[chip_id].motor_datas[chip_motor_id].qd =
-                        (chip_data->data_pack[chip_motor_id].v_data_ - chip_data->data_pack[chip_motor_id + 1].
-                         v_data_) / 2.f;
+                            (chip_data->data_pack[chip_motor_id].v_data_ - 
+                             chip_data->data_pack[chip_motor_id + 1].v_data_) / 2.f;
                         control_data_serial->chip_datas[chip_id].motor_datas[chip_motor_id].tau =
-                                chip_data->data_pack[chip_motor_id].t_data_ - chip_data->data_pack[chip_motor_id + 1].
-                                t_data_;
+                            chip_data->data_pack[chip_motor_id].t_data_ - 
+                            chip_data->data_pack[chip_motor_id + 1].t_data_;
                         break;
                     case 1:
                         control_data_serial->chip_datas[chip_id].motor_datas[chip_motor_id].q =
-                        (chip_data->data_pack[chip_motor_id - 1].p_data_ + chip_data->data_pack[chip_motor_id].
-                         p_data_) / 2.f;
+                            (chip_data->data_pack[chip_motor_id - 1].p_data_ + 
+                             chip_data->data_pack[chip_motor_id].p_data_) / 2.f;
                         control_data_serial->chip_datas[chip_id].motor_datas[chip_motor_id].qd =
-                        (chip_data->data_pack[chip_motor_id - 1].v_data_ + chip_data->data_pack[chip_motor_id].
-                         v_data_) / 2.f;
+                            (chip_data->data_pack[chip_motor_id - 1].v_data_ + 
+                             chip_data->data_pack[chip_motor_id].v_data_) / 2.f;
                         control_data_serial->chip_datas[chip_id].motor_datas[chip_motor_id].tau =
-                                chip_data->data_pack[chip_motor_id - 1].t_data_ + chip_data->data_pack[chip_motor_id].
-                                t_data_;
+                            chip_data->data_pack[chip_motor_id - 1].t_data_ + 
+                            chip_data->data_pack[chip_motor_id].t_data_;
                         break;
                     case 2:
-                        control_data_serial->chip_datas[chip_id].motor_datas[chip_motor_id].q = chip_data->data_pack[
-                            chip_motor_id].p_data_;
-                        control_data_serial->chip_datas[chip_id].motor_datas[chip_motor_id].qd = chip_data->data_pack[
-                            chip_motor_id].v_data_;
-                        control_data_serial->chip_datas[chip_id].motor_datas[chip_motor_id].tau = chip_data->data_pack[
-                            chip_motor_id].t_data_;
+                        control_data_serial->chip_datas[chip_id].motor_datas[chip_motor_id].q = 
+                            chip_data->data_pack[chip_motor_id].p_data_;
+                        control_data_serial->chip_datas[chip_id].motor_datas[chip_motor_id].qd = 
+                            chip_data->data_pack[chip_motor_id].v_data_;
+                        control_data_serial->chip_datas[chip_id].motor_datas[chip_motor_id].tau = 
+                            chip_data->data_pack[chip_motor_id].t_data_;
                         break;
                     default:
                         break;
                 }
-                // diff convert done, add offset
             }
+
+           for (int i = 0; i < NUM_WHEEL_MOTORS; i++) {
+                int chip_id = 2;
+                int motor_id = i % 2 + (i / 2) * 3;
+                control_data_serial->chip_datas[chip_id].motor_datas[motor_id].q = 
+                        raw_data.usb_data_.usb_chip_data_[chip_id].data_pack[motor_id].p_data_;
+                control_data_serial->chip_datas[chip_id].motor_datas[motor_id].qd = 
+                        raw_data.usb_data_.usb_chip_data_[chip_id].data_pack[motor_id].v_data_;
+                control_data_serial->chip_datas[chip_id].motor_datas[motor_id].tau = 
+                        raw_data.usb_data_.usb_chip_data_[chip_id].data_pack[motor_id].t_data_;    
+            }
+
+
+            // 4. Apply offsets and signs
             std::unique_lock<std::shared_mutex> lock(usb_shared_in_mutex);
-            for (int i = 0; i < 6 * NUMBER_CHIPS; i++) {
+            for (int i = 0; i < 6 * (NUMBER_CHIPS - 1); i++) {
                 const int chip_id = i / 6;
                 const int chip_motor_id = i % 6;
-                const USB_CHIP_DATA_T *chip_data = &usb_data_u->usb_data_.usb_chip_data_[chip_id];
+                
                 control_data_serial_offset->chip_datas[chip_id].motor_datas[chip_motor_id].q =
-                        (control_data_serial->chip_datas[chip_id].motor_datas[chip_motor_id].q - leg_offset[i]) *
-                        leg_side_sign[i];
+                    (control_data_serial->chip_datas[chip_id].motor_datas[chip_motor_id].q - leg_offset[i]) * leg_side_sign[i];
                 control_data_serial_offset->chip_datas[chip_id].motor_datas[chip_motor_id].qd =
-                        control_data_serial->chip_datas[chip_id].motor_datas[chip_motor_id].qd * leg_side_sign[i];
+                    control_data_serial->chip_datas[chip_id].motor_datas[chip_motor_id].qd * leg_side_sign[i];
                 control_data_serial_offset->chip_datas[chip_id].motor_datas[chip_motor_id].tau =
-                        control_data_serial->chip_datas[chip_id].motor_datas[chip_motor_id].tau / leg_side_sign[i];
-                //TODO check the uq ud here
-                control_data_serial_offset->chip_datas[chip_id].motor_datas[chip_motor_id].uq = chip_data->data_pack[
-                    chip_motor_id].uq_;
-                control_data_serial_offset->chip_datas[chip_id].motor_datas[chip_motor_id].ud = chip_data->data_pack[
-                    chip_motor_id].ud_;
+                    control_data_serial->chip_datas[chip_id].motor_datas[chip_motor_id].tau / leg_side_sign[i];
+                
+                control_data_serial_offset->chip_datas[chip_id].motor_datas[chip_motor_id].uq = 
+                    raw_data.usb_data_.usb_chip_data_[chip_id].data_pack[chip_motor_id].uq_;
+                control_data_serial_offset->chip_datas[chip_id].motor_datas[chip_motor_id].ud = 
+                    raw_data.usb_data_.usb_chip_data_[chip_id].data_pack[chip_motor_id].ud_;
+                
             }
-            //WARNING copy the data of can5 to can1
-            for (int i = 0; i < 3; i++) {
-                control_data_serial_offset->chip_datas[0].motor_datas[i].q =
-                        control_data_serial_offset->chip_datas[2].motor_datas[i].q;
-                control_data_serial_offset->chip_datas[0].motor_datas[i].qd =
-                        control_data_serial_offset->chip_datas[2].motor_datas[i].qd;
-                control_data_serial_offset->chip_datas[0].motor_datas[i].tau =
-                        control_data_serial_offset->chip_datas[2].motor_datas[i].tau;
-                control_data_serial_offset->chip_datas[0].motor_datas[i].ud =
-                        control_data_serial_offset->chip_datas[2].motor_datas[i].ud;
-                control_data_serial_offset->chip_datas[0].motor_datas[i].uq =
-                        control_data_serial_offset->chip_datas[2].motor_datas[i].uq;
+
+            // 4. Handle wheel motor data specifically (from old code)
+            for (int i = 0; i < NUM_WHEEL_MOTORS; i++) {
+                int chip_id = 2;
+                int motor_id = i % 2 + (i / 2) * 3;
+                // int data_index = NUM_LEG_MOTORS + i;
+                
+                control_data_serial_offset->chip_datas[chip_id].motor_datas[motor_id].q = 
+                    raw_data.usb_data_.usb_chip_data_[chip_id].data_pack[motor_id].p_data_ * whl_side_sign[i];
+                control_data_serial_offset->chip_datas[chip_id].motor_datas[motor_id].qd = 
+                        raw_data.usb_data_.usb_chip_data_[chip_id].data_pack[motor_id].v_data_ * whl_side_sign[i];
+                control_data_serial_offset->chip_datas[chip_id].motor_datas[motor_id].tau = 
+                    raw_data.usb_data_.usb_chip_data_[chip_id].data_pack[motor_id].t_data_ / whl_side_sign[i];
+                control_data_serial_offset->chip_datas[chip_id].motor_datas[motor_id].uq = 
+                    raw_data.usb_data_.usb_chip_data_[chip_id].data_pack[motor_id].uq_;
+                control_data_serial_offset->chip_datas[chip_id].motor_datas[motor_id].ud = 
+                    raw_data.usb_data_.usb_chip_data_[chip_id].data_pack[motor_id].ud_;
+                    // std::cout<<raw_data.usb_data_.usb_chip_data_[chip_id].data_pack[motor_id].v_data_<<std::endl;
             }
+
             memcpy(p_usbdata_serial_lcmdata, control_data_serial_offset, sizeof(USB_Data_t));
             lock.unlock();
+            
             p_usbdata_serial_lcmdata->timestamp = std::chrono::duration_cast<std::chrono::microseconds>(
                 std::chrono::steady_clock::now().time_since_epoch()).count();
             usb_data_LCM.publish("MOTOR DATA Serial", p_usbdata_serial_lcmdata);
@@ -165,7 +209,7 @@ namespace USB_HARDWARE {
     void Beast_USB2CAN::Deal_Usb_Out_Cmd() {
         // offset first, then serial to diff
         std::shared_lock<std::shared_mutex> lock(usb_shared_out_mutex);
-        for (int i = 0; i < 6 * NUMBER_CHIPS; i++) {
+        for (int i = 0; i < 6 * (NUMBER_CHIPS - 1); i++) {
             const int chip_id = i / 6;
             const int chip_motor_id = i % 6;
             control_cmd_serial_offset->chip_cmds[chip_id].motor_cmds[chip_motor_id].q_des =
@@ -180,76 +224,119 @@ namespace USB_HARDWARE {
             control_cmd_serial_offset->chip_cmds[chip_id].motor_cmds[chip_motor_id].tau_ff =
                     control_cmd_serial->chip_cmds[chip_id].motor_cmds[chip_motor_id].tau_ff * leg_side_sign[i];
         }
+
+        // 2. Handle wheel motor commands specifically (from old code)
+        for (int i = 0; i < NUM_WHEEL_MOTORS; i++) {
+            int chip_id = 2;
+            int motor_id = i % 2 + (i / 2) * 3;
+            // int cmd_index = NUM_LEG_MOTORS + i;
+            control_cmd_serial_offset->chip_cmds[chip_id].motor_cmds[motor_id].q_des = 
+                control_cmd_serial->chip_cmds[chip_id].motor_cmds[motor_id].q_des / whl_side_sign[i];
+            control_cmd_serial_offset->chip_cmds[chip_id].motor_cmds[motor_id].qd_des = 
+                control_cmd_serial->chip_cmds[chip_id].motor_cmds[motor_id].qd_des / whl_side_sign[i];
+            control_cmd_serial_offset->chip_cmds[chip_id].motor_cmds[motor_id].tau_ff = 
+                control_cmd_serial->chip_cmds[chip_id].motor_cmds[motor_id].tau_ff * whl_side_sign[i];
+            control_cmd_serial_offset->chip_cmds[chip_id].motor_cmds[motor_id].kp = 
+                control_cmd_serial->chip_cmds[chip_id].motor_cmds[motor_id].kp;
+            control_cmd_serial_offset->chip_cmds[chip_id].motor_cmds[motor_id].kd = 
+                control_cmd_serial->chip_cmds[chip_id].motor_cmds[motor_id].kd;
+        }
+
         usb_cmd_u->usb_cmd_.usb_chip_cmd_[0].chip_flag[0] = control_cmd_serial->chip_cmds[0].chip_flg;
         usb_cmd_u->usb_cmd_.usb_chip_cmd_[1].chip_flag[0] = control_cmd_serial->chip_cmds[1].chip_flg;
         usb_cmd_u->usb_cmd_.usb_chip_cmd_[2].chip_flag[0] = control_cmd_serial->chip_cmds[2].chip_flg;
         memcpy(p_usbcmd_serial_lcmdata, control_cmd_serial, sizeof(usb_command_t));
         lock.unlock();
-        for (int i = 0; i < 6 * NUMBER_CHIPS; i++) {
+        for (int i = 0; i < 6 * (NUMBER_CHIPS - 1); i++) {
             const int chip_id = i / 6;
             const int chip_motor_id = i % 6;
             const int diff_convert = chip_motor_id % 3;
             const CCC_t *chip_cmd = &control_cmd_serial_offset->chip_cmds[chip_id];
+
             switch (diff_convert) {
                 case 0:
                     usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[chip_motor_id].p_cmd_ =
-                            chip_cmd->motor_cmds[chip_motor_id].q_des +
-                            chip_cmd->motor_cmds[chip_motor_id + 1].q_des;
+                        chip_cmd->motor_cmds[chip_motor_id].q_des +
+                        chip_cmd->motor_cmds[chip_motor_id + 1].q_des;
                     usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[chip_motor_id].v_cmd_ =
-                            chip_cmd->motor_cmds[chip_motor_id].qd_des +
-                            chip_cmd->motor_cmds[chip_motor_id + 1].qd_des;
-                    usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[chip_motor_id].kp_ = chip_cmd->motor_cmds[
-                                                                                                 chip_motor_id].kp / 2.f;
-                    usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[chip_motor_id].kd_ = chip_cmd->motor_cmds[
-                                                                                                 chip_motor_id].kd / 2.f;
+                        chip_cmd->motor_cmds[chip_motor_id].qd_des +
+                        chip_cmd->motor_cmds[chip_motor_id + 1].qd_des;
+                    usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[chip_motor_id].kp_ = 
+                        chip_cmd->motor_cmds[chip_motor_id].kp / 2.f;
+                    usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[chip_motor_id].kd_ = 
+                        chip_cmd->motor_cmds[chip_motor_id].kd / 2.f;
                     usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[chip_motor_id].t_ff_ =
-                    (chip_cmd->motor_cmds[chip_motor_id].tau_ff +
-                     chip_cmd->motor_cmds[chip_motor_id + 1].tau_ff) / 2.f;
+                        (chip_cmd->motor_cmds[chip_motor_id].tau_ff +
+                         chip_cmd->motor_cmds[chip_motor_id + 1].tau_ff) / 2.f;
                     break;
                 case 1:
                     usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[chip_motor_id].p_cmd_ =
-                            -(chip_cmd->motor_cmds[chip_motor_id - 1].q_des - chip_cmd->motor_cmds[chip_motor_id].
-                              q_des);
+                        -(chip_cmd->motor_cmds[chip_motor_id - 1].q_des - 
+                          chip_cmd->motor_cmds[chip_motor_id].q_des);
                     usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[chip_motor_id].v_cmd_ =
-                            -(chip_cmd->motor_cmds[chip_motor_id - 1].qd_des - chip_cmd->motor_cmds[chip_motor_id].
-                              qd_des);
-                    usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[chip_motor_id].kp_ = chip_cmd->motor_cmds[
-                                                                                                 chip_motor_id].kp / 2.;
-                    usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[chip_motor_id].kd_ = chip_cmd->motor_cmds[
-                                                                                                 chip_motor_id].kd / 2.f;
+                        -(chip_cmd->motor_cmds[chip_motor_id - 1].qd_des - 
+                          chip_cmd->motor_cmds[chip_motor_id].qd_des);
+                    usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[chip_motor_id].kp_ = 
+                        chip_cmd->motor_cmds[chip_motor_id].kp / 2.f;
+                    usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[chip_motor_id].kd_ = 
+                        chip_cmd->motor_cmds[chip_motor_id].kd / 2.f;
                     usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[chip_motor_id].t_ff_ =
-                            -(chip_cmd->motor_cmds[chip_motor_id - 1].tau_ff - chip_cmd->motor_cmds[chip_motor_id].
-                              tau_ff) / 2.f;
+                        -(chip_cmd->motor_cmds[chip_motor_id - 1].tau_ff - 
+                          chip_cmd->motor_cmds[chip_motor_id].tau_ff) / 2.f;
                     break;
                 case 2:
                     usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[chip_motor_id].p_cmd_ =
-                            chip_cmd->motor_cmds[chip_motor_id].q_des;
+                        chip_cmd->motor_cmds[chip_motor_id].q_des;
                     usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[chip_motor_id].v_cmd_ =
-                            chip_cmd->motor_cmds[chip_motor_id].qd_des;
+                        chip_cmd->motor_cmds[chip_motor_id].qd_des;
                     usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[chip_motor_id].kp_ =
-                            chip_cmd->motor_cmds[chip_motor_id].kp / 4.f;
+                        chip_cmd->motor_cmds[chip_motor_id].kp / 4.f;
                     usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[chip_motor_id].kd_ =
-                            chip_cmd->motor_cmds[chip_motor_id].kd / 4.f;
+                        chip_cmd->motor_cmds[chip_motor_id].kd / 4.f;
                     usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[chip_motor_id].t_ff_ =
-                            chip_cmd->motor_cmds[chip_motor_id].tau_ff;
+                        chip_cmd->motor_cmds[chip_motor_id].tau_ff;
                     break;
                 default:
                     break;
             }
         }
-        //WARNING put the can1 cmds to can5
-        for (int i = 0; i < 3; i++) {
-            usb_cmd_u->usb_cmd_.usb_chip_cmd_[2].cmd_pack[i].p_cmd_ =
-                    usb_cmd_u->usb_cmd_.usb_chip_cmd_[0].cmd_pack[i].p_cmd_;
-            usb_cmd_u->usb_cmd_.usb_chip_cmd_[2].cmd_pack[i].v_cmd_ =
-                    usb_cmd_u->usb_cmd_.usb_chip_cmd_[0].cmd_pack[i].v_cmd_;
-            usb_cmd_u->usb_cmd_.usb_chip_cmd_[2].cmd_pack[i].kp_ =
-                    usb_cmd_u->usb_cmd_.usb_chip_cmd_[0].cmd_pack[i].kp_;
-            usb_cmd_u->usb_cmd_.usb_chip_cmd_[2].cmd_pack[i].kd_ =
-                    usb_cmd_u->usb_cmd_.usb_chip_cmd_[0].cmd_pack[i].kd_;
-            usb_cmd_u->usb_cmd_.usb_chip_cmd_[2].cmd_pack[i].t_ff_ =
-                    usb_cmd_u->usb_cmd_.usb_chip_cmd_[0].cmd_pack[i].t_ff_;
+
+        for (int i = 0; i < NUM_WHEEL_MOTORS; i++) {
+            int chip_id = 2;
+            int motor_id = i % 2 + (i / 2) * 3;
+            // int cmd_index = NUM_LEG_MOTORS + i;
+            usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[motor_id].p_cmd_ = 
+                control_cmd_serial_offset->chip_cmds[chip_id].motor_cmds[motor_id].q_des;
+            usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[motor_id].v_cmd_ = 
+                control_cmd_serial_offset->chip_cmds[chip_id].motor_cmds[motor_id].qd_des;
+            usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[motor_id].kp_ = 
+                control_cmd_serial_offset->chip_cmds[chip_id].motor_cmds[motor_id].kp;
+            usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[motor_id].kd_ = 
+                control_cmd_serial_offset->chip_cmds[chip_id].motor_cmds[motor_id].kd;
+            usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[motor_id].t_ff_ = 
+                control_cmd_serial_offset->chip_cmds[chip_id].motor_cmds[motor_id].tau_ff;
+            // usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[motor_id].t_ff_ = 
+            //         - 0.5 * control_data_serial->chip_datas[chip_id].motor_datas[motor_id].qd;
+            // std::cout<<control_data_serial->chip_datas[chip_id].motor_datas[motor_id].qd<<std::endl;
         }
+        // std::cout<<"  "<<std::endl;
+
+        // 3. Perform the reverse swap for commands
+        // Chip 0 motor 0 ↔ Chip 2 motor 0
+        std::swap(usb_cmd_u->usb_cmd_.usb_chip_cmd_[0].cmd_pack[0],
+                 usb_cmd_u->usb_cmd_.usb_chip_cmd_[2].cmd_pack[0]);
+        
+        // Chip 0 motor 3 ↔ Chip 2 motor 1
+        std::swap(usb_cmd_u->usb_cmd_.usb_chip_cmd_[0].cmd_pack[3],
+                 usb_cmd_u->usb_cmd_.usb_chip_cmd_[2].cmd_pack[1]);
+        
+        // Chip 1 motor 0 ↔ Chip 2 motor 3
+        std::swap(usb_cmd_u->usb_cmd_.usb_chip_cmd_[1].cmd_pack[0],
+                 usb_cmd_u->usb_cmd_.usb_chip_cmd_[2].cmd_pack[3]);
+        
+        // Chip 1 motor 3 ↔ Chip 2 motor 4
+        std::swap(usb_cmd_u->usb_cmd_.usb_chip_cmd_[1].cmd_pack[3],
+                 usb_cmd_u->usb_cmd_.usb_chip_cmd_[2].cmd_pack[4]);
 
         usb_cmd_u->usb_cmd_.checksum = data_checksum((uint32_t *) usb_cmd_u, usb_motors_out_check_length);
         memcpy(p_usbcmd_diff_lcmdata, usb_cmd_u, sizeof(usb_command_t));

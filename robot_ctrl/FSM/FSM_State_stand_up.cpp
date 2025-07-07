@@ -25,6 +25,11 @@ bool FSM_State_Stand_Up::state_on_enter() {
     double end_theta_hind2 = -end_theta2;
 #endif
 
+#if defined SIRIUS_WHEEL
+    double end_theta_hind_whl = -end_theta1;
+    double end_theta_hind2_whl = -end_theta2;
+#endif
+
     //求趴下时，hip与knee
     h = Config::Sit_Down_Height;
     double mid_theta1 = acos((l1 * l1 + h * h - l2 * l2) / (2 * l1 * h));
@@ -32,6 +37,11 @@ bool FSM_State_Stand_Up::state_on_enter() {
 #if defined DG_ENGINEER
     double mid_theta_hind = -mid_theta1;
     double mid_theta_hind2 = -mid_theta2;
+#endif
+
+#if defined SIRIUS_WHEEL
+    double mid_theta_hind_whl = -mid_theta1;
+    double mid_theta_hind2_whl = -mid_theta2;
 #endif
 
     for (size_t leg(0); leg < 4; ++leg) {
@@ -53,6 +63,19 @@ bool FSM_State_Stand_Up::state_on_enter() {
         joint_pos_stand_[leg][0] = 0;
         joint_pos_stand_[leg][1] = end_theta_hind;
         joint_pos_stand_[leg][2] = end_theta_hind2;
+        //        std::cout << "Initial Pos: " << leg  << " " <<joint_pos_ini_[leg].transpose() << std::endl;
+    }
+#endif
+
+#if defined SIRIUS_WHEEL
+    for (size_t leg(2); leg < 4; ++leg) {
+        joint_pos_ini_[leg] = this->fsm_data_->leg_controller_->leg_data[leg].q;
+        joint_pos_fold_[leg][0] = 0;
+        joint_pos_fold_[leg][1] = mid_theta_hind_whl;
+        joint_pos_fold_[leg][2] = mid_theta_hind2_whl;
+        joint_pos_stand_[leg][0] = 0;
+        joint_pos_stand_[leg][1] = end_theta_hind_whl;
+        joint_pos_stand_[leg][2] = end_theta_hind2_whl;
         //        std::cout << "Initial Pos: " << leg  << " " <<joint_pos_ini_[leg].transpose() << std::endl;
     }
 #endif
@@ -111,6 +134,12 @@ void FSM_State_Stand_Up::run_state() {
                               t2) / (2.f / 3.f * t_stand);
             }
         }
+        for (int leg = 0; leg < 4; leg++) {
+            this->fsm_data_->leg_controller_->leg_command[leg].whl_kp_joint = 0.0;
+            this->fsm_data_->leg_controller_->leg_command[leg].whl_kd_joint = 1.0;
+            this->fsm_data_->leg_controller_->leg_command[leg].whl_qd_des = 0.0;
+            this->fsm_data_->leg_controller_->leg_command[leg].whl_tau_ff = 0.0;
+      }
     } else {
         constexpr double t_stand = 1;
         double t = state_iter_ * this->fsm_para_->control_dt_ / t_stand;
@@ -124,6 +153,13 @@ void FSM_State_Stand_Up::run_state() {
                     = Interpolate::cubicBezierFirstDerivative<Vec3<double> >(
                         joint_pos_ini_[leg], joint_pos_stand_[leg], t);
         }
+
+      for (int leg = 0; leg < 4; leg++) {
+        this->fsm_data_->leg_controller_->leg_command[leg].whl_kp_joint = 0.0;
+        this->fsm_data_->leg_controller_->leg_command[leg].whl_kd_joint = 1.0;
+        this->fsm_data_->leg_controller_->leg_command[leg].whl_qd_des = 0.0;
+        this->fsm_data_->leg_controller_->leg_command[leg].whl_tau_ff = 0.0;
+      }
     }
 }
 

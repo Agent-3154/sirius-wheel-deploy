@@ -39,7 +39,7 @@ void FSM_State_User_Interface::run_state() {
                     sample->quat[i] = state_q_(i + 3);
                 }
                 sample->quat[3] = state_q_(6);
-                for (int i = 0; i < 12; i++) {
+                for (int i = 0; i < 16; i++) {
                     sample->q[i] = state_q_(i + 7);
                     sample->qd[i] = state_qd_(i + 6);
                 }
@@ -60,6 +60,14 @@ void FSM_State_User_Interface::run_state() {
                 asDiagonal();
         this->fsm_data_->leg_controller_->leg_command[i].tau_ff = Vec3<double>(tau_ff[3 * i], tau_ff[3 * i + 1], tau_ff[3 * i + 2]);
     }
+    for (int i = 0; i < 4; i++) {
+        this->fsm_data_->leg_controller_->leg_command[i].whl_q_des = q_des[12 + i];
+        this->fsm_data_->leg_controller_->leg_command[i].whl_qd_des = qd_des[12 + i];
+        this->fsm_data_->leg_controller_->leg_command[i].whl_tau_ff = tau_ff[12 + i];
+        this->fsm_data_->leg_controller_->leg_command[i].whl_kp_joint = kp_joint[12 + i];
+        this->fsm_data_->leg_controller_->leg_command[i].whl_kd_joint = kd_joint[12 + i];
+                    // std::cout <<sample->kd[12 + i]<<std::endl;
+        }
     lock.unlock();
     state_iter_++;
 }

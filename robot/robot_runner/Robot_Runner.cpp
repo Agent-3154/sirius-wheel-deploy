@@ -154,6 +154,16 @@ void RobotRunner::finalStep() {
                 sample->kd[3 * i + 1] = runner_usbcmd_->chip_cmds[index].motor_cmds[3 * (i - index_shift) + 1].kd;
                 sample->kd[3 * i + 2] = runner_usbcmd_->chip_cmds[index].motor_cmds[3 * (i - index_shift) + 2].kd;
             }
+            for (int i = 0; i < 4; i++) {
+                    const int index = 2;
+                    const int index_shift = i / 2;
+                    sample->q[12 + i] =  runner_usbcmd_->chip_cmds[index].motor_cmds[i + index_shift].q_des;
+                    sample->qd[12 + i] =  runner_usbcmd_->chip_cmds[index].motor_cmds[i + index_shift].qd_des;
+                    sample->tau_ff[12 + i] =  runner_usbcmd_->chip_cmds[index].motor_cmds[i + index_shift].tau_ff;
+                    sample->kp[12 + i] =  runner_usbcmd_->chip_cmds[index].motor_cmds[i + index_shift].kp;
+                    sample->kd[12 + i] =  runner_usbcmd_->chip_cmds[index].motor_cmds[i + index_shift].kd;
+                    // std::cout <<sample->kd[12 + i]<<std::endl;
+            }
             sample.publish();
         }).or_else([](auto &result) {
             std::cerr << "Unable to loan sample, error: " << result << std::endl;
@@ -242,6 +252,13 @@ void RobotRunner::thread_subscriber_function() {
                 runner_usbdata_->chip_datas[index].motor_datas[3 * (i - index_shift)].qd = sample->qd[3 * i];
                 runner_usbdata_->chip_datas[index].motor_datas[3 * (i - index_shift) + 1].qd = sample->qd[3 * i + 1];
                 runner_usbdata_->chip_datas[index].motor_datas[3 * (i - index_shift) + 2].qd = sample->qd[3 * i + 2];
+            }
+            for (int i = 0; i < 4; i++) {
+                const int index = 2;
+                const int index_shift = i / 2;
+                runner_usbdata_->chip_datas[index].motor_datas[i + index_shift].q = sample->q[12 + i];
+                runner_usbdata_->chip_datas[index].motor_datas[i + index_shift].qd = sample->qd[12 + i];
+                // runner_usbdata_->chip_datas[index].motor_datas[i + index_shift].tau = sample->tau_ff[12 + i];
             }
         }).or_else([](auto &result) {
             if (result != iox::popo::ChunkReceiveResult::NO_CHUNK_AVAILABLE) {

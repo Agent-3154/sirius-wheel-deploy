@@ -53,6 +53,7 @@ namespace usb_controller {
         float omega_des[3];
         float variables[3]; // variable 0: used to switch gait
         float step_height;
+        int stand_flag = 0;
     } rc_control_variable_t;
 
     typedef enum RC_MODE {

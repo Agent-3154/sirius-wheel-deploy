@@ -42,7 +42,8 @@ public:
 
     virtual bool is_busy() = 0;
 
-    void get_joint_state(Vec19<double> &joint_q, Vec18<double> &joint_qd, Vec3<double> &accel) const;
+    // void get_joint_state(Vec19<double> &joint_q, Vec18<double> &joint_qd, Vec3<double> &accel) const;
+    void get_joint_state(Vec23<double> &joint_q, Vec22<double> &joint_qd, Vec3<double> &accel) const;
 
     Control_FSM_Data_t *fsm_data_;
     Control_Parameters_t *fsm_para_;

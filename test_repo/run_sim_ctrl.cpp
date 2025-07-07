@@ -19,6 +19,8 @@ int main(int argc, char **argv) {
     std::string model_name = "../robot/robot_model/unitree_go1/scene.xml";
 #elif defined DG_ENGINEER
     std::string model_name = "../robot/robot_model/dg_engineer/scene.xml";
+#elif defined SIRIUS_WHEEL
+    std::string model_name = "../robot/robot_model/sirius_wheel/scene.xml";
 #endif
     bool launch_imu = false;
     bool launch_usb2can = false;

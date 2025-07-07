@@ -28,7 +28,7 @@ bool FSM_State_SitDown::state_on_enter() {
         joint_pos_end_[leg][1] = theta1_down;
         joint_pos_end_[leg][2] = theta2_down;
     }
-#if defined DG_ENGINEER
+#if defined(DG_ENGINEER) || defined(SIRIUS_WHEEL)
     for (size_t leg(2); leg < 4; ++leg) {
         joint_pos_end_[leg][0] = 0;
         joint_pos_end_[leg][1] = -theta1_down;
@@ -69,6 +69,12 @@ void FSM_State_SitDown::run_state() {
                 = Interpolate::cubicBezierFirstDerivative<Vec3<double>>(joint_pos_ini_[leg], joint_pos_end_[leg], t) /
                   sit_down_time;
     }
+    for (int leg = 0; leg < 4; leg++) {
+        this->fsm_data_->leg_controller_->leg_command[leg].whl_kp_joint = 0.0;
+        this->fsm_data_->leg_controller_->leg_command[leg].whl_kd_joint = 1.0;
+        this->fsm_data_->leg_controller_->leg_command[leg].whl_qd_des = 0.0;
+        this->fsm_data_->leg_controller_->leg_command[leg].whl_tau_ff = 0.0;
+      }
 }
 
 bool FSM_State_SitDown::is_busy() {

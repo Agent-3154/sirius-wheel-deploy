@@ -376,8 +376,10 @@ void Simulation::SimulationBridge::sim_control() {
     //     noise_rpy(i) += dist_quat_(generator);
     // }
     // noise_quat = ori::rpyToQuat(noise_rpy);
+    
     subscriber.take()
             .and_then([this](auto &sample) {
+            
                 for (int i = 0; i < 4; i++) {
                     const int index = i / 2;
                     const int index_shift = index * 2;
@@ -400,6 +402,18 @@ void Simulation::SimulationBridge::sim_control() {
                     motor_cmd_->chip_cmds[index].motor_cmds[3 * (i - index_shift)].kd = sample->kd[3 * i];
                     motor_cmd_->chip_cmds[index].motor_cmds[3 * (i - index_shift) + 1].kd = sample->kd[3 * i + 1];
                     motor_cmd_->chip_cmds[index].motor_cmds[3 * (i - index_shift) + 2].kd = sample->kd[3 * i + 2];
+                }
+
+                //for wheel control
+                for (int i = 0; i < 4; i++) {
+                    const int index = 2;
+                    const int index_shift = i / 2;
+                    motor_cmd_->chip_cmds[index].motor_cmds[i + index_shift].q_des = sample->q[12 + i];
+                    motor_cmd_->chip_cmds[index].motor_cmds[i + index_shift].qd_des = sample->qd[12 + i];
+                    motor_cmd_->chip_cmds[index].motor_cmds[i + index_shift].tau_ff = sample->tau_ff[12 + i];
+                    motor_cmd_->chip_cmds[index].motor_cmds[i + index_shift].kp = sample->kp[12 + i];
+                    motor_cmd_->chip_cmds[index].motor_cmds[i + index_shift].kd = sample->kd[12 + i];
+                    // std::cout <<sample->kd[12 + i]<<std::endl;
                 }
             })
             .or_else([](auto &result) {
@@ -473,12 +487,21 @@ void Simulation::SimulationBridge::sim_control() {
     for (int i = 0; i < 4; i++) {
         const int index = i / 2;
         const int index_shift = index * 2; // (0,2)
-        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift)].q = static_cast<float>(d_->qpos[Config::abad_pos_addr_offset + 3 * i]);
-        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift) + 1].q = static_cast<float>(d_->qpos[Config::hip_pos_addr_offset + 3 * i]);
-        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift) + 2].q = static_cast<float>(d_->qpos[Config::knee_pos_addr_offset + 3 * i]);
-        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift)].qd = static_cast<float>(d_->qvel[Config::abad_vel_addr_offset + 3 * i]);
-        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift) + 1].qd = static_cast<float>(d_->qvel[Config::hip_vel_addr_offset + 3 * i]);
-        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift) + 2].qd = static_cast<float>(d_->qvel[Config::knee_vel_addr_offset + 3 * i]);
+        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift)].q = static_cast<float>(d_->qpos[Config::abad_pos_addr_offset + 4 * i]);
+        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift) + 1].q = static_cast<float>(d_->qpos[Config::hip_pos_addr_offset + 4 * i]);
+        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift) + 2].q = static_cast<float>(d_->qpos[Config::knee_pos_addr_offset + 4 * i]);
+        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift)].qd = static_cast<float>(d_->qvel[Config::abad_vel_addr_offset + 4 * i]);
+        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift) + 1].qd = static_cast<float>(d_->qvel[Config::hip_vel_addr_offset + 4 * i]);
+        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift) + 2].qd = static_cast<float>(d_->qvel[Config::knee_vel_addr_offset + 4 * i]);
+    }
+
+    //for wheel control
+    for (int i = 0; i < 4; i++) {
+        const int index = 2;
+        const int index_shift = i / 2;
+        motor_data_->chip_datas[index].motor_datas[i + index_shift].q = static_cast<float>(d_->qpos[Config::whl_pos_addr_offset + 4 * i]);
+        motor_data_->chip_datas[index].motor_datas[i + index_shift].qd = static_cast<float>(d_->qvel[Config::whl_vel_addr_offset + 4 * i]);
+        // std::cout << "motor_data_->chip_datas[index].motor_datas[i + index_shift].q: " << motor_data_->chip_datas[index].motor_datas[i + index_shift].q << std::endl;
     }
 
     motors_->pack_motor_cmd(motor_cmd_, motor_data_);
@@ -499,6 +522,12 @@ void Simulation::SimulationBridge::sim_control() {
                     sample->qd[3 * i + 1] = motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift) + 1].qd;
                     sample->qd[3 * i + 2] = motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift) + 2].qd;
                 }
+                for (int i = 0; i < 4; i++) {
+                    const int index = 2;
+                    const int index_shift = i / 2;
+                    sample->q[12 + i] = motor_data_->chip_datas[index].motor_datas[i + index_shift].q;
+                    sample->qd[12 + i] = motor_data_->chip_datas[index].motor_datas[i + index_shift].qd;
+                }
                 sample.publish();
             })
             .or_else([](auto &result) {
@@ -507,9 +536,11 @@ void Simulation::SimulationBridge::sim_control() {
     //        std::cout << "torque: ";
     for (int i = 0; i < m_->nu; i++) {
         d_->ctrl[i] = motors_->get_torque(i);
+        // std::cout << "d_->ctrl[i]: " << d_->ctrl[i] << std::endl;
+        // d_->ctrl[i] = 0.0;
         //            std::cout << d_->ctrl[i] << " | ";
     }
-    //        std::cout << std::endl;
+        //    std::cout << std::endl;
 }
 
 
@@ -519,12 +550,12 @@ void Simulation::SimulationBridge::sim_show_step() {
     for (int i = 0; i < 4; i++) {
         const int index = i / 2; // (0, 1, 2, 3) / 2 = (0,1)
         const int index_shift = index * 2; // (0,2)
-        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift)].q = static_cast<float>(d_->qpos[Config::abad_pos_addr_offset + 3 * i]);
-        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift) + 1].q = static_cast<float>(d_->qpos[Config::hip_pos_addr_offset + 3 * i]);
-        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift) + 2].q = static_cast<float>(d_->qpos[Config::knee_pos_addr_offset + 3 * i]);
-        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift)].qd = static_cast<float>(d_->qvel[Config::abad_vel_addr_offset + 3 * i]);
-        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift) + 1].qd = static_cast<float>(d_->qvel[Config::hip_vel_addr_offset + 3 * i]);
-        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift) + 2].qd = static_cast<float>(d_->qvel[Config::knee_vel_addr_offset + 3 * i]);
+        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift)].q = static_cast<float>(d_->qpos[Config::abad_pos_addr_offset + 4 * i]);
+        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift) + 1].q = static_cast<float>(d_->qpos[Config::hip_pos_addr_offset + 4 * i]);
+        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift) + 2].q = static_cast<float>(d_->qpos[Config::knee_pos_addr_offset + 4 * i]);
+        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift)].qd = static_cast<float>(d_->qvel[Config::abad_vel_addr_offset + 4 * i]);
+        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift) + 1].qd = static_cast<float>(d_->qvel[Config::hip_vel_addr_offset + 4 * i]);
+        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift) + 2].qd = static_cast<float>(d_->qvel[Config::knee_vel_addr_offset + 4 * i]);
 
         // chip data: q, qd, tau_ff, uq,ud
         if (index == 0) {
@@ -565,10 +596,29 @@ void Simulation::SimulationBridge::sim_show_step() {
             motor_cmd_->chip_cmds[index].motor_cmds[3 * (i-index_shift) + 2].kd = Config::joint_kd;
         }
     }
+
+    for (int i = 0; i < 4; i++) {
+        const int index = 2;
+        const int index_shift = i / 2;
+        motor_data_->chip_datas[index].motor_datas[i + index_shift].q = static_cast<float>(d_->qpos[Config::whl_pos_addr_offset + 4 * i]);
+        motor_data_->chip_datas[index].motor_datas[i + index_shift].qd = static_cast<float>(d_->qvel[Config::whl_vel_addr_offset + 4 * i]);
+    }
+
+    for (int i = 0; i < 4; i++) {
+        const int index = 2;
+        const int index_shift = i / 2;
+        motor_cmd_->chip_cmds[index].motor_cmds[i + index_shift].q_des = sim_local_usbdata.chip3_data[i + index_shift][0];
+        motor_cmd_->chip_cmds[index].motor_cmds[i + index_shift].qd_des = sim_local_usbdata.chip3_data[i + index_shift][1];
+        motor_cmd_->chip_cmds[index].motor_cmds[i + index_shift].tau_ff = 0;
+        motor_cmd_->chip_cmds[index].motor_cmds[i + index_shift].kp = Config::joint_kp;
+        motor_cmd_->chip_cmds[index].motor_cmds[i + index_shift].kd = Config::joint_kd;
+    }
+
     motors_->pack_motor_cmd(motor_cmd_, motor_data_);
-    //        std::cout << "torque: ";
+        //    std::cout << "torque: ";
     for (int i = 0; i < m_->nu; i++) {
         d_->ctrl[i] = motors_->get_torque(i);
+        // d_->ctrl[i] = 0.0;
         //            std::cout << d_->ctrl[i] << " | ";
     } {
         std::lock_guard lk(sim_handle_->sim_imu_mtx_);

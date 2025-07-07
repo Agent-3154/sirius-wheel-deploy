@@ -104,6 +104,19 @@ namespace Config {
     constexpr double HipLinkLength = 0.272;
     constexpr double KneeLinkLength = 0.284;
     constexpr double AbadLinkLength = 0.1408;
+#elif defined SIRIUS_WHEEL
+    constexpr double Stand_Up_Height = 0.45;
+    constexpr double Sit_Down_Height = 0.07;
+    constexpr double mpc_inertia[9] = {
+        0.10767656, 0.00000033, -0.00871520,
+        0.00000033, 2.82545726, -0.00000024,
+        -0.00871520, -0.00000024, 2.85571634
+        };
+    constexpr double mpc_height = 0.42; //belt 0.38 go1:0.3
+    constexpr double mpc_weight = 27; //belt 23.7 go1:8
+    constexpr double HipLinkLength = 0.272;
+    constexpr double KneeLinkLength = 0.284;
+    constexpr double AbadLinkLength = 0.1408;
 #endif
     constexpr double kp_cartesian = 350;
     constexpr double kp_cartesian_z = 150;

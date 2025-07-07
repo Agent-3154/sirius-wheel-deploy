@@ -25,6 +25,7 @@ void FSM_State_Damping::run_state() {
     fsm_data_->leg_controller_->Zero_Command();
     for (auto &leg: fsm_data_->leg_controller_->leg_command) {
         leg.kd_joint = kd.asDiagonal();
+        leg.whl_kd_joint = Config::damping_kd;
     }
     state_iter_++;
 }

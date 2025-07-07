@@ -156,6 +156,7 @@ namespace usb_controller {
                 rc_control_.mode = RL_WALK;
             // if (rc_map_.lb && rc_map_.y)
             //     rc_control_.mode = RL_WALK_2;
+
 #ifdef GAME_STAR
             if (rc_map_.lb && rc_map_.ro)
                 rc_control_.mode = USER_INTERFACE;
@@ -185,6 +186,14 @@ namespace usb_controller {
             rc_control_.omega_des[0] = 0;
             rc_control_.omega_des[1] = 0;
             rc_control_.omega_des[2] = 0;
+            // std::cout<<rc_map_.select<<std::endl;
+        }
+
+        if (rc_map_.x && rc_map_.select) {
+                rc_control_.stand_flag = 1;
+            }
+            if (rc_map_.x && rc_map_.start) {
+                rc_control_.stand_flag = 0;
         }
 
         // if (rc_control_.mode == LOCOMOTION) {

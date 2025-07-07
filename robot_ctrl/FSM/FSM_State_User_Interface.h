@@ -35,8 +35,10 @@ private:
     std::atomic<bool> exit_state_{};
     std::shared_ptr<Thread::thread_timer> user_interface_timer_;
     double q_des[18]{}, qd_des[18]{}, kp_joint[18]{}, kd_joint[18]{}, tau_ff[18]{};
-    Vec19<double> state_q_;
-    Vec18<double> state_qd_;
+    // Vec19<double> state_q_;
+    // Vec18<double> state_qd_;
+    Vec23<double> state_q_;
+    Vec22<double> state_qd_;
     Vec3<double> state_accel;
     std::shared_mutex state_mutex_;
 };

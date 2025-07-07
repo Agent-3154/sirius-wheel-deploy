@@ -10,7 +10,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # *********************************************************************************************************************
 
 if (NOT DEFINED ROS_BUILD)
-    add_compile_definitions(DG_ENGINEER)   # choose the robot type: {CHAOJI_GO  BELT  GO1 DG_ENGINEER}
+    add_compile_definitions(SIRIUS_WHEEL)   # choose the robot type: {CHAOJI_GO  BELT  GO1 DG_ENGINEER}
     add_compile_definitions(ICEORYX_PREFIX_V2954) # {V , V2.95.4}
     message(WARNING "\nsub robot define included! Use local path")
 else ()

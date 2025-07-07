@@ -27,6 +27,13 @@ void Leg_Controller<T>::Zero_Command() {
         leg.qd_des = Vec3<T>::Zero();
         leg.tau_ff = Vec3<T>::Zero();
         leg.foot_force = Vec3<T>::Zero();
+
+        leg.whl_q_des = 0.0;
+        leg.whl_qd_des = 0.0;
+        leg.whl_tau_ff = 0.0;
+        leg.whl_kp_joint = 0.0;
+        leg.whl_kd_joint = 0.0;
+
         //foot
         leg.p_des = Vec3<T>::Zero();
         leg.v_des = Vec3<T>::Zero();
@@ -46,6 +53,9 @@ void Leg_Controller<T>::Zero_Data() {
         leg.p = Vec3<T>::Zero();
         leg.J = Mat3<T>::Zero();
         leg.tau = Vec3<T>::Zero();
+        leg.whl_q = 0.0;
+        leg.whl_qd = 0.0;
+        leg.whl_tau = 0.0;
     }
 }
 
@@ -72,7 +82,6 @@ void Leg_Controller<T>::Setup_Command(USB_Command_t *usb_cmd) {
         usb_cmd->chip_cmds[index].motor_cmds[3 * (leg_id - index_shift) + 1].tau_ff = leg_motor_torques(1);
         usb_cmd->chip_cmds[index].motor_cmds[3 * (leg_id - index_shift) + 2].tau_ff = leg_motor_torques(2);
 
-
         usb_cmd->chip_cmds[index].motor_cmds[3 * (leg_id - index_shift)].kd = leg_command[leg_id].kd_joint(0, 0);
         usb_cmd->chip_cmds[index].motor_cmds[3 * (leg_id - index_shift) + 1].kd = leg_command[leg_id].kd_joint(1, 1);
         usb_cmd->chip_cmds[index].motor_cmds[3 * (leg_id - index_shift) + 2].kd = leg_command[leg_id].kd_joint(2, 2);
@@ -91,6 +100,19 @@ void Leg_Controller<T>::Setup_Command(USB_Command_t *usb_cmd) {
 
         //TODO add enable and disable flags
     }
+    
+    //for wheel control
+    for (int leg_id = 0; leg_id < nlegs_; leg_id++) {
+        const int index = 2;
+        const int index_shift = leg_id / 2;
+        usb_cmd->chip_cmds[index].motor_cmds[leg_id + index_shift].tau_ff = leg_command[leg_id].whl_tau_ff;
+        usb_cmd->chip_cmds[index].motor_cmds[leg_id + index_shift].kd = leg_command[leg_id].whl_kd_joint;
+        usb_cmd->chip_cmds[index].motor_cmds[leg_id + index_shift].kp = leg_command[leg_id].whl_kp_joint;
+        usb_cmd->chip_cmds[index].motor_cmds[leg_id + index_shift].q_des = leg_command[leg_id].whl_q_des;
+        usb_cmd->chip_cmds[index].motor_cmds[leg_id + index_shift].qd_des = leg_command[leg_id].whl_qd_des;
+        // std::cout <<usb_cmd->chip_cmds[index].motor_cmds[leg_id + index_shift].qd_des <<std::endl;
+    }
+    // std::cout << " "<< std::endl;
 
     // enable part
     enable_counter++;
@@ -124,6 +146,17 @@ void Leg_Controller<T>::Update_Data(const USB_Data_t *usb_data) {
         computeLegJacobianAndPosition(leg_data[leg].q, &(leg_data[leg].J), &(leg_data[leg].p), leg);
         leg_data[leg].v = leg_data[leg].J * leg_data[leg].qd;
     }
+    
+    //for wheel control
+    for (int leg = 0; leg < nlegs_; leg++) {
+        const int index = 2;
+        const int index_shift = leg / 2;
+        leg_data[leg].whl_q = usb_data->chip_datas[index].motor_datas[leg + index_shift].q;
+        leg_data[leg].whl_qd = usb_data->chip_datas[index].motor_datas[leg + index_shift].qd;
+        leg_data[leg].whl_tau = usb_data->chip_datas[index].motor_datas[leg + index_shift].tau;
+        // std::cout << "leg_data[leg].q: " << leg_data[leg].whl_q << std::endl;
+    }
+
 }
 
 
@@ -137,6 +170,9 @@ void Leg_Controller<T>::setLcm(leg_control_data_lcmt *lcmData, leg_control_comma
             lcmData->p[idx] = leg_data[leg].p[axis];
             lcmData->v[idx] = leg_data[leg].v[axis];
             lcmData->tau_est[idx] = leg_data[leg].tau[axis];
+            lcmData->tau_cmd[idx] = leg_command[leg].kp_joint(axis, axis) * (leg_command[leg].q_des[axis] - leg_data[leg].q[axis])
+                                    + leg_command[leg].kd_joint(axis, axis) * (leg_command[leg].qd_des[axis] - leg_data[leg].qd[axis])
+                                    + leg_command[leg].tau_ff[axis];
 
             lcmCommand->tau_ff[idx] = leg_command[leg].tau_ff[axis];
             lcmCommand->f_ff[idx] = leg_command[leg].foot_force[axis];
@@ -149,6 +185,21 @@ void Leg_Controller<T>::setLcm(leg_control_data_lcmt *lcmData, leg_control_comma
             lcmCommand->kp_joint[idx] = leg_command[leg].kp_joint(axis, axis);
             lcmCommand->kd_joint[idx] = leg_command[leg].kd_joint(axis, axis);
         }
+
+        //for wheel control
+        lcmData->q[leg + 12] = leg_data[leg].whl_q;
+        lcmData->qd[leg + 12] = leg_data[leg].whl_qd;
+        lcmData->tau_est[leg + 12] = leg_data[leg].whl_tau;
+        lcmData->tau_cmd[leg + 12] = leg_command[leg].whl_kp_joint * (leg_command[leg].whl_q_des - leg_data[leg].whl_q)
+                                    + leg_command[leg].whl_kd_joint * (leg_command[leg].whl_qd_des - leg_data[leg].whl_qd)
+                                    + leg_command[leg].whl_tau_ff;
+        
+
+        lcmCommand->tau_ff[leg + 12] = leg_command[leg].whl_tau_ff;
+        lcmCommand->q_des[leg + 12] = leg_command[leg].whl_q_des;
+        lcmCommand->qd_des[leg + 12] = leg_command[leg].whl_qd_des;
+        lcmCommand->kp_joint[leg + 12] = leg_command[leg].whl_kp_joint;
+        lcmCommand->kd_joint[leg + 12] = leg_command[leg].whl_kd_joint;
     }
 }
 

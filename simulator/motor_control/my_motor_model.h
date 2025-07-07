@@ -26,15 +26,15 @@ namespace Motor_Control {
         void set_motor_kp_kd(float kp, float kd);
 
     private:
-        Eigen::Matrix<float, 12, 12> kp_mat_;
-        Eigen::Matrix<float, 12, 12> kd_mat_;
-        Vec12<float> torq_out_;
+        Eigen::Matrix<float, 16, 16> kp_mat_;
+        Eigen::Matrix<float, 16, 16> kd_mat_;
+        Vec16<float> torq_out_;
 
-        Vec12<float> q_data_;
-        Vec12<float> qd_data_;
-        Vec12<float> q_cmd_;
-        Vec12<float> qd_cmd_;
-        Vec12<float> t_ff_;
+        Vec16<float> q_data_;
+        Vec16<float> qd_data_;
+        Vec16<float> q_cmd_;
+        Vec16<float> qd_cmd_;
+        Vec16<float> t_ff_;
     };
 }
 
