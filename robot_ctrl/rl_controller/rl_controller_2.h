@@ -38,7 +38,7 @@ public:
 private:
     bool initialized_ = false;
     bool running_ = false;
-    float offset_hip = 0.05;
+    float offset_hip = 0.00;
     Vec16<double> last_action=Vec16<double>::Zero(); // Stores the last action taken by the controller
     Vec16<double> default_dof_pos = (Vec16<double>() << 
         0.0,  (0.7+offset_hip), -1.6, 0.0,  // LF leg (hip, thigh, calf)

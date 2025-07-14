@@ -186,13 +186,13 @@ namespace usb_controller {
             rc_control_.omega_des[0] = 0;
             rc_control_.omega_des[1] = 0;
             rc_control_.omega_des[2] = 0;
-            // std::cout<<rc_map_.select<<std::endl;
+            // std::cout<<rc_map_.yy<<std::endl;
         }
 
-        if (rc_map_.x && rc_map_.select) {
+        if (rc_map_.lb && (rc_map_.yy<-1000)) {
                 rc_control_.stand_flag = 1;
             }
-            if (rc_map_.x && rc_map_.start) {
+            if (rc_map_.lb && (rc_map_.yy>1000)) {
                 rc_control_.stand_flag = 0;
         }
 

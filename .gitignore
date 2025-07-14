@@ -57,3 +57,6 @@ CATKIN_IGNORE
 .vscode/
 lcmlog*
 *.mat
+stand_0624
+stand_0625
+stand_0702

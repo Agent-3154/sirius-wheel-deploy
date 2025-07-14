@@ -75,11 +75,11 @@ bool RLController::step(Vec23<double>* joint_q, Vec22<double>* joint_qd, Vec3<do
             // Update phase angle based on cartesian coordinates
                 leg_theta[i] = atan2(leg_xy[2*i+1], leg_xy[2*i]);
             }
-            if ((abs(vel_commands[1]) < 0.05) & (abs(vel_commands[2]) < 0.05)) {
-                for(int i = 0; i < 8; i++) {
-                    leg_xy[i] = 0.0;
-            }
-            }
+            // if ((abs(vel_commands[1]) < 0.05) & (abs(vel_commands[2]) < 0.05)) {
+            //     for(int i = 0; i < 8; i++) {
+            //         leg_xy[i] = 0.0;
+            // }
+            // }
         // calculate current observation by concatenating:
         // 1. Base angular velocity (3)
         // 2. Projected gravity vector (3) 
