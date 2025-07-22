@@ -55,6 +55,9 @@ private:
     Vec4<double> leg_theta;
     Eigen::Matrix<double, 8, 1, Eigen::DontAlign> leg_xy;
     double period = 0.6;
+    double motion_time = 0.0;
+    double motion_duration = 0.6;
+
     Eigen::Matrix<double, 3, 1, Eigen::DontAlign> vel_commands;
     Eigen::Matrix<double, 4, 1, Eigen::DontAlign> gait_schedule{0,M_PI,M_PI,0};
     int num_history_steps = 5;

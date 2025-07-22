@@ -188,11 +188,11 @@ namespace usb_controller {
             rc_control_.omega_des[2] = 0;
             // std::cout<<rc_map_.yy<<std::endl;
         }
-
-        if (rc_map_.lb && (rc_map_.yy<-1000)) {
+        rc_control_.stand_flag = 0;
+        if (rc_map_.lb && (rc_map_.yy<-10000)) {
                 rc_control_.stand_flag = 1;
             }
-            if (rc_map_.lb && (rc_map_.yy>1000)) {
+            if (rc_map_.lb && (rc_map_.yy>10000)) {
                 rc_control_.stand_flag = 0;
         }
 

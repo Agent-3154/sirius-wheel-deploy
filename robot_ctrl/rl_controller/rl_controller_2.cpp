@@ -8,13 +8,14 @@ bool RLController2::init() {
     leg_theta.setZero();
     last_action.setZero();
     step_counter = 0;
+    motion_time = 0;
 
     for(int i = 0; i < 4; i++) {
         leg_theta[i] = gait_schedule[i];
     }
     initialized_ = true;
     running_ = false;
-    loadPolicy("../models/policy_whl.onnx");
+    loadPolicy("../models/policy_jumping_Jul_17_4250.onnx");
     std::cout << "Policy Loaded" << std::endl;
 
     return true;
@@ -58,20 +59,26 @@ bool RLController2::step(Vec23<double>* joint_q, Vec22<double>* joint_qd, Vec3<d
         
         // update commands, period and gait schedule:
         vel_commands = *desired_vel_xyw;
-        period = 0.6;
-        gait_schedule = Vec4<double>(0,M_PI,M_PI,0);
-            // Update leg phase angles
-            double time_step = 0.02;
-            double delta_theta = time_step/period * 2*M_PI;
-            // Update phase for each leg
-            for(int i = 0; i < 4; i++) {
-                leg_theta[i] += delta_theta;
-                // Convert polar to cartesian coordinates
-                leg_xy[2*i] = cos(leg_theta[i]);
-                leg_xy[2*i+1] = sin(leg_theta[i]);
-                // Update phase angle based on cartesian coordinates
-                leg_theta[i] = atan2(leg_xy[2*i+1], leg_xy[2*i]);
-            }
+        // if (motion_time>0.2 && motion_time<0.8) {
+        //     vel_commands[1] = 0.5;
+        // }
+        // else {
+        //     vel_commands[1] = 0.0;
+        // }
+        // period = 0.6;
+        // gait_schedule = Vec4<double>(0,M_PI,M_PI,0);
+        //     // Update leg phase angles
+        //     double time_step = 0.02;
+        //     double delta_theta = time_step/period * 2*M_PI;
+        //     // Update phase for each leg
+        //     for(int i = 0; i < 4; i++) {
+        //         leg_theta[i] += delta_theta;
+        //         // Convert polar to cartesian coordinates
+        //         leg_xy[2*i] = cos(leg_theta[i]);
+        //         leg_xy[2*i+1] = sin(leg_theta[i]);
+        //         // Update phase angle based on cartesian coordinates
+        //         leg_theta[i] = atan2(leg_xy[2*i+1], leg_xy[2*i]);
+        //     }
         // calculate current observation by concatenating:
         // 1. Base angular velocity (3)
         // 2. Projected gravity vector (3) 
@@ -79,15 +86,18 @@ bool RLController2::step(Vec23<double>* joint_q, Vec22<double>* joint_qd, Vec3<d
         // 4. Joint angle difference from default pose (12)
         // 5. Last actions taken (12)
         // 6. Leg phase angles in x-y coordinates (8)
-
+        // std::cout<<"stand_flag: "<<*stand_flag<<std::endl;
+        if (*stand_flag == 1 && motion_time <= 0.02) {
+            motion_time = motion_duration;
+        }
         observation.segment<3>(0) = body_ang_vel*0.25;
         observation.segment<3>(3) = projected_gravity;
         observation.segment<3>(6) = vel_commands.cwiseProduct(Vec3<double>(2.0, 2.0, 0.25));
-        observation[9] = *stand_flag;
-        observation.segment<12>(10) = (reordered_angles - default_dof_pos_obs)*1.0;
-        observation.segment<4>(22) = reordered_vels*0.05;
-        observation.segment<16>(26) = last_action;
-    
+        observation.segment<12>(9) = (reordered_angles - default_dof_pos_obs)*1.0;
+        observation.segment<4>(21) = reordered_vels*0.05;
+        observation.segment<16>(25) = last_action;
+        observation[41] = motion_time;
+        motion_time = std::max(0.0, motion_time - 0.02);
 
         // Store current observation in history buffer
         // Shift old observations left and add new observation at end
