@@ -46,7 +46,7 @@ void FSM_State_RL_Walk_2::run_state() {
     // 3. send to leg controller
     int i = 0;
     for (auto &leg: this->fsm_data_->leg_controller_->leg_command) {
-        leg.kp_joint = Vec3<double>(60, 60, 60).asDiagonal();
+        leg.kp_joint = Vec3<double>(80, 80, 80).asDiagonal();
         leg.kd_joint = Vec3<double>(2.0, 2.0, 2.0).asDiagonal();
         leg.q_des = Vec3<double>(rl_controller_->desired_positions[i*3], rl_controller_->desired_positions[i*3+1], rl_controller_->desired_positions[i*3+2]);
         leg.qd_des = Vec3<double>(0, 0, 0);

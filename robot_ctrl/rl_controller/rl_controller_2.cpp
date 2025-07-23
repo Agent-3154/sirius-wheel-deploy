@@ -15,7 +15,7 @@ bool RLController2::init() {
     }
     initialized_ = true;
     running_ = false;
-    loadPolicy("../models/policy_jumping_Jul_17_4250.onnx");
+    loadPolicy("../models/policy_flipping_Jul_22_300_landing2.onnx");
     std::cout << "Policy Loaded" << std::endl;
 
     return true;
@@ -59,12 +59,12 @@ bool RLController2::step(Vec23<double>* joint_q, Vec22<double>* joint_qd, Vec3<d
         
         // update commands, period and gait schedule:
         vel_commands = *desired_vel_xyw;
-        // if (motion_time>0.2 && motion_time<0.8) {
-        //     vel_commands[1] = 0.5;
-        // }
-        // else {
-        //     vel_commands[1] = 0.0;
-        // }
+        if ((motion_time/motion_duration>0.2) && (motion_time/motion_duration<0.8)) {
+            vel_commands[1] = 0.5;
+        }
+        else {
+            vel_commands[1] = 0.0;
+        }
         // period = 0.6;
         // gait_schedule = Vec4<double>(0,M_PI,M_PI,0);
         //     // Update leg phase angles

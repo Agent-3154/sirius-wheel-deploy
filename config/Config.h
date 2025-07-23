@@ -43,7 +43,7 @@ namespace Config {
 
     // TODO: Is the abad axis inverse?
     constexpr double damping_kd = 4;
-    constexpr double qd_danger = 18.;
+    constexpr double qd_danger = 25.;
     // Task frequency
     constexpr int sim_remote_controller_task_fre = 200;
     constexpr int sim_robot_runner_task_fre = 500;
