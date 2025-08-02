@@ -26,7 +26,7 @@ struct FSM_StateList {
 
 class ControlFSM {
 public:
-    ControlFSM(usb_controller::logic_remote_controller *rc,
+    ControlFSM(usb_controller::LogicRemoteController *rc,
                Leg_Controller<double> *leg_control, StateEstimatorContainer<double> *stateEsti);
 
     void ControlFSM_run();

@@ -21,8 +21,10 @@ namespace HardwareBridge {
 
         ~My_HardwareBridge();
 
-        [[noreturn]] void setup_HardwareBridge(bool real_imu, bool real_usb2can, bool real_rc, bool unitree_);
+        void setup_HardwareBridge(bool real_imu, bool real_usb2can, bool real_rc, bool unitree_);
         //todo Add robot controller
+        [[noreturn]] void run();
+        
     private:
         std::thread thread_usb2can_;
         std::thread thread_imu_;
@@ -45,7 +47,7 @@ namespace HardwareBridge {
         USB_HARDWARE::Beast_USB2CAN *usb2can_board_handle_ = nullptr;
         USB_HARDWARE::USB_IMU *imu_handle_ = nullptr;
         USB_HARDWARE::USB_Hardware_Containers* usb_container_;
-        usb_controller::logic_remote_controller *rc_handle_ = nullptr;
+        usb_controller::LogicRemoteController *rc_handle_ = nullptr;
 
         USB_Command_t *usb_cmd_;
         USB_Data_t *usb_data_;

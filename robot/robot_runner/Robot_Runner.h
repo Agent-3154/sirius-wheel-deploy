@@ -38,7 +38,7 @@ public:
 
     ~RobotRunner() = default;
 
-    usb_controller::logic_remote_controller *runner_rc_ = nullptr;
+    usb_controller::LogicRemoteController *runner_rc_ = nullptr;
     USB_HARDWARE::Beast_USB2CAN *runner_usb2can_ = nullptr;
     USB_HARDWARE::USB_IMU *runner_imu_ = nullptr;
     USB_Data_t *runner_usbdata_ = nullptr;

@@ -14,7 +14,7 @@ namespace Thread {
 
     }
 
-    [[noreturn]] void thread_rc::thread_loop(usb_controller::logic_remote_controller *handle, bool print_rc_data) {
+    [[noreturn]] void thread_rc::thread_loop(usb_controller::LogicRemoteController *handle, bool print_rc_data) {
         (void ) print_rc_data;
         std::cout << GREEN << "[Thread RC OK]: " << RESET << "Initialize RC thread!\n";
         while (true) {

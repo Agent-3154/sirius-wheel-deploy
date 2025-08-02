@@ -8,8 +8,11 @@
 #include "../../utilities/types/std_cout_colors.h"
 #include "../../utilities/inc/utilities_fun.h"
 
-namespace usb_controller {
-    ssize_t logic_remote_controller::rc_map_read(int rc_fd, xbox_map_t *map) {
+namespace usb_controller
+{
+
+    ssize_t LogicRemoteController::rc_map_read(int rc_fd, xbox_map_t *map)
+    {
         int type, number, value;
         ssize_t length = read(rc_fd, &joystick, sizeof(struct js_event));
         type = joystick.type;
@@ -17,111 +20,122 @@ namespace usb_controller {
         value = joystick.value;
         map->time = joystick.time;
         //        std::cout << "Joystick time:" << joystick.time << std::endl;
-        if (type == JS_EVENT_BUTTON) {
-            switch (number) {
-                case XBOX_BUTTON_A:
-                    map->a = value;
-                    //std::cout << "a" << "\n" << std::endl;
-                    break;
-                case XBOX_BUTTON_B:
-                    map->b = value;
-                    //std::cout << "b" << "\n" << std::endl;
-                    break;
-                case XBOX_BUTTON_X:
-                    map->x = value;
-                    //std::cout << "x" << "\n" << std::endl;
-                    break;
-                case XBOX_BUTTON_Y:
-                    map->y = value;
-                    //std::cout << "y" << "\n" << std::endl;
-                    break;
-                case XBOX_BUTTON_LB:
-                    map->lb = value;
-                    //std::cout << "lb" << "\n" << std::endl;
-                    break;
-                case XBOX_BUTTON_RB:
-                    map->rb = value;
-                    break;
-                case XBOX_BUTTON_START:
-                    map->start = value;
-                    break;
-                case XBOX_BUTTON_SELECT:
-                    map->select = value;
-                    break;
-                case XBOX_BUTTON_LO:
-                    map->lo = value;
-                    break;
-                case XBOX_BUTTON_RO:
-                    map->ro = value;
-                    break;
-                default:
-                    break;
+        if (type == JS_EVENT_BUTTON)
+        {
+            switch (number)
+            {
+            case XBOX_BUTTON_A:
+                map->a = value;
+                // std::cout << "a" << "\n" << std::endl;
+                break;
+            case XBOX_BUTTON_B:
+                map->b = value;
+                // std::cout << "b" << "\n" << std::endl;
+                break;
+            case XBOX_BUTTON_X:
+                map->x = value;
+                // std::cout << "x" << "\n" << std::endl;
+                break;
+            case XBOX_BUTTON_Y:
+                map->y = value;
+                // std::cout << "y" << "\n" << std::endl;
+                break;
+            case XBOX_BUTTON_LB:
+                map->lb = value;
+                // std::cout << "lb" << "\n" << std::endl;
+                break;
+            case XBOX_BUTTON_RB:
+                map->rb = value;
+                break;
+            case XBOX_BUTTON_START:
+                map->start = value;
+                break;
+            case XBOX_BUTTON_SELECT:
+                map->select = value;
+                break;
+            case XBOX_BUTTON_LO:
+                map->lo = value;
+                break;
+            case XBOX_BUTTON_RO:
+                map->ro = value;
+                break;
+            default:
+                break;
             }
-        } else if (type == JS_EVENT_AXIS) {
-            switch (number) {
-                case XBOX_AXIS_LX:
-                    map->lx = deadzone_func(value, data_deadzone_width);
-                    break;
-                case XBOX_AXIS_LY:
-                    map->ly = deadzone_func(value, data_deadzone_width);
-                    break;
-                case XBOX_AXIS_RX:
-                    map->rx = deadzone_func(value, data_deadzone_width);
-                    break;
-                case XBOX_AXIS_RY:
-                    map->ry = deadzone_func(value, data_deadzone_width);
-                    break;
-                case XBOX_AXIS_LT:
-                    map->lt = deadzone_func(value, data_deadzone_width);
-                    break;
-                case XBOX_AXIS_RT:
-                    map->rt = deadzone_func(value, data_deadzone_width);
-                    break;
-                case XBOX_AXIS_XX: //方向键
-                    map->xx = value;
-                    break;
-                case XBOX_AXIS_YY:
-                    map->yy = value;
-                    break;
-                default:
-                    break;
+        }
+        else if (type == JS_EVENT_AXIS)
+        {
+            switch (number)
+            {
+            case XBOX_AXIS_LX:
+                map->lx = deadzone_func(value, data_deadzone_width);
+                break;
+            case XBOX_AXIS_LY:
+                map->ly = deadzone_func(value, data_deadzone_width);
+                break;
+            case XBOX_AXIS_RX:
+                map->rx = deadzone_func(value, data_deadzone_width);
+                break;
+            case XBOX_AXIS_RY:
+                map->ry = deadzone_func(value, data_deadzone_width);
+                break;
+            case XBOX_AXIS_LT:
+                map->lt = deadzone_func(value, data_deadzone_width);
+                break;
+            case XBOX_AXIS_RT:
+                map->rt = deadzone_func(value, data_deadzone_width);
+                break;
+            case XBOX_AXIS_XX: // 方向键
+                map->xx = value;
+                break;
+            case XBOX_AXIS_YY:
+                map->yy = value;
+                break;
+            default:
+                break;
             }
-        } else {
+        }
+        else
+        {
             /* Init do nothing */
             //            std::cout << "STUCH ELSE\n";
         }
-        if (print_data_) {
-            std::cout << MAGENTA << "[RC DATA]: " << RESET << "a:" << map->a << " | " << "b:" << map->b << " | " <<
-                    "xx: " << map->xx << " | rt: " << map->rt << " | lt: " << map->lt << " | lx: " << map->lx
-                    << " | ly: " << map->ly << " | rb: " << map->rb << " | rx: " << map->rx << " | ry: " << map->ry
-                    << " | x: " << map->x << " | y: " << map->y << " | yy: " << map->yy << " | lb: " << map->lb
-                    << " | lo: " << map->lo << " | ro: " << map->ro << " | start: " << map->start << " | back: "
-                    << map->back
-                    << " | home: " << map->home << " | select: " << map->select
-                    << std::endl;
+        if (print_data_)
+        {
+            std::cout << MAGENTA << "[RC DATA]: " << RESET << "a:" << map->a << " | " << "b:" << map->b << " | " << "xx: " << map->xx << " | rt: " << map->rt << " | lt: " << map->lt << " | lx: " << map->lx
+                      << " | ly: " << map->ly << " | rb: " << map->rb << " | rx: " << map->rx << " | ry: " << map->ry
+                      << " | x: " << map->x << " | y: " << map->y << " | yy: " << map->yy << " | lb: " << map->lb
+                      << " | lo: " << map->lo << " | ro: " << map->ro << " | start: " << map->start << " | back: "
+                      << map->back
+                      << " | home: " << map->home << " | select: " << map->select
+                      << std::endl;
         }
         return length;
     }
 
-    int logic_remote_controller::rc_open(const char *file_name) {
+    int LogicRemoteController::rc_open(const char *file_name)
+    {
         int local_rc_fd = open(file_name, O_RDONLY | O_NONBLOCK);
-        if (local_rc_fd < 0) {
+        if (local_rc_fd < 0)
+        {
             // std::cout << RED << "[RC ERROR]: " << RESET << "Can not open joystick!\n";
             return -1;
         }
         return local_rc_fd;
     }
 
-    void logic_remote_controller::rc_close() const {
+    void LogicRemoteController::rc_close() const
+    {
         close(rc_fd_);
         // std::cout << GREEN << "[RC SUCCESS]: " << RESET << "Close the rc controller!\n";
     }
 
-    ssize_t logic_remote_controller::rc_complete() {
+    ssize_t LogicRemoteController::rc_complete()
+    {
         // rt and lt range:-32767~32767, starts from -32767
         // button and direction(lxy and rxy): -32767 -32767^ 32767_ 32767
         ssize_t length = rc_map_read(rc_fd_, &rc_map_);
-        (void) length;
+        (void)length;
         //        std::cout << "Read length: " << length <<"\n";
         //        if (length < 0) return;
         {
@@ -132,19 +146,22 @@ namespace usb_controller {
             // if (rc_map_.lb && rc_map_.lo) {
             //     rc_control_.mode = SITDOWN;
             // }
-            if (rc_map_.lb && rc_map_.x) {
+            if (rc_map_.lb && rc_map_.x)
+            {
                 rc_control_.mode = SITDOWN;
             }
             // if (rc_map_.lb && rc_map_.x) {
             //     rc_control_.mode = PASSIVE;
             // }
-            if (rc_map_.rb && rc_map_.x) {
+            if (rc_map_.rb && rc_map_.x)
+            {
                 rc_control_.mode = PASSIVE;
             }
             // if (rc_map_.lb && rc_map_.rb) {
             //     rc_control_.mode = DAMPING;
             // }
-            if (rc_map_.lb && rc_map_.rb) {
+            if (rc_map_.lb && rc_map_.rb)
+            {
                 rc_control_.mode = DAMPING;
             }
             // if (rc_map_.lb && rc_map_.b)
@@ -165,20 +182,25 @@ namespace usb_controller {
                 rc_control_.mode = USER_INTERFACE;
 #endif
             // draw lines in simulation
-            if (rc_map_.select) {
+            if (rc_map_.select)
+            {
                 delay_count++;
-                if (!selected && (delay_count > 50)) {
+                if (!selected && (delay_count > 50))
+                {
                     rc_control_.variables[1] = 1;
                     selected = true;
                     delay_count = 0;
-                } else if (delay_count > 50) {
+                }
+                else if (delay_count > 50)
+                {
                     selected = false;
                     rc_control_.variables[1] = 2;
                     delay_count = 0;
                 }
             }
         }
-        if (rc_control_.mode == RL_WALK || rc_control_.mode == RL_WALK_2) {
+        if (rc_control_.mode == RL_WALK || rc_control_.mode == RL_WALK_2)
+        {
             rc_control_.v_des[0] = -static_cast<float>(rc_map_.ly) / 32768;
             rc_control_.v_des[1] = -static_cast<float>(rc_map_.lx) / 32768;
             rc_control_.v_des[2] = -static_cast<float>(rc_map_.rx) / 32768;
@@ -189,11 +211,13 @@ namespace usb_controller {
             // std::cout<<rc_map_.yy<<std::endl;
         }
         rc_control_.stand_flag = 0;
-        if (rc_map_.lb && (rc_map_.yy<-10000)) {
-                rc_control_.stand_flag = 1;
-            }
-            if (rc_map_.lb && (rc_map_.yy>10000)) {
-                rc_control_.stand_flag = 0;
+        if (rc_map_.lb && (rc_map_.yy < -10000))
+        {
+            rc_control_.stand_flag = 1;
+        }
+        if (rc_map_.lb && (rc_map_.yy > 10000))
+        {
+            rc_control_.stand_flag = 0;
         }
 
         // if (rc_control_.mode == LOCOMOTION) {
@@ -239,14 +263,19 @@ namespace usb_controller {
         return length;
     }
 
-
-    logic_remote_controller::logic_remote_controller(bool print_data) : print_data_(print_data),
-                                                                        rc_LCM(getLcmUrl(255)) {
-        rc_fd_ = rc_open("/dev/input/js0");
-        if (rc_fd_ > 0) {
+    LogicRemoteController::LogicRemoteController(
+        const std::string &device_file,
+        bool print_data) : device_file_(device_file),
+                           print_data_(print_data)
+    {
+        rc_fd_ = rc_open(device_file_.c_str()); //defaults to `/dev/input/js0`
+        if (rc_fd_ > 0)
+        {
             std::cout << GREEN << "[RC SUCCESS]: " << RESET << "Finish open the device js0!\n";
             std::cout << GREEN << "[RC LCM SUCCESS]: " << RESET << "Finish initializing the lcm!\n";
-        } else {
+        }
+        else
+        {
             std::cout << BOLDRED << "[RC ERROR]: " << RESET << "Can not open the device js0!\n";
         }
         rc_control_.step_height = 0.8;

@@ -15,7 +15,7 @@ namespace Thread {
 
         ~thread_rc() = default;
 
-        [[noreturn]] void thread_loop(usb_controller::logic_remote_controller *handle,  bool print_rc_data = false);
+        [[noreturn]] void thread_loop(usb_controller::LogicRemoteController *handle,  bool print_rc_data = false);
     };
 }
 #endif //MY_MUJOCO_SIMULATOR_THREAD_RC_H

@@ -10,7 +10,7 @@
 
 INITIALIZE_EASYLOGGINGPP
 
-ControlFSM::ControlFSM(usb_controller::logic_remote_controller *rc,
+ControlFSM::ControlFSM(usb_controller::LogicRemoteController *rc,
                        Leg_Controller<double> *leg_control, StateEstimatorContainer<double> *stateesti) {
     control_data_.leg_controller_ = leg_control;
     control_data_.estimators_ = stateesti;

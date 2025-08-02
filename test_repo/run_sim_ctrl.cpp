@@ -34,5 +34,6 @@ int main(int argc, char **argv) {
 #endif
     HardwareBridge::My_HardwareBridge sim_ctrl(model_name, robot_ctrl, type_);
     sim_ctrl.setup_HardwareBridge(launch_imu, launch_usb2can, launch_rc, unitree);
+    sim_ctrl.run();
     return 0;
 }

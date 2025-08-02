@@ -25,7 +25,7 @@ protected:
     Leg_Controller<double> *leg_controller_ = nullptr;
     StateEstimateOutput<double> *state_esti_ouput_ = nullptr;
     StateEstimatorContainer<double> *estimators_ = nullptr;
-    usb_controller::logic_remote_controller *ctrl_rc_ = nullptr;
+    usb_controller::LogicRemoteController *ctrl_rc_ = nullptr;
 
 };
 

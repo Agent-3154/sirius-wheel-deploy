@@ -13,7 +13,7 @@
 typedef struct Control_FSM_Data {
     Leg_Controller<double> *leg_controller_ = nullptr;
     StateEstimatorContainer<double> *estimators_ = nullptr;
-    usb_controller::logic_remote_controller *rc_ = nullptr;
+    usb_controller::LogicRemoteController *rc_ = nullptr;
     std::mutex fsm_data_mutex_;
 } Control_FSM_Data_t;
 

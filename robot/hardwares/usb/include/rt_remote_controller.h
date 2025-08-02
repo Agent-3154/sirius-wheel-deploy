@@ -95,8 +95,11 @@ namespace usb_controller {
 
     } xbox_map_t;
 
-    class logic_remote_controller {
+    class LogicRemoteController {
     public:
+        std::string device_file_;
+        bool print_data_ = false;
+        
         std::mutex rc_mtx_;
         rc_control_variable_t rc_control_{};
         xbox_map_t rc_map_{};
@@ -104,15 +107,17 @@ namespace usb_controller {
         int delay_count{};
         struct js_event joystick{};
         int joystick_gait;
-        bool print_data_ = false;
         int rc_fd_;
         lcm::LCM rc_LCM;
         rc_lcmt rc_lcmdata{};
         int data_deadzone_width = 600;
 
-        explicit logic_remote_controller(bool print_data = false);
+        explicit LogicRemoteController(
+            const std::string &device_file="/dev/input/js0",
+            bool print_data = false
+        );
 
-        ~logic_remote_controller() = default;
+        ~LogicRemoteController() = default;
 
         ssize_t rc_map_read(int rc_fd, xbox_map_t *map);
 
