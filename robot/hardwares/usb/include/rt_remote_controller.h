@@ -8,10 +8,14 @@
 #include <thread>
 #include <mutex>
 #include <linux/joystick.h>
+#include <map>
+#include <string>
 #include "lcm/lcm-cpp.hpp"
 #include "../../lcm-types/cpp/rc_lcmt.hpp"
 
 namespace usb_controller {
+
+// Default Xbox button mappings (fallback if no config file is provided)
 #define XBOX_BUTTON_A       0x00
 #define XBOX_BUTTON_B       0x01
 #define XBOX_BUTTON_X       0x03
@@ -43,6 +47,49 @@ namespace usb_controller {
 #define XBOX_AXIS_RT        0x05
 #define XBOX_AXIS_XX        0x06    /* 方向键X轴 */
 #define XBOX_AXIS_YY        0x07    /* 方向键Y轴 */
+
+    // Button mapping configuration structure
+    struct ButtonMapping {
+        std::map<std::string, int> buttons;
+        std::map<std::string, int> axes;
+        
+        // Default constructor with Xbox mappings
+        ButtonMapping() {
+            // Button mappings
+            buttons["A"] = XBOX_BUTTON_A;
+            buttons["B"] = XBOX_BUTTON_B;
+            buttons["X"] = XBOX_BUTTON_X;
+            buttons["Y"] = XBOX_BUTTON_Y;
+            buttons["LB"] = XBOX_BUTTON_LB;
+            buttons["RB"] = XBOX_BUTTON_RB;
+            buttons["START"] = XBOX_BUTTON_START;
+            buttons["SELECT"] = XBOX_BUTTON_SELECT;
+            buttons["LO"] = XBOX_BUTTON_LO;
+            buttons["RO"] = XBOX_BUTTON_RO;
+            
+            // Axis mappings
+            axes["LX"] = XBOX_AXIS_LX;
+            axes["LY"] = XBOX_AXIS_LY;
+            axes["RX"] = XBOX_AXIS_RX;
+            axes["RY"] = XBOX_AXIS_RY;
+            axes["LT"] = XBOX_AXIS_LT;
+            axes["RT"] = XBOX_AXIS_RT;
+            axes["XX"] = XBOX_AXIS_XX;
+            axes["YY"] = XBOX_AXIS_YY;
+        }
+        
+        // Get button number by name
+        int getButton(const std::string& name) const {
+            auto it = buttons.find(name);
+            return (it != buttons.end()) ? it->second : -1;
+        }
+        
+        // Get axis number by name
+        int getAxis(const std::string& name) const {
+            auto it = axes.find(name);
+            return (it != axes.end()) ? it->second : -1;
+        }
+    };
 
     typedef struct rc_control_variable_ {
         int mode;
@@ -99,6 +146,8 @@ namespace usb_controller {
     public:
         std::string device_file_;
         bool print_data_ = false;
+        std::string config_file_;  // Path to button mapping configuration file
+        ButtonMapping button_mapping_;  // Button mapping configuration
         
         std::mutex rc_mtx_;
         rc_control_variable_t rc_control_{};
@@ -114,7 +163,8 @@ namespace usb_controller {
 
         explicit LogicRemoteController(
             const std::string &device_file="/dev/input/js0",
-            bool print_data = false
+            bool print_data = false,
+            const std::string &config_file = ""
         );
 
         ~LogicRemoteController() = default;
@@ -126,6 +176,12 @@ namespace usb_controller {
         void rc_close() const;
 
         ssize_t rc_complete();
+        
+        // Load button mapping configuration from YAML file
+        bool loadButtonMapping(const std::string& config_file);
+        
+        // Get button mapping (for debugging/testing)
+        const ButtonMapping& getButtonMapping() const { return button_mapping_; }
     };
 }
 

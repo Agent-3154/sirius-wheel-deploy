@@ -30,11 +30,10 @@
 #include "../../utilities/inc/thread_timer.h"
 #include "../../quadruped_share_data/robot_state_protocols.h"
 
-class RobotRunner {
+class RobotRunner
+{
 public:
     explicit RobotRunner(std::string &model_name, Robot_Controller_Base *control_base, Config::run_type sim_real);
-
-    // void lcm_handle_func();
 
     ~RobotRunner() = default;
 
@@ -46,12 +45,12 @@ public:
     USB_Imu_t *runner_imudata_ = nullptr;
 
     void init_robotrunner();
+    void run_step(int step_count);
+    void setupStep();
+    void finalStep();
 
-    void run();
+    std::mutex sim_mtx; // for sim
 
-    std::mutex sim_mtx; //for sim
-
-    //    std::atomic_bool ato_print_data_ = false;
     std::array<double, 7> groud_truth_q{};
     std::array<double, 6> ground_truth_qd_{};
 
@@ -60,11 +59,6 @@ public:
     Leg_Controller<double> *leg_controller_ = nullptr;
     StateEstimateOutput<double> state_esti_ouput_;
     StateEstimatorContainer<double> *estimators_ = nullptr;
-    // this mjModel is used for initiate
-
-    void setupStep();
-
-    void finalStep();
 
     // lcm types
     state_estimator_lcmt lcm_state_estimate{};
@@ -91,7 +85,25 @@ public:
     std::thread thread_subscriber_;
     std::shared_ptr<Thread::thread_timer> robot_runner_timer_;
     void thread_subscriber_function();
+    void publishMotorCommands();
+    void copyLegMotorCommands(auto &sample);
+    void copyWheelMotorCommands(auto &sample);
+    void copyImuData(auto &sample);
+    void copyLegData(auto &sample);
+    void copyWheelData(auto &sample);
 #endif
+
+private:
+    // Helper methods for data handling
+    void updateDataFromUSB();
+    void updateDataFromSimulation();
+    void runEstimatorsWithLock();
+    
+    // Helper methods for command handling
+    void sendCommandsToUSB();
+    void sendCommandsToSimulation();
+    void sendCommandsToLCM();
+    void publishData();
 };
 
-#endif //MY_MUJOCO_SIMULATOR_ROBOT_RUNNER_H
+#endif // MY_MUJOCO_SIMULATOR_ROBOT_RUNNER_H

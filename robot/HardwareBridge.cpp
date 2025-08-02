@@ -41,7 +41,7 @@ HardwareBridge::My_HardwareBridge::~My_HardwareBridge()
  * @param real_rc: control the thread of rc
  */
 void HardwareBridge::My_HardwareBridge::setup_HardwareBridge(const bool real_imu, const bool real_usb2can,
-                                                        const bool real_rc, const bool unitree_)
+                                                             const bool real_rc, const bool unitree_)
 {
     t_usb_ = std::make_shared<Thread::thread_usb_hardwares>("USB Hardwares", 0);
     if (!unitree_)
@@ -90,7 +90,11 @@ void HardwareBridge::My_HardwareBridge::setup_HardwareBridge(const bool real_imu
         {
             t_rc_ = std::make_shared<Thread::thread_rc>("RC Thread", 200);
             // tp_rc_ = std::make_shared<Utilities::ThreadPool>(1);
-            this->rc_handle_ = new usb_controller::LogicRemoteController("/dev/input/js0", false);
+            this->rc_handle_ = new usb_controller::LogicRemoteController(
+                "/dev/input/js0",
+                false,
+                "../robot/hardwares/usb/config/BTP-KP20.yaml"
+            );
             // tp_rc_->Schedule([this]() { t_rc_->thread_loop(rc_handle_); });
             this->thread_rc_ = std::thread(&My_HardwareBridge::thread_rc_function, this);
             this->robot_runner_->runner_rc_ = this->rc_handle_;
@@ -123,11 +127,26 @@ void HardwareBridge::My_HardwareBridge::setup_HardwareBridge(const bool real_imu
 
 [[noreturn]] void HardwareBridge::My_HardwareBridge::run()
 {
+    auto last_print_time = std::chrono::steady_clock::now();
+    const auto print_interval = std::chrono::seconds(1); // Print every second
+    int step_count = 0;
+
     for (;;)
     {
         this->t_robot_runner_->thread_enter_task();
-        this->robot_runner_->run();
+        this->robot_runner_->run_step(step_count);
         this->t_robot_runner_->thread_finish_task();
+
+        step_count++;
+        auto current_time = std::chrono::steady_clock::now();
+        if (step_count % 1000 == 0)
+        {
+            auto interval_duration = std::chrono::duration_cast<std::chrono::milliseconds>(current_time - last_print_time);
+            double frequency = (step_count * 1000.0) / interval_duration.count();
+            std::cout << GREEN << "[Main Loop Frequency]: " << RESET << frequency << " Hz" << std::endl;
+            last_print_time = current_time;
+            step_count = 0; // Reset counter for next interval
+        }
     }
 }
 

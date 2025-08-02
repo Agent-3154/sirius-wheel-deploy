@@ -1,0 +1,27 @@
+# Generic Controller Button Mapping Configuration
+# This file maps button names to their corresponding joystick event numbers
+# Modify the numbers below to match your specific controller
+
+# Button mappings
+buttons:
+  A: 0        # Primary action button
+  B: 1        # Secondary action button
+  X: 2        # Tertiary action button
+  Y: 3        # Quaternary action button
+  LB: 4       # Left shoulder button
+  RB: 5       # Right shoulder button
+  START: 6    # Start/Menu button
+  SELECT: 7   # Select/Back button
+  LO: 8       # Left stick press
+  RO: 9       # Right stick press
+
+# Axis mappings
+axes:
+  LX: 0       # Left stick X-axis
+  LY: 1       # Left stick Y-axis
+  RX: 2       # Right stick X-axis
+  RY: 3       # Right stick Y-axis
+  LT: 4       # Left trigger
+  RT: 5       # Right trigger
+  XX: 6       # D-pad X-axis
+  YY: 7       # D-pad Y-axis 

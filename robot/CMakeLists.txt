@@ -25,6 +25,7 @@ include(GNUInstallDirs)
 find_package(iceoryx_platform REQUIRED)
 find_package(iceoryx_posh CONFIG REQUIRED)
 find_package(iceoryx_hoofs CONFIG REQUIRED)
+find_package(yaml-cpp REQUIRED)
 
 add_library(hardware_library SHARED ${hardware_sources}
         thread_tasks/inc/thread_usb_hardware.h

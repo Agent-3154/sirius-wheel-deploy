@@ -11,7 +11,8 @@
 INITIALIZE_EASYLOGGINGPP
 
 ControlFSM::ControlFSM(usb_controller::LogicRemoteController *rc,
-                       Leg_Controller<double> *leg_control, StateEstimatorContainer<double> *stateesti) {
+                       Leg_Controller<double> *leg_control, StateEstimatorContainer<double> *stateesti)
+{
     control_data_.leg_controller_ = leg_control;
     control_data_.estimators_ = stateesti;
     control_data_.rc_ = rc;
@@ -32,95 +33,145 @@ ControlFSM::ControlFSM(usb_controller::LogicRemoteController *rc,
     state_next_ = state_current_;
 }
 
-void ControlFSM::ControlFSM_run() {
-    if (state_next_ == state_current_) {
-        switch (state_current_->fsm_name_) {
-            case PASSIVE:
-                if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::RECOVER_STAND) {
-                    state_list_.s_standup->fold_flag_ = true;
-                    state_next_ = state_list_.s_standup;
-                } else if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::USER_INTERFACE) {
-                    state_next_ = state_list_.s_user_interface;
-                } else { control_data_.rc_->rc_control_.mode = usb_controller::RC_MODE::PASSIVE; }
+void ControlFSM::ControlFSM_run()
+{
+    if (state_next_ == state_current_)
+    {
+        switch (state_current_->fsm_name_)
+        {
+        case PASSIVE:
+            if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::RECOVER_STAND)
+            {
+                state_list_.s_standup->fold_flag_ = true;
+                state_next_ = state_list_.s_standup;
+            }
+            else if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::USER_INTERFACE)
+            {
+                state_next_ = state_list_.s_user_interface;
+            }
+            else
+            {
+                control_data_.rc_->rc_control_.mode = usb_controller::RC_MODE::PASSIVE;
+            }
+            break;
+        case STAND_UP:
+            if (state_current_->is_busy())
                 break;
-            case STAND_UP:
-                if (state_current_->is_busy()) break;
-                if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::SITDOWN) {
-                    state_next_ = state_list_.s_sitdown;
-                } else if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::DAMPING) {
-                    state_next_ = state_list_.s_damping;
-                } else if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::RL_WALK) {
-                    state_next_ = state_list_.s_rl_walk;
-                } else if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::RL_WALK_2) {
-                    state_next_ = state_list_.s_rl_walk_2;
-                } else {
-                    control_data_.rc_->rc_control_.mode = usb_controller::RC_MODE::RECOVER_STAND;
-                }
+            if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::SITDOWN)
+            {
+                state_next_ = state_list_.s_sitdown;
+            }
+            else if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::DAMPING)
+            {
+                state_next_ = state_list_.s_damping;
+            }
+            else if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::RL_WALK)
+            {
+                state_next_ = state_list_.s_rl_walk;
+            }
+            else if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::RL_WALK_2)
+            {
+                state_next_ = state_list_.s_rl_walk_2;
+            }
+            else
+            {
+                control_data_.rc_->rc_control_.mode = usb_controller::RC_MODE::RECOVER_STAND;
+            }
+            break;
+        case SIT_DOWN:
+            if (state_current_->is_busy())
                 break;
-            case SIT_DOWN:
-                if (state_current_->is_busy()) break;
-                if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::PASSIVE) {
-                    state_next_ = state_list_.s_passive;
-                } else if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::RECOVER_STAND) {
-                    state_list_.s_standup->fold_flag_ = true;
-                    state_next_ = state_list_.s_standup;
-                } else {
-                    control_data_.rc_->rc_control_.mode = usb_controller::RC_MODE::SITDOWN;
-                }
+            if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::PASSIVE)
+            {
+                state_next_ = state_list_.s_passive;
+            }
+            else if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::RECOVER_STAND)
+            {
+                state_list_.s_standup->fold_flag_ = true;
+                state_next_ = state_list_.s_standup;
+            }
+            else
+            {
+                control_data_.rc_->rc_control_.mode = usb_controller::RC_MODE::SITDOWN;
+            }
+            break;
+        case DAMPING:
+            if (state_current_->is_busy())
                 break;
-            case DAMPING:
-                if (state_current_->is_busy()) break;
-                if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::RECOVER_STAND) {
-                    state_list_.s_standup->fold_flag_ = true;
-                    state_next_ = state_list_.s_standup;
-                } else if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::PASSIVE) {
-                    state_next_ = state_list_.s_passive;
-                } else {
-                    control_data_.rc_->rc_control_.mode = usb_controller::RC_MODE::DAMPING;
-                }
+            if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::RECOVER_STAND)
+            {
+                state_list_.s_standup->fold_flag_ = true;
+                state_next_ = state_list_.s_standup;
+            }
+            else if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::PASSIVE)
+            {
+                state_next_ = state_list_.s_passive;
+            }
+            else
+            {
+                control_data_.rc_->rc_control_.mode = usb_controller::RC_MODE::DAMPING;
+            }
+            break;
+        case RL_WALK:
+            if (state_current_->is_busy())
                 break;
-            case RL_WALK:
-                if (state_current_->is_busy()) break;
-                if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::RECOVER_STAND) {
-                    state_list_.s_standup->fold_flag_ = false;
-                    state_next_ = state_list_.s_standup;
-                } else if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::DAMPING) {
-                    state_next_ = state_list_.s_damping;
-                } else {
-                    control_data_.rc_->rc_control_.mode = usb_controller::RC_MODE::RL_WALK;
-                }
+            if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::RECOVER_STAND)
+            {
+                state_list_.s_standup->fold_flag_ = false;
+                state_next_ = state_list_.s_standup;
+            }
+            else if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::DAMPING)
+            {
+                state_next_ = state_list_.s_damping;
+            }
+            else
+            {
+                control_data_.rc_->rc_control_.mode = usb_controller::RC_MODE::RL_WALK;
+            }
+            break;
+        case RL_WALK_2:
+            if (state_current_->is_busy())
                 break;
-            case RL_WALK_2:
-                if (state_current_->is_busy()) break;
-                if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::RECOVER_STAND) {
-                    state_list_.s_standup->fold_flag_ = false;
-                    state_next_ = state_list_.s_standup;
-                } else if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::DAMPING) {
-                    state_next_ = state_list_.s_damping;
-                } else {
-                    control_data_.rc_->rc_control_.mode = usb_controller::RC_MODE::RL_WALK_2;
-                }
+            if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::RECOVER_STAND)
+            {
+                state_list_.s_standup->fold_flag_ = false;
+                state_next_ = state_list_.s_standup;
+            }
+            else if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::DAMPING)
+            {
+                state_next_ = state_list_.s_damping;
+            }
+            else
+            {
+                control_data_.rc_->rc_control_.mode = usb_controller::RC_MODE::RL_WALK_2;
+            }
+            break;
+        case USER_INTERFACE:
+            if (state_current_->is_busy())
                 break;
-            case USER_INTERFACE:
-                if (state_current_->is_busy())break;
-                if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::DAMPING) {
-                    state_next_ = state_list_.s_damping;
-                }
-            default:
-                break;
+            if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::DAMPING)
+            {
+                state_next_ = state_list_.s_damping;
+            }
+        default:
+            break;
         }
     }
 
     // safety check
-    for (auto &i: control_data_.leg_controller_->leg_data) {
-        for (int j = 0; j < 3; j++) {
-            if (i.qd(j) > Config::qd_danger) {
+    for (auto &i : control_data_.leg_controller_->leg_data)
+    {
+        for (int j = 0; j < 3; j++)
+        {
+            if (i.qd(j) > Config::qd_danger)
+            {
                 danger_times_++;
             }
         }
     }
 
-    if (danger_times_ > 10) {
+    if (danger_times_ > 10)
+    {
         LOG(WARNING) << "Reach the danger velocity!";
         state_next_ = state_list_.s_damping;
         danger_times_ = 0;
@@ -131,18 +182,26 @@ void ControlFSM::ControlFSM_run() {
     // }
 
     // switch state
-    if (state_next_ != state_current_) {
-        if (!state_current_->is_busy()) {
+    if (state_next_ != state_current_)
+    {
+        if (!state_current_->is_busy())
+        {
             state_current_->state_on_exit();
-            if (state_next_->state_on_enter()) {
+            if (state_next_->state_on_enter())
+            {
                 state_current_ = state_next_;
-            } else { state_next_ = state_current_; }
+            }
+            else
+            {
+                state_next_ = state_current_;
+            }
         }
     }
     state_current_->run_state();
 }
 
-void ControlFSM::Get_Settings() {
+void ControlFSM::Get_Settings()
+{
     const std::string setting_name = "State_Parameters";
     const std::string file_name = Config::path_2_config_directory + "config/Control_Parameters.info";
     boost::property_tree::ptree pt;

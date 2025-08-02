@@ -19,6 +19,7 @@ else()
 
     add_executable(sim_ctrl run_sim_ctrl.cpp)
     target_link_libraries(sim_ctrl hardware_library robot_ctrl_library ${onnx})
+    target_link_libraries(sim_ctrl yaml-cpp)
 
     add_executable(show_robot real_robot_show.cpp)
     target_link_libraries(show_robot simulation_library hardware_library robot_ctrl_library ${onnx})

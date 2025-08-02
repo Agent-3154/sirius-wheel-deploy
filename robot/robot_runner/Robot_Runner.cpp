@@ -92,35 +92,16 @@ void RobotRunner::setupStep() {
     }
 }
 
-void RobotRunner::run() {
-    // run estimators
-    // runner_timer_.timer_record();
-    // if (sim_ != sim_embedded_in_other) {
+void RobotRunner::run_step(int step_count) {
     if (sim_ == Config::real_usb) {
         std::lock_guard<std::mutex> lk(runner_imu_->imu_mtx);
         estimators_->run_estimators();
     } else if (sim_ == Config::sim_mj) {
         estimators_->run_estimators();
-        // for (int i = 0; i < 3; i++) {
-        // this->estimators_->shared_esti_data_.result_->p_w_(i) = groud_truth_q[i];
-        // this->estimators_->shared_esti_data_.result_->v_w_(i) = ground_truth_qd_[i];
-        // this->estimators_->shared_esti_data_.result_->omega_w_(i) = ground_truth_qd_[i + 3];
-        // this->estimators_->shared_esti_data_.result_->q_ori_(i) = groud_truth_q[i + 3];
-        // }
-        // this->estimators_->shared_esti_data_.result_->q_ori_(3) = groud_truth_q[6];
-        // this->estimators_->shared_esti_data_.result_->r_b_ = ori::quaternionToRotationMatrix(
-        // this->estimators_->shared_esti_data_.result_->q_ori_);
     }
     setupStep();
-    // runner_timer_.timer_exit(1);
-    // TODO run controller here
-    // runner_timer_.timer_record();
     robot_ctrl_->run();
-    // runner_timer_.timer_exit(2);
-    // runner_timer_.timer_record();
     finalStep();
-    // }
-    // runner_timer_.timer_exit(3);
 }
 
 void RobotRunner::finalStep() {

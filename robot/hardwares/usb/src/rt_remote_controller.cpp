@@ -5,6 +5,8 @@
 #include <iostream>
 #include <fcntl.h>
 #include <unistd.h>
+#include <fstream>
+#include <yaml-cpp/yaml.h>
 #include "../../utilities/types/std_cout_colors.h"
 #include "../../utilities/inc/utilities_fun.h"
 
@@ -19,81 +21,55 @@ namespace usb_controller
         number = joystick.number;
         value = joystick.value;
         map->time = joystick.time;
-        //        std::cout << "Joystick time:" << joystick.time << std::endl;
+
+        // std::cout << "Joystick time:" << joystick.time << std::endl;
+        // std::cout << "Joystick type:" << type << std::endl;
+        // std::cout << "Joystick number:" << number << std::endl;
+        // std::cout << "Joystick value:" << value << std::endl;
+
         if (type == JS_EVENT_BUTTON)
         {
-            switch (number)
-            {
-            case XBOX_BUTTON_A:
+            // Use configurable button mappings
+            if (number == button_mapping_.getButton("A"))
                 map->a = value;
-                // std::cout << "a" << "\n" << std::endl;
-                break;
-            case XBOX_BUTTON_B:
+            else if (number == button_mapping_.getButton("B"))
                 map->b = value;
-                // std::cout << "b" << "\n" << std::endl;
-                break;
-            case XBOX_BUTTON_X:
+            else if (number == button_mapping_.getButton("X"))
                 map->x = value;
-                // std::cout << "x" << "\n" << std::endl;
-                break;
-            case XBOX_BUTTON_Y:
+            else if (number == button_mapping_.getButton("Y"))
                 map->y = value;
-                // std::cout << "y" << "\n" << std::endl;
-                break;
-            case XBOX_BUTTON_LB:
+            else if (number == button_mapping_.getButton("LB"))
                 map->lb = value;
-                // std::cout << "lb" << "\n" << std::endl;
-                break;
-            case XBOX_BUTTON_RB:
+            else if (number == button_mapping_.getButton("RB"))
                 map->rb = value;
-                break;
-            case XBOX_BUTTON_START:
+            else if (number == button_mapping_.getButton("START"))
                 map->start = value;
-                break;
-            case XBOX_BUTTON_SELECT:
+            else if (number == button_mapping_.getButton("SELECT"))
                 map->select = value;
-                break;
-            case XBOX_BUTTON_LO:
+            else if (number == button_mapping_.getButton("LO"))
                 map->lo = value;
-                break;
-            case XBOX_BUTTON_RO:
+            else if (number == button_mapping_.getButton("RO"))
                 map->ro = value;
-                break;
-            default:
-                break;
-            }
         }
         else if (type == JS_EVENT_AXIS)
         {
-            switch (number)
-            {
-            case XBOX_AXIS_LX:
+            // Use configurable axis mappings
+            if (number == button_mapping_.getAxis("LX"))
                 map->lx = deadzone_func(value, data_deadzone_width);
-                break;
-            case XBOX_AXIS_LY:
+            else if (number == button_mapping_.getAxis("LY"))
                 map->ly = deadzone_func(value, data_deadzone_width);
-                break;
-            case XBOX_AXIS_RX:
+            else if (number == button_mapping_.getAxis("RX"))
                 map->rx = deadzone_func(value, data_deadzone_width);
-                break;
-            case XBOX_AXIS_RY:
+            else if (number == button_mapping_.getAxis("RY"))
                 map->ry = deadzone_func(value, data_deadzone_width);
-                break;
-            case XBOX_AXIS_LT:
+            else if (number == button_mapping_.getAxis("LT"))
                 map->lt = deadzone_func(value, data_deadzone_width);
-                break;
-            case XBOX_AXIS_RT:
+            else if (number == button_mapping_.getAxis("RT"))
                 map->rt = deadzone_func(value, data_deadzone_width);
-                break;
-            case XBOX_AXIS_XX: // 方向键
+            else if (number == button_mapping_.getAxis("XX"))
                 map->xx = value;
-                break;
-            case XBOX_AXIS_YY:
+            else if (number == button_mapping_.getAxis("YY"))
                 map->yy = value;
-                break;
-            default:
-                break;
-            }
         }
         else
         {
@@ -128,6 +104,62 @@ namespace usb_controller
     {
         close(rc_fd_);
         // std::cout << GREEN << "[RC SUCCESS]: " << RESET << "Close the rc controller!\n";
+    }
+
+    bool LogicRemoteController::loadButtonMapping(const std::string &config_file)
+    {
+        if (config_file.empty())
+        {
+            std::cout << YELLOW << "[RC WARNING]: " << RESET << "No config file specified, using default Xbox mappings.\n";
+            return true;
+        }
+
+        try
+        {
+            YAML::Node config = YAML::LoadFile(config_file);
+
+            // Load button mappings
+            if (config["buttons"])
+            {
+                YAML::Node buttons = config["buttons"];
+                for (const auto &button : buttons)
+                {
+                    std::string name = button.first.as<std::string>();
+                    int number = button.second.as<int>();
+                    button_mapping_.buttons[name] = number;
+                }
+            }
+
+            // Load axis mappings
+            if (config["axes"])
+            {
+                YAML::Node axes = config["axes"];
+                for (const auto &axis : axes)
+                {
+                    std::string name = axis.first.as<std::string>();
+                    int number = axis.second.as<int>();
+                    button_mapping_.axes[name] = number;
+                }
+            }
+
+            std::cout << GREEN << "[RC SUCCESS]: " << RESET << "Loaded button mapping from " << config_file << std::endl;
+            return true;
+        }
+        catch (const YAML::BadFile &e)
+        {
+            std::cout << RED << "[RC ERROR]: " << RESET << "Could not open config file: " << config_file << std::endl;
+            return false;
+        }
+        catch (const YAML::ParserException &e)
+        {
+            std::cout << RED << "[RC ERROR]: " << RESET << "YAML parsing error in " << config_file << ": " << e.what() << std::endl;
+            return false;
+        }
+        catch (const std::exception &e)
+        {
+            std::cout << RED << "[RC ERROR]: " << RESET << "Error loading config file: " << e.what() << std::endl;
+            return false;
+        }
     }
 
     ssize_t LogicRemoteController::rc_complete()
@@ -239,7 +271,7 @@ namespace usb_controller
         //         rc_control_.omega_des[2] = static_cast<float>(rc_map_.rx) / 32768.f / 2.f;
         //         rc_control_.rpy_des[0] = 0;
         //     } else if (rc_control_.variables[0] == 3) {
-        //         rc_control_.v_des[0] = -static_cast<float>(rc_map_.ly) / 32768.f / 4.f;
+        //         rc_control_.v_des[0] = = -static_cast<float>(rc_map_.ly) / 32768.f / 4.f;
         //         rc_control_.v_des[1] = 0;
         //         rc_control_.v_des[2] = 0;
         //         rc_control_.omega_des[0] = 0;
@@ -265,10 +297,12 @@ namespace usb_controller
 
     LogicRemoteController::LogicRemoteController(
         const std::string &device_file,
-        bool print_data) : device_file_(device_file),
-                           print_data_(print_data)
+        bool print_data,
+        const std::string &config_file) : device_file_(device_file),
+                                          print_data_(print_data),
+                                          config_file_(config_file)
     {
-        rc_fd_ = rc_open(device_file_.c_str()); //defaults to `/dev/input/js0`
+        rc_fd_ = rc_open(device_file_.c_str()); // defaults to `/dev/input/js0`
         if (rc_fd_ > 0)
         {
             std::cout << GREEN << "[RC SUCCESS]: " << RESET << "Finish open the device js0!\n";
@@ -278,6 +312,13 @@ namespace usb_controller
         {
             std::cout << BOLDRED << "[RC ERROR]: " << RESET << "Can not open the device js0!\n";
         }
+
+        // Load button mapping configuration
+        if (!config_file_.empty())
+        {
+            loadButtonMapping(config_file_);
+        }
+
         rc_control_.step_height = 0.8;
         rc_control_.height_variation = 0;
         joystick_gait = 3;
