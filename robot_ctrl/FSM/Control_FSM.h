@@ -13,6 +13,7 @@
 #include "FSM_State_RL_Walk.h"
 #include "FSM_State_RL_Walk_2.h"
 #include "FSM_State_User_Interface.h"
+#include "FSM_State_RL.cpp"
 
 struct FSM_StateList {
     FSM_State_Stand_Up *s_standup;
@@ -22,6 +23,7 @@ struct FSM_StateList {
     FSM_State_RL_Walk* s_rl_walk;
     FSM_State_RL_Walk_2* s_rl_walk_2;
     FSM_State_User_Interface *s_user_interface;
+    FSM_State_RL *s_rl;
 };
 
 class ControlFSM {

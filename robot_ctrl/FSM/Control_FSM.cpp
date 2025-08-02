@@ -26,6 +26,7 @@ ControlFSM::ControlFSM(usb_controller::LogicRemoteController *rc,
     state_list_.s_rl_walk = new FSM_State_RL_Walk(&control_data_, &control_para_);
     state_list_.s_rl_walk_2 = new FSM_State_RL_Walk_2(&control_data_, &control_para_);
     state_list_.s_user_interface = new FSM_State_User_Interface(&control_data_, &control_para_);
+    state_list_.s_rl = new FSM_State_RL(&control_data_, &control_para_);
     //    std::cout << "ok\n";
 
     state_current_ = state_list_.s_passive;
