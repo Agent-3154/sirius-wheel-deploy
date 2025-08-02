@@ -29,7 +29,7 @@ ControlFSM::ControlFSM(usb_controller::LogicRemoteController *rc,
     state_list_.s_rl = new FSM_State_RL(&control_data_, &control_para_);
     //    std::cout << "ok\n";
 
-    state_current_ = state_list_.s_passive;
+    state_current_ = state_list_.s_rl;
     state_current_->state_on_enter();
     state_next_ = state_current_;
 }

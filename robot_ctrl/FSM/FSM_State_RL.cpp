@@ -12,8 +12,6 @@ const int64_t hidden_state_dim = 128; // for GRU
 class FSM_State_RL final : public FSM_State
 {
 private:
-    static constexpr const char* input_names[4] = {"command", "policy", "is_init", "hx"};
-    static constexpr const char* output_names[1] = {"actions"};
 
     std::unique_ptr<Ort::Session> session;
     Ort::RunOptions run_options = Ort::RunOptions{nullptr};
@@ -21,7 +19,7 @@ private:
     
     std::vector<float> command;
     std::vector<float> policy;
-    std::vector<int64_t> is_init;
+    bool is_init[1];  // Use bool array instead of std::vector<bool>
     std::vector<float> hx;
     
     const std::vector<int64_t> command_shape = {1, command_dim};
@@ -45,10 +43,15 @@ public:
         // Initialize observation vector with 49 zeros
         command.resize(command_dim, 0.0f);
         policy.resize(policy_dim, 0.0f);
-        is_init.resize(1, 0);
+        is_init[0] = false; // Initialize the bool array
         hx.resize(hidden_state_dim, 0.0f);
 
         std::cout << GREEN << "[FSM State RL]: Policy Loaded" << RESET << std::endl;
+
+        auto output_names_vector = session->GetOutputNames();
+        for (const auto& name : output_names_vector) {
+            std::cout << GREEN << name << RESET << std::endl;
+        }
     }
 
     ~FSM_State_RL() override = default;
@@ -62,6 +65,19 @@ public:
     };
 
     void run_state() override {
+
+        auto quat = fsm_data_->estimators_->get_result_quat();
+        auto angular_body = fsm_data_->estimators_->get_result_angular_body();
+        
+        Eigen::Matrix<double, 4, 3> q; // joint position
+        Eigen::Matrix<double, 4, 3> qd; // joint velocity
+        for (int i = 0; i < 4; i++) {
+            q.row(i) = fsm_data_->leg_controller_->leg_data[i].q;
+            qd.row(i) = fsm_data_->leg_controller_->leg_data[i].qd;
+        }
+
+        // // print q
+        // std::cout << "q: " << q << std::endl;
 
         std::vector<Ort::Value> input_tensors;
         input_tensors.push_back(Ort::Value::CreateTensor<float>(
@@ -78,10 +94,10 @@ public:
             policy_shape.data(),
             policy_shape.size()
         ));
-        input_tensors.push_back(Ort::Value::CreateTensor<int64_t>(
+        input_tensors.push_back(Ort::Value::CreateTensor<bool>(
             memory_info,
-            is_init.data(),
-            is_init.size(),
+            is_init,
+            1,
             is_init_shape.data(),
             is_init_shape.size()
         ));
@@ -93,13 +109,15 @@ public:
             hx_shape.size()
         ));
 
+        const char* input_names[] = {"command", "policy", "is_init", "hx"};
+        const char* output_names[] = {"div", "div_1", "linear_4", "add_3", "mish_4", "linear_8", "mul_2", "linear_8", "sum_1"};
         auto output_tensors = session->Run(
             run_options,
             input_names,
             input_tensors.data(),
-            input_tensors.size(),
+            session->GetInputCount(),
             output_names,
-            1
+            session->GetOutputCount()
         );
     };
 
