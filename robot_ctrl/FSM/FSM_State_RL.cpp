@@ -1,6 +1,6 @@
 #include <iostream>
 #include "FSM_State.h"
-#include "onnxruntime_cxx_api.h"
+#include <onnxruntime_cxx_api.h>
 #include "../../utilities/types/std_cout_colors.h"
 
 // constants for tensor dimensions
@@ -35,7 +35,7 @@ public:
         Control_Parameters_t *control_para) : FSM_State(controlfsmdata, control_para, RL)
     {
 
-        std::cout << "[FSM State RL]: Ort version: " << ORT_API_VERSION << std::endl;
+        std::cout << GREEN << "[FSM State RL]: Ort version: " << ORT_API_VERSION << RESET << std::endl;
 
         const std::string policy_path = "/home/btx0424/lab45/sirius_deploy/checkpoints/policy-06-24_14-34.onnx";
         Ort::Env env(ORT_LOGGING_LEVEL_WARNING, "ONNXInference");
