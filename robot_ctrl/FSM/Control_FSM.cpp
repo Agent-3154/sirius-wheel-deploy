@@ -29,7 +29,7 @@ ControlFSM::ControlFSM(usb_controller::LogicRemoteController *rc,
     state_list_.s_rl = new FSM_State_RL(&control_data_, &control_para_);
     //    std::cout << "ok\n";
 
-    state_current_ = state_list_.s_rl;
+    state_current_ = state_list_.s_passive;
     state_current_->state_on_enter();
     state_next_ = state_current_;
 }
@@ -68,11 +68,7 @@ void ControlFSM::ControlFSM_run()
             }
             else if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::RL_WALK)
             {
-                state_next_ = state_list_.s_rl_walk;
-            }
-            else if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::RL_WALK_2)
-            {
-                state_next_ = state_list_.s_rl_walk_2;
+                state_next_ = state_list_.s_rl;
             }
             else
             {
