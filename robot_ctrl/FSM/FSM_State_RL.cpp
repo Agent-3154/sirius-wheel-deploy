@@ -252,17 +252,25 @@ public:
             // get next_hx and copy to hx
             auto next_hx = output_tensors[3].GetTensorData<float>();
             std::copy(next_hx, next_hx + HIDDEN_STATE_DIM, this->hx.begin());
-        
         }
-        fsm_data_->leg_controller_->leg_command[0].q_des = desired_leg_jpos.row(2).cast<double>();
-        fsm_data_->leg_controller_->leg_command[1].q_des = desired_leg_jpos.row(0).cast<double>();
-        fsm_data_->leg_controller_->leg_command[2].q_des = desired_leg_jpos.row(3).cast<double>();
-        fsm_data_->leg_controller_->leg_command[3].q_des = desired_leg_jpos.row(1).cast<double>();
-
+        desired_leg_jpos_filtered = desired_leg_jpos_filtered * 0.2 + desired_leg_jpos * 0.8;
+        fsm_data_->leg_controller_->leg_command[0].q_des = desired_leg_jpos_filtered.row(2).cast<double>();
+        fsm_data_->leg_controller_->leg_command[1].q_des = desired_leg_jpos_filtered.row(0).cast<double>();
+        fsm_data_->leg_controller_->leg_command[2].q_des = desired_leg_jpos_filtered.row(3).cast<double>();
+        fsm_data_->leg_controller_->leg_command[3].q_des = desired_leg_jpos_filtered.row(1).cast<double>();
+        
         fsm_data_->leg_controller_->leg_command[0].whl_qd_des = double(desired_whl_jvel(2));
         fsm_data_->leg_controller_->leg_command[1].whl_qd_des = double(desired_whl_jvel(0));
         fsm_data_->leg_controller_->leg_command[2].whl_qd_des = double(desired_whl_jvel(3));
         fsm_data_->leg_controller_->leg_command[3].whl_qd_des = double(desired_whl_jvel(1));
+
+        for (auto &leg: fsm_data_->leg_controller_->leg_command)
+        {
+            leg.kp_joint = Vec3<double>(40, 40, 40).asDiagonal();
+            leg.kd_joint = Vec3<double>(1, 1, 1).asDiagonal();
+            leg.whl_kp_joint = 0;
+            leg.whl_kd_joint = 5.0;
+        }
     };
 
     bool is_busy() override
