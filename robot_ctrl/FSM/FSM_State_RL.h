@@ -1,0 +1,84 @@
+#ifndef FSM_STATE_RL_H
+#define FSM_STATE_RL_H
+
+#include "FSM_State.h"
+#include <memory>
+#include <vector>
+#include <array>
+#include <string>
+#include <onnxruntime_cxx_api.h>
+
+
+// constants for tensor dimensions
+const int64_t COMMAND_DIM = 17;
+const int64_t POLICY_DIM = 147; // Updated to match JSON configuration
+const int64_t ACTION_DIM = 16;
+const int64_t HIDDEN_STATE_DIM = 128; // for GRU
+const int64_t HISTORY_STEPS = 4;
+
+class FSM_State_RL final : public FSM_State
+{
+private:
+    std::unique_ptr<Ort::Session> session;
+    std::unique_ptr<Ort::RunOptions> run_options;
+    std::unique_ptr<Ort::MemoryInfo> memory_info;
+
+    Eigen::Vector4d quat;
+    Eigen::Vector3d gyro;
+    Eigen::Vector3d projected_gravity;
+
+    std::vector<float> command;
+    std::vector<float> policy;
+    bool is_init[1]; // Use bool array instead of std::vector<bool>
+    std::vector<float> hx;
+
+    Eigen::Matrix<float, 12, 4> q_buffer;     // joint position history in ISAAC order
+    Eigen::Matrix<float, 16, 4> qd_buffer;    // joint velocity history in ISAAC order
+    Eigen::Matrix<float, 16, 2> prev_actions; // previous actions
+    Eigen::Matrix<float, 4, 3> desired_leg_jpos;
+    Eigen::Matrix<float, 4, 3> desired_leg_jpos_filtered;
+    Eigen::Vector4f desired_whl_jvel;
+    const Eigen::VectorXf DEFAULT_JOINT_POS = (Eigen::VectorXf(16) << 0.0, 0.0, 0.0, 0.0,
+                                               0.40, -0.40, 0.40, -0.40,
+                                               -1.20, 1.20, -1.20, 1.20,
+                                               0.0, 0.0, 0.0, 0.0)
+                                                  .finished();
+
+    const float dt = 0.002f; // Time step in seconds (assuming 1kHz control loop)
+
+    const std::vector<int64_t> command_shape = {1, COMMAND_DIM};
+    const std::vector<int64_t> policy_shape = {1, POLICY_DIM};
+    const std::vector<int64_t> is_init_shape = {1};
+    const std::vector<int64_t> hx_shape = {1, HIDDEN_STATE_DIM};
+    int64_t step_count = 0;
+
+    const std::array<std::string, 16> ISAAC_JORDER = {
+        "LF_HAA", "LH_HAA", "RF_HAA", "RH_HAA",
+        "LF_HFE", "LH_HFE", "RF_HFE", "RH_HFE",
+        "LF_KFE", "LH_KFE", "RF_KFE", "RH_KFE",
+        "LF_WHEEL", "LH_WHEEL", "RF_WHEEL", "RH_WHEEL"};
+
+    const std::array<std::string, 16> REAL_JORDER = {
+        "RF_HAA", "RF_HFE", "RF_KFE",
+        "LF_HAA", "LF_HFE", "LF_KFE",
+        "RH_HAA", "RH_HFE", "RH_KFE",
+        "LH_HAA", "LH_HFE", "LH_KFE",
+        "RF_WHEEL", "LF_WHEEL", "RH_WHEEL", "LH_WHEEL"};
+
+    std::array<int, 16> isaac2real;
+    std::array<int, 16> real2isaac;
+
+public:
+    FSM_State_RL(
+        Control_FSM_Data_t *controlfsmdata,
+        Control_Parameters_t *control_para);
+
+    ~FSM_State_RL() override = default;
+
+    bool state_on_enter() override;
+    void state_on_exit() override;
+    void run_state() override;
+    bool is_busy() override;
+};
+
+#endif // FSM_STATE_RL_H

@@ -15,3 +15,5 @@ buttons:
 axes:
   LT: 5
   RT: 4
+  RX: 2
+  RY: 3
