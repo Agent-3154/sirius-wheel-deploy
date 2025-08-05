@@ -99,8 +99,8 @@ void FSM_State_RL::run_state()
             this->q_buffer.col(i) = this->q_buffer.col(i - 1);
             this->qd_buffer.col(i) = this->qd_buffer.col(i - 1);
         }
-        auto q_leg_flat = Eigen::Map<Eigen::Vector<float, 12>>(q_leg.data());
-        auto qd_leg_flat = Eigen::Map<Eigen::Vector<float, 12>>(qd_leg.data());
+        auto q_leg_flat = Eigen::Map<Eigen::VectorXf>(q_leg.data(), 12);
+        auto qd_leg_flat = Eigen::Map<Eigen::VectorXf>(qd_leg.data(), 12);
 
         this->q_buffer.col(0) = q_leg_flat;
         this->qd_buffer.col(0) << qd_leg_flat,
@@ -114,58 +114,57 @@ void FSM_State_RL::run_state()
 
         // observation "policy":
         // concat [projected_gravity(3), q_buffer.flatten(48), qd_buffer.flatten(64), prev_actions.flatten(32)] = 147 total
-        Eigen::Vector<float, 147> _policy;
+        Eigen::VectorXf _policy(147);
         _policy.setZero();
 
         _policy << projected_gravity.cast<float>(),
-            Eigen::Map<Eigen::Vector<float, 48>>(q_buffer.data()),
-            Eigen::Map<Eigen::Vector<float, 64>>(qd_buffer.data()),
-            Eigen::Map<Eigen::Vector<float, 32>>(prev_actions.data());
+            Eigen::Map<Eigen::VectorXf>(q_buffer.data(), 48),
+            Eigen::Map<Eigen::VectorXf>(qd_buffer.data(), 64),
+            Eigen::Map<Eigen::VectorXf>(prev_actions.data(), 32);
 
         // Copy to policy vector
         std::copy(_policy.data(), _policy.data() + POLICY_DIM, this->policy.begin());
 
-        Eigen::Vector<float, COMMAND_DIM> _command;
-        _command.setZero();
-        Eigen::Vector<float, 2> cmd_lin_vel;
+        Eigen::VectorXf _command(COMMAND_DIM); _command.setZero();
+        
+        Eigen::Vector2f cmd_lin_vel;
         cmd_lin_vel << v_des_x, v_des_y;
-        Eigen::Vector<float, 3> cmd_ang_vel;
+
+        Eigen::Vector3f cmd_ang_vel;
         cmd_ang_vel << 0.0, 0.0, v_des_z;
-        Eigen::Vector<float, 1> cmd_roll;
-        cmd_roll.setZero();
-        Eigen::Vector<float, 1> cmd_pitch;
-        cmd_pitch.setZero();
-        Eigen::Vector<float, 2> timing;
-        timing.setZero();
-        Eigen::Vector<float, 4> cmd_mode;
+
+        Eigen::Vector2f cmd_roll_pitch; cmd_roll_pitch.setZero();
+        Eigen::Vector2f timing; timing.setZero();
+        Eigen::Vector4f cmd_mode;
+
         cmd_mode << 1.0, 0.0, 0.0, 0.0;
-        Eigen::Vector<float, 4> des_contact;
+        Eigen::Vector4f des_contact;
         des_contact.setZero();
 
-        _command << cmd_lin_vel, cmd_ang_vel, cmd_roll, cmd_pitch, timing, cmd_mode, des_contact;
+        _command << cmd_lin_vel, cmd_ang_vel, cmd_roll_pitch, timing, cmd_mode, des_contact;
         std::copy(_command.data(), _command.data() + COMMAND_DIM, this->command.begin());
 
         std::vector<Ort::Value> input_tensors;
         input_tensors.push_back(Ort::Value::CreateTensor<float>(
-            *memory_info,
+            *this->memory_info,
             command.data(),
             command.size(),
             command_shape.data(),
             command_shape.size()));
         input_tensors.push_back(Ort::Value::CreateTensor<float>(
-            *memory_info,
+            *this->memory_info,
             policy.data(),
             policy.size(),
             policy_shape.data(),
             policy_shape.size()));
         input_tensors.push_back(Ort::Value::CreateTensor<bool>(
-            *memory_info,
+            *this->memory_info,
             is_init,
             1,
             is_init_shape.data(),
             is_init_shape.size()));
         input_tensors.push_back(Ort::Value::CreateTensor<float>(
-            *memory_info,
+            *this->memory_info,
             hx.data(),
             hx.size(),
             hx_shape.data(),
@@ -188,7 +187,7 @@ void FSM_State_RL::run_state()
         this->prev_actions.col(1) = this->prev_actions.col(0);
         this->prev_actions.col(0) = action_eigen;
 
-        Eigen::Vector<float, 12> desired_leg_jpos_ = action_eigen.head(12) * 0.5 + DEFAULT_JOINT_POS.head(12);
+        Eigen::VectorXf desired_leg_jpos_ = action_eigen.head(12) * 0.5 + DEFAULT_JOINT_POS.head(12);
         
         this->desired_leg_jpos = Eigen::Map<Eigen::Matrix<float, 4, 3>>(desired_leg_jpos_.data());
         this->desired_whl_jvel = action_eigen.tail(4) * 10.0;

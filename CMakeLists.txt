@@ -26,7 +26,7 @@ message(STATUS "  Include: ${ONNX_INCLUDE_DIR}")
 message(STATUS "  Library: ${ONNX_LIBRARY}")
 
 # Eigen Configuration - Optional local installation with system fallback
-option(USE_LOCAL_EIGEN "Use locally installed Eigen 3.4.0 instead of system Eigen" ON)
+option(USE_LOCAL_EIGEN "Use locally installed Eigen 3.4.0 instead of system Eigen" OFF)
 
 if(USE_LOCAL_EIGEN)
     message(STATUS "Using local Eigen 3.4.0")
@@ -45,7 +45,7 @@ else()
     message(STATUS "Using system Eigen")
     find_package(Eigen3 REQUIRED)
     message(STATUS "Eigen3 configured (system installation):")
-    message(STATUS "  Version: ${EIGEN3_VERSION}")
+    message(STATUS "  Version: ${EIGEN3_VERSION_STRING}")
     message(STATUS "  Include Directory: ${EIGEN3_INCLUDE_DIR}")
 endif()
 

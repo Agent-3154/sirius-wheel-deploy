@@ -109,7 +109,7 @@ void ControlFSM::ControlFSM_run()
                 control_data_.rc_->rc_control_.mode = usb_controller::RC_MODE::DAMPING;
             }
             break;
-        case RL_WALK:
+        case RL:
             if (state_current_->is_busy())
                 break;
             if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::RECOVER_STAND)
