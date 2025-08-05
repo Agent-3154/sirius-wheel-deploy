@@ -27,7 +27,6 @@ private:
     Eigen::Vector3d gyro;
     Eigen::Vector3d projected_gravity;
 
-    std::vector<float> command;
     std::vector<float> policy;
     bool is_init[1]; // Use bool array instead of std::vector<bool>
     std::vector<float> hx;
@@ -43,6 +42,8 @@ private:
                                                -1.20, 1.20, -1.20, 1.20,
                                                0.0, 0.0, 0.0, 0.0)
                                                   .finished();
+    Eigen::Vector3f cmd_lin_vel;
+    Eigen::Vector3f cmd_ang_vel;
 
     const float dt = 0.002f; // Time step in seconds (assuming 1kHz control loop)
 
@@ -65,9 +66,10 @@ private:
         "LH_HAA", "LH_HFE", "LH_KFE",
         "RF_WHEEL", "LF_WHEEL", "RH_WHEEL", "LH_WHEEL"};
 
-    std::array<int, 16> isaac2real;
-    std::array<int, 16> real2isaac;
     bool apply_action = true; // set to false for dry-run
+    
+    bool is_jumping = false;
+    float cmd_jump_time = 0.0;
 
 public:
     FSM_State_RL(

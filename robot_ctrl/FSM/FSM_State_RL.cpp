@@ -11,7 +11,7 @@ FSM_State_RL::FSM_State_RL(
 
     std::cout << GREEN << "[FSM State RL]: Ort version: " << ORT_API_VERSION << RESET << std::endl;
 
-    const std::string policy_path = "/home/btx0424/lab45/sirius_deploy/checkpoints/policy-06-24_14-34.onnx";
+    const std::string policy_path = "../models/policy-06-24_14-34.onnx";
     Ort::Env env(ORT_LOGGING_LEVEL_WARNING, "ONNXInference");
     Ort::SessionOptions session_options;
     session = std::make_unique<Ort::Session>(env, policy_path.c_str(), session_options);
@@ -21,10 +21,12 @@ FSM_State_RL::FSM_State_RL(
     memory_info = std::make_unique<Ort::MemoryInfo>(Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault));
 
     // Initialize observation vector with 49 zeros
-    command.resize(COMMAND_DIM, 0.0f);
     policy.resize(POLICY_DIM, 0.0f);
     is_init[0] = false; // Initialize the bool array
     hx.resize(HIDDEN_STATE_DIM, 0.0f);
+
+    cmd_lin_vel.setZero();
+    cmd_ang_vel.setZero();
 
     prev_actions.setZero();
     desired_leg_jpos.setZero();
@@ -58,6 +60,9 @@ bool FSM_State_RL::state_on_enter()
         leg.whl_kp_joint = 0;
         leg.whl_kd_joint = 5.0;
     }
+    this->is_jumping = false;
+    this->cmd_jump_time = 0.0;
+    this->hx.resize(HIDDEN_STATE_DIM, 0.0f);
     return true;
 };
 
@@ -73,9 +78,15 @@ void FSM_State_RL::run_state()
     quat = fsm_data_->estimators_->get_result_quat();
     gyro = fsm_data_->estimators_->get_result_angular_body();
 
-    float v_des_x = fsm_data_->rc_->rc_control_.v_des[0] * 1.6;
+    float v_des_x = fsm_data_->rc_->rc_control_.v_des[0] * 1.2;
     float v_des_y = fsm_data_->rc_->rc_control_.v_des[1] * 0.8;
     float v_des_z = fsm_data_->rc_->rc_control_.v_des[2];
+
+    
+    if (fsm_data_->rc_->rc_map_.a && !this->is_jumping)
+    {
+        this->is_jumping = true;
+    }
 
     if (step_count % 10 == 0)
     {
@@ -127,28 +138,42 @@ void FSM_State_RL::run_state()
 
         Eigen::VectorXf _command(COMMAND_DIM); _command.setZero();
         
-        Eigen::Vector2f cmd_lin_vel;
-        cmd_lin_vel << v_des_x, v_des_y;
-
-        Eigen::Vector3f cmd_ang_vel;
-        cmd_ang_vel << 0.0, 0.0, v_des_z;
+        Eigen::Vector3f v_des_xy = Eigen::Vector3f(v_des_x, v_des_y, 0.0);
+        this->cmd_lin_vel = this->cmd_lin_vel * 0.5 + v_des_xy * 0.5;
+        this->cmd_ang_vel << 0.0, 0.0, v_des_z;
 
         Eigen::Vector2f cmd_roll_pitch; cmd_roll_pitch.setZero();
-        Eigen::Vector2f timing; timing.setZero();
+        Eigen::Vector2f timing;
         Eigen::Vector4f cmd_mode;
-
-        cmd_mode << 1.0, 0.0, 0.0, 0.0;
         Eigen::Vector4f des_contact;
-        des_contact.setZero();
 
-        _command << cmd_lin_vel, cmd_ang_vel, cmd_roll_pitch, timing, cmd_mode, des_contact;
-        std::copy(_command.data(), _command.data() + COMMAND_DIM, this->command.begin());
+        if (this->is_jumping) {
+            timing << this->cmd_jump_time, 1.0 - this->cmd_jump_time;
+            cmd_mode << 0.0, 0.0, 1.0, 0.0;
+            bool in_air = (this->cmd_jump_time > 0.4) && (this->cmd_jump_time < 0.7);
+            if (in_air) {
+                des_contact << -1.0, -1.0, -1.0, -1.0;
+            } else {
+                des_contact << 0.0, 0.0, 0.0, 0.0;
+            }
+            this->cmd_jump_time += 0.02;
+            if (this->cmd_jump_time > 1.0) {
+                this->is_jumping = false;
+                this->cmd_jump_time = 0.0;
+            }
+        } else {
+            timing << 0.0, 0.0;
+            cmd_mode << 1.0, 0.0, 0.0, 0.0;
+            des_contact << 0.0, 0.0, 0.0, 0.0;
+        }
+
+        _command << cmd_lin_vel.head(2), cmd_ang_vel, cmd_roll_pitch, timing, cmd_mode, des_contact;
 
         std::vector<Ort::Value> input_tensors;
         input_tensors.push_back(Ort::Value::CreateTensor<float>(
             *this->memory_info,
-            command.data(),
-            command.size(),
+            _command.data(),
+            _command.size(),
             command_shape.data(),
             command_shape.size()));
         input_tensors.push_back(Ort::Value::CreateTensor<float>(
@@ -159,7 +184,7 @@ void FSM_State_RL::run_state()
             policy_shape.size()));
         input_tensors.push_back(Ort::Value::CreateTensor<bool>(
             *this->memory_info,
-            is_init,
+            this->is_init,
             1,
             is_init_shape.data(),
             is_init_shape.size()));
@@ -196,7 +221,10 @@ void FSM_State_RL::run_state()
         auto next_hx = output_tensors[3].GetTensorMutableData<float>();
         std::copy(next_hx, next_hx + HIDDEN_STATE_DIM, this->hx.begin());
     }
-    desired_leg_jpos_filtered = desired_leg_jpos_filtered * 0.2 + desired_leg_jpos * 0.8;
+    // only update if desired_leg_jpos does not contain nan
+    if (!desired_leg_jpos.hasNaN()) {
+        desired_leg_jpos_filtered = desired_leg_jpos_filtered * 0.2 + desired_leg_jpos * 0.8;
+    }
     
     if (this -> apply_action)
     {
@@ -222,5 +250,6 @@ void FSM_State_RL::run_state()
 
 bool FSM_State_RL::is_busy()
 {
-    return false;
+    // wait until the jump is finished
+    return this->is_jumping;
 };

@@ -156,14 +156,17 @@ void ControlFSM::ControlFSM_run()
     }
 
     // safety check
-    for (auto &i : control_data_.leg_controller_->leg_data)
+    for (auto &leg : control_data_.leg_controller_->leg_data)
     {
         for (int j = 0; j < 3; j++)
         {
-            if (i.qd(j) > Config::qd_danger)
+            if (leg.qd(j) > Config::qd_danger)
             {
                 danger_times_++;
             }
+        }
+        if (!(leg.tau(0) < 40.0 && leg.tau(1) < 40.0 && leg.tau(2) < 80.0)) {
+            danger_times_ += 3;
         }
     }
 
