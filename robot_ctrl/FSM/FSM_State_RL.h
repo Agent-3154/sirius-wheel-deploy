@@ -67,6 +67,7 @@ private:
 
     std::array<int, 16> isaac2real;
     std::array<int, 16> real2isaac;
+    bool apply_action = true; // set to false for dry-run
 
 public:
     FSM_State_RL(

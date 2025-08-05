@@ -197,15 +197,19 @@ void FSM_State_RL::run_state()
         std::copy(next_hx, next_hx + HIDDEN_STATE_DIM, this->hx.begin());
     }
     desired_leg_jpos_filtered = desired_leg_jpos_filtered * 0.2 + desired_leg_jpos * 0.8;
-    fsm_data_->leg_controller_->leg_command[0].q_des = desired_leg_jpos_filtered.row(2).cast<double>();
-    fsm_data_->leg_controller_->leg_command[1].q_des = desired_leg_jpos_filtered.row(0).cast<double>();
-    fsm_data_->leg_controller_->leg_command[2].q_des = desired_leg_jpos_filtered.row(3).cast<double>();
-    fsm_data_->leg_controller_->leg_command[3].q_des = desired_leg_jpos_filtered.row(1).cast<double>();
+    
+    if (this -> apply_action)
+    {
+        fsm_data_->leg_controller_->leg_command[0].q_des = desired_leg_jpos_filtered.row(2).cast<double>();
+        fsm_data_->leg_controller_->leg_command[1].q_des = desired_leg_jpos_filtered.row(0).cast<double>();
+        fsm_data_->leg_controller_->leg_command[2].q_des = desired_leg_jpos_filtered.row(3).cast<double>();
+        fsm_data_->leg_controller_->leg_command[3].q_des = desired_leg_jpos_filtered.row(1).cast<double>();
 
-    fsm_data_->leg_controller_->leg_command[0].whl_qd_des = double(desired_whl_jvel(2));
-    fsm_data_->leg_controller_->leg_command[1].whl_qd_des = double(desired_whl_jvel(0));
-    fsm_data_->leg_controller_->leg_command[2].whl_qd_des = double(desired_whl_jvel(3));
-    fsm_data_->leg_controller_->leg_command[3].whl_qd_des = double(desired_whl_jvel(1));
+        fsm_data_->leg_controller_->leg_command[0].whl_qd_des = double(desired_whl_jvel(2));
+        fsm_data_->leg_controller_->leg_command[1].whl_qd_des = double(desired_whl_jvel(0));
+        fsm_data_->leg_controller_->leg_command[2].whl_qd_des = double(desired_whl_jvel(3));
+        fsm_data_->leg_controller_->leg_command[3].whl_qd_des = double(desired_whl_jvel(1));
+    }
 
     for (auto &leg : fsm_data_->leg_controller_->leg_command)
     {

@@ -48,5 +48,6 @@ int main(int argc, char **argv) {
     iox::runtime::PoshRuntime::initRuntime("Robot_Ctrl_Node");
     HardwareBridge::My_HardwareBridge test_hardware(model_name, robot_ctrl, type_);
     test_hardware.setup_HardwareBridge(launch_imu, launch_usb2can, launch_rc, unitree);
+    test_hardware.run();
     return 0;
 }
