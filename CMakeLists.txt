@@ -1,8 +1,9 @@
 cmake_minimum_required(VERSION 3.5)
 
+set(THIRD_PARTY_DIR "${CMAKE_CURRENT_SOURCE_DIR}/third_party")
 # ONNX Runtime Configuration - Centralized version management
 set(ONNX_VERSION "1.22.0" CACHE STRING "ONNX Runtime version to use")
-set(ONNX_DIR "${CMAKE_CURRENT_SOURCE_DIR}/onnxruntime-linux-x64-${ONNX_VERSION}" CACHE PATH "ONNX Runtime directory")
+set(ONNX_DIR "${THIRD_PARTY_DIR}/onnxruntime-linux-x64-${ONNX_VERSION}" CACHE PATH "ONNX Runtime directory")
 set(ONNX_INCLUDE_DIR "${ONNX_DIR}/include")
 set(ONNX_LIB_DIR "${ONNX_DIR}/lib")
 
@@ -24,11 +25,37 @@ message(STATUS "  Directory: ${ONNX_DIR}")
 message(STATUS "  Include: ${ONNX_INCLUDE_DIR}")
 message(STATUS "  Library: ${ONNX_LIBRARY}")
 
+# Eigen Configuration - Optional local installation with system fallback
+option(USE_LOCAL_EIGEN "Use locally installed Eigen 3.4.0 instead of system Eigen" ON)
+
+if(USE_LOCAL_EIGEN)
+    message(STATUS "Using local Eigen 3.4.0")
+    # Eigen 3.4.0 Configuration - Local installation
+    set(EIGEN3_INSTALL_DIR "${THIRD_PARTY_DIR}/eigen3.4.0_install" CACHE PATH "Eigen 3.4.0 installation directory")
+    set(EIGEN3_INCLUDE_DIR "${EIGEN3_INSTALL_DIR}/include/eigen3")
+    
+    # Add Eigen include directory
+    include_directories(${EIGEN3_INCLUDE_DIR})
+    
+    message(STATUS "Eigen 3.4.0 configured (local installation):")
+    message(STATUS "  Version: 3.4.0")
+    message(STATUS "  Include Directory: ${EIGEN3_INCLUDE_DIR}")
+else()
+    # Use system Eigen
+    message(STATUS "Using system Eigen")
+    find_package(Eigen3 REQUIRED)
+    message(STATUS "Eigen3 configured (system installation):")
+    message(STATUS "  Version: ${EIGEN3_VERSION}")
+    message(STATUS "  Include Directory: ${EIGEN3_INCLUDE_DIR}")
+endif()
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #set(CMAKE_C_COMPILER "/usr/bin/clang-12")
 #set(CMAKE_CXX_COMPILER "/usr/bin/clang++-12")
+set(CMAKE_C_COMPILER "/usr/bin/gcc-11")
+set(CMAKE_CXX_COMPILER "/usr/bin/g++-11")
 
 # choose make definition
 # *********************************************************************************************************************
