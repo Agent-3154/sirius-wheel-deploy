@@ -63,6 +63,10 @@ bool FSM_State_RL::state_on_enter()
     this->is_jumping = false;
     this->cmd_jump_time = 0.0;
     this->hx.resize(HIDDEN_STATE_DIM, 0.0f);
+
+    Eigen::VectorXf desired_leg_jpos_ = this->DEFAULT_LEG_JOINT_POS;
+    this->desired_leg_jpos << Eigen::Map<Eigen::Matrix<float, 4, 3>>(desired_leg_jpos_.data());
+    this->desired_leg_jpos_filtered << Eigen::Map<Eigen::Matrix<float, 4, 3>>(desired_leg_jpos_.data());
     return true;
 };
 
@@ -212,7 +216,7 @@ void FSM_State_RL::run_state()
         this->prev_actions.col(1) = this->prev_actions.col(0);
         this->prev_actions.col(0) = action_eigen;
 
-        Eigen::VectorXf desired_leg_jpos_ = action_eigen.head(12) * 0.5 + DEFAULT_JOINT_POS.head(12);
+        Eigen::VectorXf desired_leg_jpos_ = action_eigen.head(12) * 0.5 + this->DEFAULT_LEG_JOINT_POS;
         
         this->desired_leg_jpos = Eigen::Map<Eigen::Matrix<float, 4, 3>>(desired_leg_jpos_.data());
         this->desired_whl_jvel = action_eigen.tail(4) * 10.0;

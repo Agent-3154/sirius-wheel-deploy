@@ -37,11 +37,11 @@ private:
     Eigen::Matrix<float, 4, 3> desired_leg_jpos;
     Eigen::Matrix<float, 4, 3> desired_leg_jpos_filtered;
     Eigen::Vector4f desired_whl_jvel;
-    const Eigen::VectorXf DEFAULT_JOINT_POS = (Eigen::VectorXf(16) << 0.0, 0.0, 0.0, 0.0,
-                                               0.40, -0.40, 0.40, -0.40,
-                                               -1.20, 1.20, -1.20, 1.20,
-                                               0.0, 0.0, 0.0, 0.0)
-                                                  .finished();
+    const Eigen::VectorXf DEFAULT_LEG_JOINT_POS = (
+        Eigen::VectorXf(12) << 0.0, 0.0, 0.0, 0.0,
+                            0.40, -0.40, 0.40, -0.40,
+                            -1.20, 1.20, -1.20, 1.20
+                            ).finished();
     Eigen::Vector3f cmd_lin_vel;
     Eigen::Vector3f cmd_ang_vel;
 
