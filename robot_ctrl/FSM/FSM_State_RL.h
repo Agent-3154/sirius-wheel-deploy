@@ -8,14 +8,6 @@
 #include <string>
 #include <onnxruntime_cxx_api.h>
 
-
-// constants for tensor dimensions
-const int64_t COMMAND_DIM = 17;
-const int64_t POLICY_DIM = 147; // Updated to match JSON configuration
-const int64_t ACTION_DIM = 16;
-const int64_t HIDDEN_STATE_DIM = 128; // for GRU
-const int64_t HISTORY_STEPS = 4;
-
 class FSM_State_RL final : public FSM_State
 {
 private:
@@ -25,6 +17,8 @@ private:
 
     Eigen::Vector4d quat;
     Eigen::Vector3d gyro;
+    Eigen::Vector3d rpy;
+    Eigen::Vector3d rpy_init;
     Eigen::Vector3d projected_gravity;
 
     std::vector<float> policy;
@@ -42,8 +36,13 @@ private:
                             0.40, -0.40, 0.40, -0.40,
                             -1.20, 1.20, -1.20, 1.20
                             ).finished();
+    
     Eigen::Vector3f cmd_lin_vel;
+    Eigen::Vector3f cmd_rpy;
     Eigen::Vector3f cmd_ang_vel;
+    Eigen::Vector3f des_ang_vel;
+    Eigen::Vector4f des_contact;
+    Eigen::Vector4f cmd_mode;
 
     const float dt = 0.002f; // Time step in seconds (assuming 1kHz control loop)
 
@@ -72,6 +71,15 @@ private:
     float cmd_jump_time = 0.0;
 
 public:
+    static constexpr int64_t COMMAND_DIM = 18;
+    static constexpr int64_t POLICY_DIM = 147; // Updated to match JSON configuration
+    static constexpr int64_t ACTION_DIM = 16;
+    static constexpr int64_t HIDDEN_STATE_DIM = 128; // for GRU
+    static constexpr int64_t HISTORY_STEPS = 4;
+
+    static constexpr float JUMP_PREP_TIME = 0.5;
+    static constexpr float JUMP_LAND_TIME = 0.4;
+
     FSM_State_RL(
         Control_FSM_Data_t *controlfsmdata,
         Control_Parameters_t *control_para);
