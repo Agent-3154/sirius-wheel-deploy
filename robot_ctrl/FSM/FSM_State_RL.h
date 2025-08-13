@@ -7,6 +7,8 @@
 #include <array>
 #include <string>
 #include <onnxruntime_cxx_api.h>
+#include "../../lcm-types/cpp/leg_control_data_lcmt.hpp"
+#include "../../lcm-types/cpp/leg_control_command_lcmt.hpp"
 
 class FSM_State_RL final : public FSM_State
 {
@@ -69,7 +71,11 @@ private:
     
     bool is_jumping = false;
     float cmd_jump_time = 0.0;
-
+    
+    // logging with lcm
+    lcm::LCM lcm_logger_;
+    leg_control_data_lcmt lcm_leg_control_data{};
+    leg_control_command_lcmt lcm_leg_control_cmd{};
 public:
     static constexpr int64_t COMMAND_DIM = 18;
     static constexpr int64_t POLICY_DIM = 147; // Updated to match JSON configuration

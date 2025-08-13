@@ -7,9 +7,9 @@
 
 FSM_State_RL::FSM_State_RL(
     Control_FSM_Data_t *controlfsmdata,
-    Control_Parameters_t *control_para) : FSM_State(controlfsmdata, control_para, RL)
+    Control_Parameters_t *control_para) : FSM_State(controlfsmdata, control_para, RL),
+                                          lcm_logger_("udpm://239.255.76.67:7667?ttl=255")
 {
-
     std::cout << GREEN << "[FSM State RL]: Ort version: " << ORT_API_VERSION << RESET << std::endl;
 
     const std::string policy_path = "../models/policy-08-13_17-21.onnx";
@@ -94,18 +94,20 @@ void FSM_State_RL::run_state()
     float v_des_y = fsm_data_->rc_->rc_control_.v_des[1] * 0.8;
     float v_des_z = fsm_data_->rc_->rc_control_.v_des[2];
 
-    
     if (fsm_data_->rc_->rc_map_.a && !this->is_jumping)
     {
         this->is_jumping = true;
         float angle = 0.0;
         float air_time = 1.3 - JUMP_PREP_TIME - JUMP_LAND_TIME;
 
-        if (fsm_data_->rc_->rc_map_.lt > 0) {
+        if (fsm_data_->rc_->rc_map_.lt > 0)
+        {
             angle = M_PI / 2;
             std::cout << "[FSM State RL]: jump left" << std::endl;
-        } else if (fsm_data_->rc_->rc_map_.rt > 0) {
-            angle = - M_PI / 2;
+        }
+        else if (fsm_data_->rc_->rc_map_.rt > 0)
+        {
+            angle = -M_PI / 2;
             std::cout << "[FSM State RL]: jump right" << std::endl;
         }
 
@@ -161,32 +163,41 @@ void FSM_State_RL::run_state()
         // Copy to policy vector
         std::copy(_policy.data(), _policy.data() + POLICY_DIM, this->policy.begin());
 
-        Eigen::VectorXf _command(COMMAND_DIM); _command.setZero();
-        
+        Eigen::VectorXf _command(COMMAND_DIM);
+        _command.setZero();
+
         Eigen::Vector3f v_des_xy = Eigen::Vector3f(v_des_x, v_des_y, 0.0);
         this->cmd_lin_vel = this->cmd_lin_vel * 0.5 + v_des_xy * 0.5;
 
         Eigen::Vector2f timing;
-        Eigen::Vector3f cmd_rpy_; cmd_rpy_.setZero();
+        Eigen::Vector3f cmd_rpy_;
+        cmd_rpy_.setZero();
 
-        if (this->is_jumping) {
+        if (this->is_jumping)
+        {
             timing << this->cmd_jump_time, 1.3 - this->cmd_jump_time;
             this->cmd_mode << 0.0, 0.0, 1.0, 0.0;
             bool in_air = (this->cmd_jump_time > JUMP_PREP_TIME) && (this->cmd_jump_time < 1.3 - JUMP_LAND_TIME);
-            if (in_air) {
+            if (in_air)
+            {
                 this->des_contact << -1.0, -1.0, -1.0, -1.0;
                 this->cmd_ang_vel << this->des_ang_vel;
-            } else {
+            }
+            else
+            {
                 this->des_contact << 0.0, 0.0, 0.0, 0.0;
                 this->cmd_ang_vel << 0.0, 0.0, 0.0;
             }
             this->cmd_jump_time += 0.02;
-            if (this->cmd_jump_time > 1.3) {
+            if (this->cmd_jump_time > 1.3)
+            {
                 this->is_jumping = false;
                 this->cmd_jump_time = 0.0;
                 this->cmd_rpy(2) = rpy(2);
             }
-        } else {
+        }
+        else
+        {
             timing << 0.0, 0.0;
             this->cmd_mode << 1.0, 0.0, 0.0, 0.0;
             this->des_contact << 0.0, 0.0, 0.0, 0.0;
@@ -196,14 +207,14 @@ void FSM_State_RL::run_state()
 
         cmd_rpy_(2) = this->cmd_rpy(2) - rpy(2);
         cmd_rpy_(2) = std::fmod(cmd_rpy_(2) + M_PI, 2 * M_PI) - M_PI;
-        
+
         _command << cmd_lin_vel.head(2),
-            this->cmd_ang_vel, 
-            cmd_rpy_, 
-            timing, 
-            this->cmd_mode, 
+            this->cmd_ang_vel,
+            cmd_rpy_,
+            timing,
+            this->cmd_mode,
             this->des_contact;
-        
+
         // std::cout << "command: " << std::fixed << std::setprecision(2) << cmd_rpy_.transpose() << std::endl;
 
         std::vector<Ort::Value> input_tensors;
@@ -245,25 +256,29 @@ void FSM_State_RL::run_state()
         // // get action and convert to Eigen
         auto action = output_tensors[2].GetTensorMutableData<float>();
         Eigen::Map<const Eigen::VectorXf> action_eigen(action, ACTION_DIM);
-        
+
         this->prev_actions.col(1) = this->prev_actions.col(0);
         this->prev_actions.col(0) = action_eigen;
 
         Eigen::VectorXf desired_leg_jpos_ = action_eigen.head(12) * 0.75 + this->DEFAULT_LEG_JOINT_POS;
-        
+
         this->desired_leg_jpos = Eigen::Map<Eigen::Matrix<float, 4, 3>>(desired_leg_jpos_.data());
         this->desired_whl_jvel = action_eigen.tail(4) * 10.0;
 
         // get next_hx and copy to hx
         auto next_hx = output_tensors[4].GetTensorMutableData<float>();
         std::copy(next_hx, next_hx + HIDDEN_STATE_DIM, this->hx.begin());
+
+        fsm_data_->leg_controller_->setLcm(&lcm_leg_control_data, &lcm_leg_control_cmd);
+        lcm_logger_.publish("POLICY_DATA_CHANNEL", &lcm_leg_control_data);
     }
     // only update if desired_leg_jpos does not contain nan
-    if (!desired_leg_jpos.hasNaN()) {
+    if (!desired_leg_jpos.hasNaN())
+    {
         desired_leg_jpos_filtered = desired_leg_jpos_filtered * 0.2 + desired_leg_jpos * 0.8;
     }
-    
-    if (this -> apply_action)
+
+    if (this->apply_action)
     {
         fsm_data_->leg_controller_->leg_command[0].q_des = desired_leg_jpos_filtered.row(2).cast<double>();
         fsm_data_->leg_controller_->leg_command[1].q_des = desired_leg_jpos_filtered.row(0).cast<double>();
