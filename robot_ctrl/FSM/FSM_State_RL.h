@@ -80,6 +80,10 @@ public:
     static constexpr float JUMP_PREP_TIME = 0.5;
     static constexpr float JUMP_LAND_TIME = 0.4;
 
+    static constexpr float LEG_KP = 40.0;
+    static constexpr float LEG_KD = 1.0;
+    static constexpr float WHEEL_KD = 10.0;
+
     FSM_State_RL(
         Control_FSM_Data_t *controlfsmdata,
         Control_Parameters_t *control_para);

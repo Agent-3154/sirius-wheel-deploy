@@ -162,21 +162,27 @@ void ControlFSM::ControlFSM_run()
         {
             if (leg.qd(j) > Config::qd_danger)
             {
-                danger_times_++;
+                vel_danger_times_++;
             }
         }
-        if (!(leg.tau(0) < 40.0 && leg.tau(1) < 40.0 && leg.tau(2) < 80.0)) {
-            danger_times_ += 3;
-        }
+        tau_danger_times_ += int(leg.tau(0) > 40.0);
+        tau_danger_times_ += int(leg.tau(1) > 40.0);
+        tau_danger_times_ += int(leg.tau(2) > 80.0);
     }
 
-    if (danger_times_ > 10)
+    if (vel_danger_times_ > 10)
     {
         LOG(WARNING) << "Reach the danger velocity!";
         state_next_ = state_list_.s_damping;
-        danger_times_ = 0;
+        vel_danger_times_ = 0;
     }
 
+    if (tau_danger_times_ > 10)
+    {
+        LOG(WARNING) << "Reach the danger torque!";
+        state_next_ = state_list_.s_damping;
+        tau_danger_times_ = 0;
+    }
     // if (state_current_->state_iter_ % 100 == 0) {
     //     LOG(INFO) << "Current State: " << state_current_->fsm_name_;
     // }

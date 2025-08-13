@@ -12,7 +12,7 @@ FSM_State_RL::FSM_State_RL(
 
     std::cout << GREEN << "[FSM State RL]: Ort version: " << ORT_API_VERSION << RESET << std::endl;
 
-    const std::string policy_path = "../models/policy-08-11_20-24.onnx";
+    const std::string policy_path = "../models/policy-08-13_17-21.onnx";
     Ort::Env env(ORT_LOGGING_LEVEL_WARNING, "ONNXInference");
     Ort::SessionOptions session_options;
     session = std::make_unique<Ort::Session>(env, policy_path.c_str(), session_options);
@@ -60,10 +60,10 @@ bool FSM_State_RL::state_on_enter()
     std::cout << "[FSM State RL]: state_on_enter" << std::endl;
     for (auto &leg : fsm_data_->leg_controller_->leg_command)
     {
-        leg.kp_joint = Vec3<double>(40, 40, 40).asDiagonal();
-        leg.kd_joint = Vec3<double>(1, 1, 1).asDiagonal();
+        leg.kp_joint = Vec3<double>(LEG_KP, LEG_KP, LEG_KP).asDiagonal();
+        leg.kd_joint = Vec3<double>(LEG_KD, LEG_KD, LEG_KD).asDiagonal();
         leg.whl_kp_joint = 0;
-        leg.whl_kd_joint = 10.0;
+        leg.whl_kd_joint = WHEEL_KD;
     }
     this->is_jumping = false;
     this->cmd_jump_time = 0.0;
@@ -191,6 +191,7 @@ void FSM_State_RL::run_state()
             this->cmd_mode << 1.0, 0.0, 0.0, 0.0;
             this->des_contact << 0.0, 0.0, 0.0, 0.0;
             this->cmd_ang_vel << 0.0, 0.0, v_des_z;
+            this->cmd_rpy(2) = rpy(2);
         }
 
         cmd_rpy_(2) = this->cmd_rpy(2) - rpy(2);
@@ -203,7 +204,7 @@ void FSM_State_RL::run_state()
             this->cmd_mode, 
             this->des_contact;
         
-        std::cout << "command: " << std::fixed << std::setprecision(2) << cmd_rpy_.transpose() << std::endl;
+        // std::cout << "command: " << std::fixed << std::setprecision(2) << cmd_rpy_.transpose() << std::endl;
 
         std::vector<Ort::Value> input_tensors;
         input_tensors.push_back(Ort::Value::CreateTensor<float>(
@@ -277,10 +278,10 @@ void FSM_State_RL::run_state()
 
     for (auto &leg : fsm_data_->leg_controller_->leg_command)
     {
-        leg.kp_joint = Vec3<double>(40, 40, 40).asDiagonal();
-        leg.kd_joint = Vec3<double>(1, 1, 1).asDiagonal();
+        leg.kp_joint = Vec3<double>(LEG_KP, LEG_KP, LEG_KP).asDiagonal();
+        leg.kd_joint = Vec3<double>(LEG_KD, LEG_KD, LEG_KD).asDiagonal();
         leg.whl_kp_joint = 0;
-        leg.whl_kd_joint = 5.0;
+        leg.whl_kd_joint = WHEEL_KD;
     }
 };
 
