@@ -15,7 +15,7 @@ FSM_State_RL::FSM_State_RL(
 {
     std::cout << GREEN << "[FSM State RL]: Ort version: " << ORT_API_VERSION << RESET << std::endl;
 
-    const std::string policy_path = "../models/policy-08-16_15-12.onnx";
+    const std::string policy_path = "../models/policy-08-16_17-42.onnx";
     Ort::Env env(ORT_LOGGING_LEVEL_WARNING, "ONNXInference");
     Ort::SessionOptions session_options;
     session = std::make_unique<Ort::Session>(env, policy_path.c_str(), session_options);
@@ -29,7 +29,7 @@ FSM_State_RL::FSM_State_RL(
     is_init[0] = false; // Initialize the bool array
     hx.resize(HIDDEN_STATE_DIM, 0.0f);
     this->rpy.setZero();
-    this->cmd_rpy.setZero();
+    this->cmd_rpy_.setZero();
     // rpy_init = fsm_data_->estimators_->shared_esti_data_.result_->rpy_;
     // std::cout << "rpy_init: " << rpy_init.transpose() << std::endl;
 
@@ -103,7 +103,7 @@ void FSM_State_RL::run_state()
             std::cout << "[FSM State RL]: jump right" << std::endl;
         }
 
-        this->cmd_rpy(2) = rpy(2) + angle;
+        this->cmd_rpy_(2) = rpy(2) + angle;
         this->des_ang_vel(2) = angle / air_time;
     }
 
@@ -142,12 +142,12 @@ void FSM_State_RL::run_state()
 
         // observation "policy":
         // concat [projected_gravity(3), q_buffer.flatten(48), qd_buffer.flatten(64), prev_actions.flatten(32)] = 147 total
-        Eigen::VectorXf _policy(83);
+        Eigen::VectorXf _policy(99);
         _policy.setZero();
 
         _policy << projected_gravity.cast<float>(),
             Eigen::Map<Eigen::VectorXf>(jpos_buffer_.data(), 48),
-            // Eigen::Map<Eigen::VectorXf>(jvel_buffer_.data(), 64),
+            Eigen::Map<Eigen::VectorXf>(jvel_buffer_.data(), 64).head(16),
             Eigen::Map<Eigen::VectorXf>(prev_actions.data(), 32);
 
         // Copy to policy vector
@@ -160,8 +160,8 @@ void FSM_State_RL::run_state()
         this->cmd_lin_vel = this->cmd_lin_vel * 0.5 + v_des_xy * 0.5;
 
         Eigen::Vector2f timing;
-        Eigen::Vector3f cmd_rpy_;
-        cmd_rpy_.setZero();
+        Eigen::Vector3f cmd_rpy;
+        cmd_rpy.setZero();
 
         if (this->is_jumping)
         {
@@ -183,7 +183,7 @@ void FSM_State_RL::run_state()
             {
                 this->is_jumping = false;
                 this->cmd_jump_time = 0.0;
-                this->cmd_rpy(2) = rpy(2);
+                this->cmd_rpy_(2) = rpy(2);
             }
         }
         else
@@ -192,15 +192,15 @@ void FSM_State_RL::run_state()
             this->cmd_mode << 1.0, 0.0, 0.0, 0.0;
             this->des_contact << 0.0, 0.0, 0.0, 0.0;
             this->cmd_ang_vel << 0.0, 0.0, v_des_z;
-            this->cmd_rpy(2) = rpy(2);
+            this->cmd_rpy_(2) = rpy(2);
         }
 
-        cmd_rpy_(2) = this->cmd_rpy(2) - rpy(2);
-        cmd_rpy_(2) = std::fmod(cmd_rpy_(2) + M_PI, 2 * M_PI) - M_PI;
+        cmd_rpy(2) = this->cmd_rpy_(2) - rpy(2);
+        cmd_rpy(2) = std::fmod(cmd_rpy(2) + M_PI, 2 * M_PI) - M_PI;
 
         _command << cmd_lin_vel.head(2),
             this->cmd_ang_vel,
-            cmd_rpy_,
+            cmd_rpy,
             timing,
             this->cmd_mode,
             this->des_contact;
@@ -251,10 +251,9 @@ void FSM_State_RL::run_state()
         this->prev_actions.col(0) = action_eigen;
 
         Eigen::VectorXf desired_leg_jpos = action_eigen.head(12) * 0.75 + this->DEFAULT_LEG_JOINT_POS;
-        auto desired_whl_jvel = action_eigen.tail(4) * 10.0;
 
-        this->desired_leg_jpos_ = this->desired_leg_jpos_ * 0.2 + Eigen::Map<Eigen::Matrix<float, 4, 3>>(desired_leg_jpos.data()) * 0.8;
-        this->desired_whl_jvel_ = this->desired_whl_jvel_ * 0.2 + desired_whl_jvel * 0.8;
+        this->desired_leg_jpos_ = Eigen::Map<Eigen::Matrix<float, 4, 3>>(desired_leg_jpos.data());
+        this->desired_whl_jvel_ = action_eigen.tail(4) * 10.0;
 
         // get next_hx and copy to hx
         auto next_hx = output_tensors[4].GetTensorMutableData<float>();
@@ -266,7 +265,7 @@ void FSM_State_RL::run_state()
     // only update if desired_leg_jpos does not contain nan
     if (!this->desired_leg_jpos_.hasNaN())
     {
-        this->desired_leg_jpos_filtered_ = this->desired_leg_jpos_;
+        this->desired_leg_jpos_filtered_ = 0.8 * this->desired_leg_jpos_ + 0.2 * this->desired_leg_jpos_filtered_;
     }
 
     if (this->apply_action)

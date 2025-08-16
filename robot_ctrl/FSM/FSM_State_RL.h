@@ -41,7 +41,7 @@ private:
                             ).finished();
     
     Eigen::Vector3f cmd_lin_vel;
-    Eigen::Vector3f cmd_rpy;
+    Eigen::Vector3f cmd_rpy_;
     Eigen::Vector3f cmd_ang_vel;
     Eigen::Vector3f des_ang_vel;
     Eigen::Vector4f des_contact;
@@ -81,7 +81,7 @@ private:
     leg_control_command_lcmt lcm_leg_control_cmd{};
 public:
     static constexpr int64_t COMMAND_DIM = 18;
-    static constexpr int64_t POLICY_DIM = 83; // Updated to match JSON configuration
+    static constexpr int64_t POLICY_DIM = 99; // Updated to match JSON configuration
     static constexpr int64_t ACTION_DIM = 16;
     static constexpr int64_t HIDDEN_STATE_DIM = 128; // for GRU
     static constexpr int64_t HISTORY_STEPS = 4;
@@ -89,8 +89,8 @@ public:
     static constexpr float JUMP_PREP_TIME = 0.5;
     static constexpr float JUMP_LAND_TIME = 0.4;
 
-    static constexpr float LEG_KP = 40.0;
-    static constexpr float LEG_KD = 1.0;
+    static constexpr float LEG_KP = 48.0;
+    static constexpr float LEG_KD = 1.2;
     static constexpr float WHEEL_KD = 10.0;
 
     FSM_State_RL(
