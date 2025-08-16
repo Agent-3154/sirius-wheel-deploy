@@ -1,4 +1,5 @@
 #include "FSM_State_RL.h"
+#include "./filters.h"
 #include <iostream>
 #include <iomanip>
 // #include <onnxruntime_cxx_api.h>
@@ -8,11 +9,13 @@
 FSM_State_RL::FSM_State_RL(
     Control_FSM_Data_t *controlfsmdata,
     Control_Parameters_t *control_para) : FSM_State(controlfsmdata, control_para, RL),
-                                          lcm_logger_("udpm://239.255.76.67:7667?ttl=255")
+                                          lcm_logger_("udpm://239.255.76.67:7667?ttl=255"),
+                                          jvel_filter_1(0.01f, 0.001f),
+                                          jvel_filter_2(0.01f, 0.001f)
 {
     std::cout << GREEN << "[FSM State RL]: Ort version: " << ORT_API_VERSION << RESET << std::endl;
 
-    const std::string policy_path = "../models/policy-08-13_17-21.onnx";
+    const std::string policy_path = "../models/policy-08-16_15-12.onnx";
     Ort::Env env(ORT_LOGGING_LEVEL_WARNING, "ONNXInference");
     Ort::SessionOptions session_options;
     session = std::make_unique<Ort::Session>(env, policy_path.c_str(), session_options);
@@ -34,17 +37,6 @@ FSM_State_RL::FSM_State_RL(
     cmd_ang_vel.setZero();
 
     prev_actions.setZero();
-    desired_leg_jpos.setZero();
-    desired_leg_jpos_filtered.setZero();
-
-    // [Debug] fill q with arange(history * 12)
-    for (int i = 0; i < HISTORY_STEPS; i++)
-    {
-        for (int j = 0; j < 12; j++)
-        {
-            q_buffer(i, j) = i * 12 + j;
-        }
-    }
 
     std::cout << GREEN << "[FSM State RL]: Policy Loaded" << RESET << std::endl;
 
@@ -70,9 +62,9 @@ bool FSM_State_RL::state_on_enter()
     this->hx.resize(HIDDEN_STATE_DIM, 0.0f);
     this->des_ang_vel.setZero();
 
-    Eigen::VectorXf desired_leg_jpos_ = this->DEFAULT_LEG_JOINT_POS;
-    this->desired_leg_jpos << Eigen::Map<Eigen::Matrix<float, 4, 3>>(desired_leg_jpos_.data());
-    this->desired_leg_jpos_filtered << Eigen::Map<Eigen::Matrix<float, 4, 3>>(desired_leg_jpos_.data());
+    Eigen::VectorXf desired_leg_jpos = this->DEFAULT_LEG_JOINT_POS;
+    this->desired_leg_jpos_ = Eigen::Map<Eigen::Matrix<float, 4, 3>>(desired_leg_jpos.data());
+    this->desired_leg_jpos_filtered_ = this->desired_leg_jpos_;
     return true;
 };
 
@@ -117,31 +109,29 @@ void FSM_State_RL::run_state()
 
     if (step_count % 10 == 0)
     {
-        Eigen::Matrix<float, 4, 3> q_leg;
-        q_leg.setZero(); // joint position in ISAAC order
-        Eigen::Matrix<float, 4, 3> qd_leg;
-        qd_leg.setZero(); // joint velocity in ISAAC order
+        Eigen::Matrix<float, 4, 3> jpos_leg; // joint position in ISAAC order
+        Eigen::Matrix<float, 4, 3> jvel_leg; // joint velocity in ISAAC order
 
-        q_leg.row(0) = fsm_data_->leg_controller_->leg_data[1].q.cast<float>();   // RF
-        q_leg.row(1) = fsm_data_->leg_controller_->leg_data[3].q.cast<float>();   // LF
-        q_leg.row(2) = fsm_data_->leg_controller_->leg_data[0].q.cast<float>();   // RH
-        q_leg.row(3) = fsm_data_->leg_controller_->leg_data[2].q.cast<float>();   // LH
-        qd_leg.row(0) = fsm_data_->leg_controller_->leg_data[1].qd.cast<float>(); // RF
-        qd_leg.row(1) = fsm_data_->leg_controller_->leg_data[3].qd.cast<float>(); // LF
-        qd_leg.row(2) = fsm_data_->leg_controller_->leg_data[0].qd.cast<float>(); // RH
-        qd_leg.row(3) = fsm_data_->leg_controller_->leg_data[2].qd.cast<float>(); // LH
+        jpos_leg.row(0) = fsm_data_->leg_controller_->leg_data[1].q.cast<float>();   // RF
+        jpos_leg.row(1) = fsm_data_->leg_controller_->leg_data[3].q.cast<float>();   // LF
+        jpos_leg.row(2) = fsm_data_->leg_controller_->leg_data[0].q.cast<float>();   // RH
+        jpos_leg.row(3) = fsm_data_->leg_controller_->leg_data[2].q.cast<float>();   // LH
+        jvel_leg.row(0) = fsm_data_->leg_controller_->leg_data[1].qd.cast<float>(); // RF
+        jvel_leg.row(1) = fsm_data_->leg_controller_->leg_data[3].qd.cast<float>(); // LF
+        jvel_leg.row(2) = fsm_data_->leg_controller_->leg_data[0].qd.cast<float>(); // RH
+        jvel_leg.row(3) = fsm_data_->leg_controller_->leg_data[2].qd.cast<float>(); // LH
 
         // shift history
         for (int i = HISTORY_STEPS - 1; i > 0; i--)
         {
-            this->q_buffer.col(i) = this->q_buffer.col(i - 1);
-            this->qd_buffer.col(i) = this->qd_buffer.col(i - 1);
+            this->jpos_buffer_.col(i) = this->jpos_buffer_.col(i - 1);
+            this->jvel_buffer_.col(i) = this->jvel_buffer_.col(i - 1);
         }
-        auto q_leg_flat = Eigen::Map<Eigen::VectorXf>(q_leg.data(), 12);
-        auto qd_leg_flat = Eigen::Map<Eigen::VectorXf>(qd_leg.data(), 12);
+        auto jpos_leg_flat = Eigen::Map<Eigen::VectorXf>(jpos_leg.data(), 12);
+        auto jvel_leg_flat = Eigen::Map<Eigen::VectorXf>(jvel_leg.data(), 12);
 
-        this->q_buffer.col(0) = q_leg_flat;
-        this->qd_buffer.col(0) << qd_leg_flat,
+        this->jpos_buffer_.col(0) = jpos_leg_flat;
+        this->jvel_buffer_.col(0) << jvel_leg_flat,
             float(fsm_data_->leg_controller_->leg_data[1].whl_qd),
             float(fsm_data_->leg_controller_->leg_data[3].whl_qd),
             float(fsm_data_->leg_controller_->leg_data[0].whl_qd),
@@ -152,12 +142,12 @@ void FSM_State_RL::run_state()
 
         // observation "policy":
         // concat [projected_gravity(3), q_buffer.flatten(48), qd_buffer.flatten(64), prev_actions.flatten(32)] = 147 total
-        Eigen::VectorXf _policy(147);
+        Eigen::VectorXf _policy(83);
         _policy.setZero();
 
         _policy << projected_gravity.cast<float>(),
-            Eigen::Map<Eigen::VectorXf>(q_buffer.data(), 48),
-            Eigen::Map<Eigen::VectorXf>(qd_buffer.data(), 64),
+            Eigen::Map<Eigen::VectorXf>(jpos_buffer_.data(), 48),
+            // Eigen::Map<Eigen::VectorXf>(jvel_buffer_.data(), 64),
             Eigen::Map<Eigen::VectorXf>(prev_actions.data(), 32);
 
         // Copy to policy vector
@@ -260,10 +250,11 @@ void FSM_State_RL::run_state()
         this->prev_actions.col(1) = this->prev_actions.col(0);
         this->prev_actions.col(0) = action_eigen;
 
-        Eigen::VectorXf desired_leg_jpos_ = action_eigen.head(12) * 0.75 + this->DEFAULT_LEG_JOINT_POS;
+        Eigen::VectorXf desired_leg_jpos = action_eigen.head(12) * 0.75 + this->DEFAULT_LEG_JOINT_POS;
+        auto desired_whl_jvel = action_eigen.tail(4) * 10.0;
 
-        this->desired_leg_jpos = Eigen::Map<Eigen::Matrix<float, 4, 3>>(desired_leg_jpos_.data());
-        this->desired_whl_jvel = action_eigen.tail(4) * 10.0;
+        this->desired_leg_jpos_ = this->desired_leg_jpos_ * 0.2 + Eigen::Map<Eigen::Matrix<float, 4, 3>>(desired_leg_jpos.data()) * 0.8;
+        this->desired_whl_jvel_ = this->desired_whl_jvel_ * 0.2 + desired_whl_jvel * 0.8;
 
         // get next_hx and copy to hx
         auto next_hx = output_tensors[4].GetTensorMutableData<float>();
@@ -273,22 +264,22 @@ void FSM_State_RL::run_state()
         lcm_logger_.publish("POLICY_DATA_CHANNEL", &lcm_leg_control_data);
     }
     // only update if desired_leg_jpos does not contain nan
-    if (!desired_leg_jpos.hasNaN())
+    if (!this->desired_leg_jpos_.hasNaN())
     {
-        desired_leg_jpos_filtered = desired_leg_jpos_filtered * 0.2 + desired_leg_jpos * 0.8;
+        this->desired_leg_jpos_filtered_ = this->desired_leg_jpos_;
     }
 
     if (this->apply_action)
     {
-        fsm_data_->leg_controller_->leg_command[0].q_des = desired_leg_jpos_filtered.row(2).cast<double>();
-        fsm_data_->leg_controller_->leg_command[1].q_des = desired_leg_jpos_filtered.row(0).cast<double>();
-        fsm_data_->leg_controller_->leg_command[2].q_des = desired_leg_jpos_filtered.row(3).cast<double>();
-        fsm_data_->leg_controller_->leg_command[3].q_des = desired_leg_jpos_filtered.row(1).cast<double>();
+        fsm_data_->leg_controller_->leg_command[0].q_des = desired_leg_jpos_filtered_.row(2).cast<double>();
+        fsm_data_->leg_controller_->leg_command[1].q_des = desired_leg_jpos_filtered_.row(0).cast<double>();
+        fsm_data_->leg_controller_->leg_command[2].q_des = desired_leg_jpos_filtered_.row(3).cast<double>();
+        fsm_data_->leg_controller_->leg_command[3].q_des = desired_leg_jpos_filtered_.row(1).cast<double>();
 
-        fsm_data_->leg_controller_->leg_command[0].whl_qd_des = double(desired_whl_jvel(2));
-        fsm_data_->leg_controller_->leg_command[1].whl_qd_des = double(desired_whl_jvel(0));
-        fsm_data_->leg_controller_->leg_command[2].whl_qd_des = double(desired_whl_jvel(3));
-        fsm_data_->leg_controller_->leg_command[3].whl_qd_des = double(desired_whl_jvel(1));
+        fsm_data_->leg_controller_->leg_command[0].whl_qd_des = double(this->desired_whl_jvel_(2));
+        fsm_data_->leg_controller_->leg_command[1].whl_qd_des = double(this->desired_whl_jvel_(0));
+        fsm_data_->leg_controller_->leg_command[2].whl_qd_des = double(this->desired_whl_jvel_(3));
+        fsm_data_->leg_controller_->leg_command[3].whl_qd_des = double(this->desired_whl_jvel_(1));
     }
 
     for (auto &leg : fsm_data_->leg_controller_->leg_command)

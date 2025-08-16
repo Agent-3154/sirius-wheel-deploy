@@ -9,6 +9,7 @@
 #include <onnxruntime_cxx_api.h>
 #include "../../lcm-types/cpp/leg_control_data_lcmt.hpp"
 #include "../../lcm-types/cpp/leg_control_command_lcmt.hpp"
+#include "./filters.h"
 
 class FSM_State_RL final : public FSM_State
 {
@@ -27,12 +28,12 @@ private:
     bool is_init[1]; // Use bool array instead of std::vector<bool>
     std::vector<float> hx;
 
-    Eigen::Matrix<float, 12, 4> q_buffer;     // joint position history in ISAAC order
-    Eigen::Matrix<float, 16, 4> qd_buffer;    // joint velocity history in ISAAC order
+    Eigen::Matrix<float, 12, 4> jpos_buffer_;     // joint position history in ISAAC order
+    Eigen::Matrix<float, 16, 4> jvel_buffer_;    // joint velocity history in ISAAC order
     Eigen::Matrix<float, 16, 2> prev_actions; // previous actions
-    Eigen::Matrix<float, 4, 3> desired_leg_jpos;
-    Eigen::Matrix<float, 4, 3> desired_leg_jpos_filtered;
-    Eigen::Vector4f desired_whl_jvel;
+    Eigen::Matrix<float, 4, 3> desired_leg_jpos_;
+    Eigen::Matrix<float, 4, 3> desired_leg_jpos_filtered_;
+    Eigen::Vector4f desired_whl_jvel_;
     const Eigen::VectorXf DEFAULT_LEG_JOINT_POS = (
         Eigen::VectorXf(12) << 0.0, 0.0, 0.0, 0.0,
                             0.40, -0.40, 0.40, -0.40,
@@ -47,6 +48,8 @@ private:
     Eigen::Vector4f cmd_mode;
 
     const float dt = 0.002f; // Time step in seconds (assuming 1kHz control loop)
+    FirstOrderLowPassFilter jvel_filter_1;
+    SecondOrderLowPassFilter jvel_filter_2;
 
     const std::vector<int64_t> command_shape = {1, COMMAND_DIM};
     const std::vector<int64_t> policy_shape = {1, POLICY_DIM};
@@ -78,7 +81,7 @@ private:
     leg_control_command_lcmt lcm_leg_control_cmd{};
 public:
     static constexpr int64_t COMMAND_DIM = 18;
-    static constexpr int64_t POLICY_DIM = 147; // Updated to match JSON configuration
+    static constexpr int64_t POLICY_DIM = 83; // Updated to match JSON configuration
     static constexpr int64_t ACTION_DIM = 16;
     static constexpr int64_t HIDDEN_STATE_DIM = 128; // for GRU
     static constexpr int64_t HISTORY_STEPS = 4;
