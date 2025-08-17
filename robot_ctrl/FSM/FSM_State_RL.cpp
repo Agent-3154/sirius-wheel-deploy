@@ -107,31 +107,48 @@ void FSM_State_RL::run_state()
         this->des_ang_vel(2) = angle / air_time;
     }
 
-    if (step_count % 10 == 0)
+    Eigen::Matrix<float, 4, 3> jpos_leg; // joint position in ISAAC order
+    Eigen::Matrix<float, 4, 3> jvel_leg; // joint velocity in ISAAC order
+
+    jpos_leg.row(0) = fsm_data_->leg_controller_->leg_data[1].q.cast<float>();   // RF
+    jpos_leg.row(1) = fsm_data_->leg_controller_->leg_data[3].q.cast<float>();   // LF
+    jpos_leg.row(2) = fsm_data_->leg_controller_->leg_data[0].q.cast<float>();   // RH
+    jpos_leg.row(3) = fsm_data_->leg_controller_->leg_data[2].q.cast<float>();   // LH
+    jvel_leg.row(0) = fsm_data_->leg_controller_->leg_data[1].qd.cast<float>(); // RF
+    jvel_leg.row(1) = fsm_data_->leg_controller_->leg_data[3].qd.cast<float>(); // LF
+    jvel_leg.row(2) = fsm_data_->leg_controller_->leg_data[0].qd.cast<float>(); // RH
+    jvel_leg.row(3) = fsm_data_->leg_controller_->leg_data[2].qd.cast<float>(); // LH
+
+    auto jpos_leg_flat = Eigen::Map<Eigen::VectorXf>(jpos_leg.data(), 12);
+    auto jvel_leg_flat = Eigen::VectorXf(16);
+    jvel_leg_flat << Eigen::Map<Eigen::VectorXf>(jvel_leg.data(), 12),
+        float(fsm_data_->leg_controller_->leg_data[1].whl_qd),
+        float(fsm_data_->leg_controller_->leg_data[3].whl_qd),
+        float(fsm_data_->leg_controller_->leg_data[0].whl_qd),
+        float(fsm_data_->leg_controller_->leg_data[2].whl_qd);
+
+    raw_jpos_buffer_.col(step_count % 10) = jpos_leg_flat;
+    // raw_jvel_buffer_.col(step_count % 10) = jvel_leg_flat;
+
+    std::memcpy(lcm_leg_raw_data.q, jpos_leg_flat.data(), 12 * sizeof(float));
+    std::memcpy(lcm_leg_raw_data.qd, jvel_leg_flat.data(), 16 * sizeof(float));
+    lcm_logger_.publish("RAW_DATA_CHANNEL", &lcm_leg_raw_data);
+
+    if ((step_count+1) % 10 == 0)
     {
-        Eigen::Matrix<float, 4, 3> jpos_leg; // joint position in ISAAC order
-        Eigen::Matrix<float, 4, 3> jvel_leg; // joint velocity in ISAAC order
-
-        jpos_leg.row(0) = fsm_data_->leg_controller_->leg_data[1].q.cast<float>();   // RF
-        jpos_leg.row(1) = fsm_data_->leg_controller_->leg_data[3].q.cast<float>();   // LF
-        jpos_leg.row(2) = fsm_data_->leg_controller_->leg_data[0].q.cast<float>();   // RH
-        jpos_leg.row(3) = fsm_data_->leg_controller_->leg_data[2].q.cast<float>();   // LH
-        jvel_leg.row(0) = fsm_data_->leg_controller_->leg_data[1].qd.cast<float>(); // RF
-        jvel_leg.row(1) = fsm_data_->leg_controller_->leg_data[3].qd.cast<float>(); // LF
-        jvel_leg.row(2) = fsm_data_->leg_controller_->leg_data[0].qd.cast<float>(); // RH
-        jvel_leg.row(3) = fsm_data_->leg_controller_->leg_data[2].qd.cast<float>(); // LH
-
         // shift history
         for (int i = HISTORY_STEPS - 1; i > 0; i--)
         {
-            this->jpos_buffer_.col(i) = this->jpos_buffer_.col(i - 1);
-            this->jvel_buffer_.col(i) = this->jvel_buffer_.col(i - 1);
+            this->obs_jpos_buffer_.col(i) = this->obs_jpos_buffer_.col(i - 1);
+            this->obs_jvel_buffer_.col(i) = this->obs_jvel_buffer_.col(i - 1);
         }
-        auto jpos_leg_flat = Eigen::Map<Eigen::VectorXf>(jpos_leg.data(), 12);
-        auto jvel_leg_flat = Eigen::Map<Eigen::VectorXf>(jvel_leg.data(), 12);
 
-        this->jpos_buffer_.col(0) = jpos_leg_flat;
-        this->jvel_buffer_.col(0) << jvel_leg_flat,
+        auto jpos_leg_mean_prev = raw_jpos_buffer_.leftCols(6).rowwise().mean();
+        auto jpos_leg_mean_curr = raw_jpos_buffer_.rightCols(6).rowwise().mean();
+
+        this->obs_jpos_buffer_.col(0) = jpos_leg_mean_curr;
+        this->obs_jvel_buffer_.col(0) << 
+            (jpos_leg_mean_curr - jpos_leg_mean_prev) / 0.01,
             float(fsm_data_->leg_controller_->leg_data[1].whl_qd),
             float(fsm_data_->leg_controller_->leg_data[3].whl_qd),
             float(fsm_data_->leg_controller_->leg_data[0].whl_qd),
@@ -146,8 +163,8 @@ void FSM_State_RL::run_state()
         _policy.setZero();
 
         _policy << projected_gravity.cast<float>(),
-            Eigen::Map<Eigen::VectorXf>(jpos_buffer_.data(), 48),
-            Eigen::Map<Eigen::VectorXf>(jvel_buffer_.data(), 64).head(16),
+            Eigen::Map<Eigen::VectorXf>(obs_jpos_buffer_.data(), 48),
+            Eigen::Map<Eigen::VectorXf>(obs_jvel_buffer_.data(), 64).head(16),
             Eigen::Map<Eigen::VectorXf>(prev_actions.data(), 32);
 
         // Copy to policy vector
@@ -259,8 +276,9 @@ void FSM_State_RL::run_state()
         auto next_hx = output_tensors[4].GetTensorMutableData<float>();
         std::copy(next_hx, next_hx + HIDDEN_STATE_DIM, this->hx.begin());
 
-        fsm_data_->leg_controller_->setLcm(&lcm_leg_control_data, &lcm_leg_control_cmd);
-        lcm_logger_.publish("POLICY_DATA_CHANNEL", &lcm_leg_control_data);
+        std::memcpy(lcm_leg_obs_data.q, obs_jpos_buffer_.col(0).data(), 12 * sizeof(float));
+        std::memcpy(lcm_leg_obs_data.qd, obs_jvel_buffer_.col(0).data(), 16 * sizeof(float));
+        lcm_logger_.publish("POLICY_DATA_CHANNEL", &lcm_leg_obs_data);
     }
     // only update if desired_leg_jpos does not contain nan
     if (!this->desired_leg_jpos_.hasNaN())

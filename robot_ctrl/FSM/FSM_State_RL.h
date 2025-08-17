@@ -28,8 +28,10 @@ private:
     bool is_init[1]; // Use bool array instead of std::vector<bool>
     std::vector<float> hx;
 
-    Eigen::Matrix<float, 12, 4> jpos_buffer_;     // joint position history in ISAAC order
-    Eigen::Matrix<float, 16, 4> jvel_buffer_;    // joint velocity history in ISAAC order
+    Eigen::Matrix<float, 12, 11> raw_jpos_buffer_;
+    
+    Eigen::Matrix<float, 12, 4> obs_jpos_buffer_;     // joint position history in ISAAC order
+    Eigen::Matrix<float, 16, 4> obs_jvel_buffer_;    // joint velocity history in ISAAC order
     Eigen::Matrix<float, 16, 2> prev_actions; // previous actions
     Eigen::Matrix<float, 4, 3> desired_leg_jpos_;
     Eigen::Matrix<float, 4, 3> desired_leg_jpos_filtered_;
@@ -77,7 +79,8 @@ private:
     
     // logging with lcm
     lcm::LCM lcm_logger_;
-    leg_control_data_lcmt lcm_leg_control_data{};
+    leg_control_data_lcmt lcm_leg_obs_data{};
+    leg_control_data_lcmt lcm_leg_raw_data{};
     leg_control_command_lcmt lcm_leg_control_cmd{};
 public:
     static constexpr int64_t COMMAND_DIM = 18;
