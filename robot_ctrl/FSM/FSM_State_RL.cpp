@@ -11,11 +11,11 @@ FSM_State_RL::FSM_State_RL(
     Control_Parameters_t *control_para) : FSM_State(controlfsmdata, control_para, RL),
                                           lcm_logger_("udpm://239.255.76.67:7667?ttl=255"),
                                           jvel_filter_1(0.01f, 0.001f),
-                                          jvel_filter_2(0.01f, 0.001f)
+                                          jvel_filter_2(0.01f, 0.002f)
 {
     std::cout << GREEN << "[FSM State RL]: Ort version: " << ORT_API_VERSION << RESET << std::endl;
 
-    const std::string policy_path = "../models/policy-08-16_17-42.onnx";
+    const std::string policy_path = "../models/policy-08-16_15-12.onnx";
     Ort::Env env(ORT_LOGGING_LEVEL_WARNING, "ONNXInference");
     Ort::SessionOptions session_options;
     session = std::make_unique<Ort::Session>(env, policy_path.c_str(), session_options);
@@ -133,6 +133,14 @@ void FSM_State_RL::run_state()
     std::memcpy(lcm_leg_raw_data.q, jpos_leg_flat.data(), 12 * sizeof(float));
     std::memcpy(lcm_leg_raw_data.qd, jvel_leg_flat.data(), 16 * sizeof(float));
     lcm_logger_.publish("RAW_DATA_CHANNEL", &lcm_leg_raw_data);
+    
+    auto jvel_leg_filtered_1 = this->jvel_filter_1.update(jvel_leg_flat);
+    std::memcpy(lcm_leg_filtered_data_1.qd, jvel_leg_filtered_1.data(), 16 * sizeof(float));
+    lcm_logger_.publish("FILTERED_DATA_CHANNEL_1", &lcm_leg_filtered_data_1);
+
+    auto jvel_leg_filtered_2 = this->jvel_filter_2.update(jvel_leg_filtered_1);
+    std::memcpy(lcm_leg_filtered_data_2.qd, jvel_leg_filtered_2.data(), 16 * sizeof(float));
+    lcm_logger_.publish("FILTERED_DATA_CHANNEL_2", &lcm_leg_filtered_data_2);
 
     if ((step_count+1) % 10 == 0)
     {
@@ -143,12 +151,12 @@ void FSM_State_RL::run_state()
             this->obs_jvel_buffer_.col(i) = this->obs_jvel_buffer_.col(i - 1);
         }
 
-        auto jpos_leg_mean_prev = raw_jpos_buffer_.leftCols(6).rowwise().mean();
-        auto jpos_leg_mean_curr = raw_jpos_buffer_.rightCols(6).rowwise().mean();
+        // auto jpos_leg_mean_prev = raw_jpos_buffer_.leftCols(5).rowwise().mean();
+        auto jpos_leg_mean_curr = raw_jpos_buffer_.rowwise().mean();
+        auto jvel_leg_approx = (jpos_leg_mean_curr - this->obs_jpos_buffer_.col(1)) / 0.02;
 
         this->obs_jpos_buffer_.col(0) = jpos_leg_mean_curr;
-        this->obs_jvel_buffer_.col(0) << 
-            (jpos_leg_mean_curr - jpos_leg_mean_prev) / 0.01,
+        this->obs_jvel_buffer_.col(0) << jvel_leg_approx,
             float(fsm_data_->leg_controller_->leg_data[1].whl_qd),
             float(fsm_data_->leg_controller_->leg_data[3].whl_qd),
             float(fsm_data_->leg_controller_->leg_data[0].whl_qd),
@@ -164,7 +172,7 @@ void FSM_State_RL::run_state()
 
         _policy << projected_gravity.cast<float>(),
             Eigen::Map<Eigen::VectorXf>(obs_jpos_buffer_.data(), 48),
-            Eigen::Map<Eigen::VectorXf>(obs_jvel_buffer_.data(), 64).head(16),
+            // Eigen::Map<Eigen::VectorXf>(obs_jvel_buffer_.data(), 64).head(16),
             Eigen::Map<Eigen::VectorXf>(prev_actions.data(), 32);
 
         // Copy to policy vector

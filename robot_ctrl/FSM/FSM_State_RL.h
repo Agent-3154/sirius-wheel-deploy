@@ -28,7 +28,7 @@ private:
     bool is_init[1]; // Use bool array instead of std::vector<bool>
     std::vector<float> hx;
 
-    Eigen::Matrix<float, 12, 11> raw_jpos_buffer_;
+    Eigen::Matrix<float, 12, 10> raw_jpos_buffer_;
     
     Eigen::Matrix<float, 12, 4> obs_jpos_buffer_;     // joint position history in ISAAC order
     Eigen::Matrix<float, 16, 4> obs_jvel_buffer_;    // joint velocity history in ISAAC order
@@ -50,7 +50,7 @@ private:
     Eigen::Vector4f cmd_mode;
 
     const float dt = 0.002f; // Time step in seconds (assuming 1kHz control loop)
-    FirstOrderLowPassFilter jvel_filter_1;
+    SecondOrderLowPassFilter jvel_filter_1;
     SecondOrderLowPassFilter jvel_filter_2;
 
     const std::vector<int64_t> command_shape = {1, COMMAND_DIM};
@@ -81,10 +81,12 @@ private:
     lcm::LCM lcm_logger_;
     leg_control_data_lcmt lcm_leg_obs_data{};
     leg_control_data_lcmt lcm_leg_raw_data{};
+    leg_control_data_lcmt lcm_leg_filtered_data_1{};
+    leg_control_data_lcmt lcm_leg_filtered_data_2{};
     leg_control_command_lcmt lcm_leg_control_cmd{};
 public:
     static constexpr int64_t COMMAND_DIM = 18;
-    static constexpr int64_t POLICY_DIM = 99; // Updated to match JSON configuration
+    static constexpr int64_t POLICY_DIM = 83; // Updated to match JSON configuration
     static constexpr int64_t ACTION_DIM = 16;
     static constexpr int64_t HIDDEN_STATE_DIM = 128; // for GRU
     static constexpr int64_t HISTORY_STEPS = 4;
