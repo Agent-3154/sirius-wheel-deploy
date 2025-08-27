@@ -15,7 +15,7 @@ FSM_State_RL::FSM_State_RL(
 {
     std::cout << GREEN << "[FSM State RL]: Ort version: " << ORT_API_VERSION << RESET << std::endl;
 
-    const std::string policy_path = "../models/policy-08-16_15-12.onnx";
+    const std::string policy_path = "../models/policy-08-27_15-42.onnx";
     Ort::Env env(ORT_LOGGING_LEVEL_WARNING, "ONNXInference");
     Ort::SessionOptions session_options;
     session = std::make_unique<Ort::Session>(env, policy_path.c_str(), session_options);
@@ -26,17 +26,21 @@ FSM_State_RL::FSM_State_RL(
 
     // Initialize observation vector with 49 zeros
     policy.resize(POLICY_DIM, 0.0f);
-    is_init[0] = false; // Initialize the bool array
-    hx.resize(HIDDEN_STATE_DIM, 0.0f);
+    
+    this->is_init[0] = false; // Initialize the bool array
+    this->hx.resize(HIDDEN_STATE_DIM, 0.0f);
     this->rpy.setZero();
     this->cmd_rpy_.setZero();
     // rpy_init = fsm_data_->estimators_->shared_esti_data_.result_->rpy_;
     // std::cout << "rpy_init: " << rpy_init.transpose() << std::endl;
 
-    cmd_lin_vel.setZero();
-    cmd_ang_vel.setZero();
+    this->cmd_lin_vel_.setZero();
+    this->cmd_ang_vel_.setZero();
 
-    prev_actions.setZero();
+    this->prev_actions.setZero();
+    this->command_ = Eigen::VectorXf(COMMAND_DIM);
+    this->command_.setZero();
+    this->cum_hip_deviation_.setZero();
 
     std::cout << GREEN << "[FSM State RL]: Policy Loaded" << RESET << std::endl;
 
@@ -58,9 +62,9 @@ bool FSM_State_RL::state_on_enter()
         leg.whl_kd_joint = WHEEL_KD;
     }
     this->is_jumping = false;
-    this->cmd_jump_time = 0.0;
+    this->cmd_time_ = 0.0;
     this->hx.resize(HIDDEN_STATE_DIM, 0.0f);
-    this->des_ang_vel.setZero();
+    this->cmd_ang_vel_.setZero();
 
     Eigen::VectorXf desired_leg_jpos = this->DEFAULT_LEG_JOINT_POS;
     this->desired_leg_jpos_ = Eigen::Map<Eigen::Matrix<float, 4, 3>>(desired_leg_jpos.data());
@@ -73,38 +77,101 @@ void FSM_State_RL::state_on_exit()
     return;
 };
 
+void FSM_State_RL::step_command()
+{
+    float v_des_x = fsm_data_->rc_->rc_control_.v_des[0] * 1.2;
+    float v_des_y = fsm_data_->rc_->rc_control_.v_des[1] * 0.8;
+    float v_des_z = fsm_data_->rc_->rc_control_.v_des[2];
+
+    Eigen::Vector3f v_des_xy = Eigen::Vector3f(v_des_x, v_des_y, 0.0);
+    this->cmd_lin_vel_ = this->cmd_lin_vel_ * 0.5 + v_des_xy * 0.5;
+
+    if (this->is_jumping)
+    {
+        this->cmd_mode_ << 0.0, 1.0;
+        if (this->cmd_time_ < JUMP_PREP_TIME)
+        {
+            this->des_contact_  = - Eigen::Vector4f::Ones() * 0.25;
+        }
+        else if (this->cmd_time_ < JUMP_PREP_TIME + 0.2)
+        {
+            this->des_contact_ << 0.0, 0.0, 0.0, 0.0;
+            this->cmd_ang_vel_ << 0.0, 0.0, 0.0;
+        }
+        else if (this->cmd_time_ < this->cmd_duration_ - JUMP_LAND_TIME)
+        {
+            this->des_contact_ << Eigen::Vector4f::Ones();
+        } else if (this->cmd_time_ < this->cmd_duration_) {
+            
+        } else {
+            this->is_jumping = false;
+            this->cmd_time_ = 0.0;
+            this->cmd_rpy_(2) = this->rpy(2);
+        }
+    }
+    else
+    {
+        this->cmd_mode_ << 1.0, 0.0;
+        for (int i = 0; i < 4; i++) {
+            auto cond = (this->cum_hip_deviation_(i) > 0.6);
+            this->des_contact_(i) = cond ? -1.0 : 0.0;
+        }
+        this->cmd_ang_vel_ << 0.0, 0.0, v_des_z;
+    }
+    this->cmd_rpy_ += this->cmd_ang_vel_ * 0.02;
+    this->cmd_time_ += 0.02;
+}
+
+void FSM_State_RL::compute_command() {
+    Eigen::Vector3f cmd_rpy_b;
+    cmd_rpy_b(2) = this->cmd_rpy_(2) - this->rpy(2);
+    cmd_rpy_b(2) = std::fmod(cmd_rpy_b(2) + M_PI, 2 * M_PI) - M_PI;
+    auto des_yaw_b = 0.0;
+
+    Eigen::Vector2f timing;
+    if (this->is_jumping) {
+        timing << this->cmd_time_, this->cmd_duration_ - this->cmd_time_;
+    } else {
+        timing << 0.0, 0.0;
+    }
+    this->command_ << 
+        this->cmd_lin_vel_,
+        this->cmd_ang_vel_,
+        cmd_rpy_b,
+        des_yaw_b,
+        timing,
+        this->cmd_mode_,
+        this->des_contact_;
+}
+
 void FSM_State_RL::run_state()
 {
     step_count++;
 
-    quat = fsm_data_->estimators_->get_result_quat();
-    gyro = fsm_data_->estimators_->get_result_angular_body();
-    rpy = fsm_data_->estimators_->shared_esti_data_.result_->rpy_;
+    this->quat = fsm_data_->estimators_->get_result_quat();
+    this->gyro = fsm_data_->estimators_->get_result_angular_body();
+    this->rpy = fsm_data_->estimators_->shared_esti_data_.result_->rpy_;
     // std::cout << "rpy: " << rpy.transpose() << std::endl;
-
-    float v_des_x = fsm_data_->rc_->rc_control_.v_des[0] * 1.2;
-    float v_des_y = fsm_data_->rc_->rc_control_.v_des[1] * 0.8;
-    float v_des_z = fsm_data_->rc_->rc_control_.v_des[2];
 
     if (fsm_data_->rc_->rc_map_.a && !this->is_jumping)
     {
         this->is_jumping = true;
         float angle = 0.0;
-        float air_time = 1.3 - JUMP_PREP_TIME - JUMP_LAND_TIME;
+        float air_time = 0.5;
+        this->cmd_duration_ = JUMP_PREP_TIME + air_time + JUMP_LAND_TIME;
 
-        if (fsm_data_->rc_->rc_map_.lt > 0)
-        {
-            angle = M_PI / 2;
-            std::cout << "[FSM State RL]: jump left" << std::endl;
-        }
-        else if (fsm_data_->rc_->rc_map_.rt > 0)
-        {
-            angle = -M_PI / 2;
-            std::cout << "[FSM State RL]: jump right" << std::endl;
-        }
-
-        this->cmd_rpy_(2) = rpy(2) + angle;
-        this->des_ang_vel(2) = angle / air_time;
+        // if (fsm_data_->rc_->rc_map_.lt > 0)
+        // {
+        //     angle = M_PI / 2;
+        //     std::cout << "[FSM State RL]: jump left" << std::endl;
+        // }
+        // else if (fsm_data_->rc_->rc_map_.rt > 0)
+        // {
+        //     angle = -M_PI / 2;
+        //     std::cout << "[FSM State RL]: jump right" << std::endl;
+        // }
+        this->cmd_rpy_ << 0.0, 0.0, this->rpy(2);
+        this->des_rpy_ << 0.0, 0.0, this->rpy(2) + angle;
     }
 
     Eigen::Matrix<float, 4, 3> jpos_leg; // joint position in ISAAC order
@@ -155,6 +222,19 @@ void FSM_State_RL::run_state()
         auto jpos_leg_mean_curr = raw_jpos_buffer_.rowwise().mean();
         auto jvel_leg_approx = (jpos_leg_mean_curr - this->obs_jpos_buffer_.col(1)) / 0.02;
 
+        for (int i = 0; i < 4; i++)
+        {
+            auto hip_deviation = abs(jpos_leg_mean_curr(i));
+            if (hip_deviation < 0.1)
+            {
+                this->cum_hip_deviation_(i) = 0.0;
+            }
+            else
+            {
+                this->cum_hip_deviation_(i) += hip_deviation * 0.02;
+            }
+        }
+
         this->obs_jpos_buffer_.col(0) = jpos_leg_mean_curr;
         this->obs_jvel_buffer_.col(0) << jvel_leg_approx,
             float(fsm_data_->leg_controller_->leg_data[1].whl_qd),
@@ -167,78 +247,31 @@ void FSM_State_RL::run_state()
 
         // observation "policy":
         // concat [projected_gravity(3), q_buffer.flatten(48), qd_buffer.flatten(64), prev_actions.flatten(32)] = 147 total
-        Eigen::VectorXf _policy(99);
+        Eigen::VectorXf _policy(POLICY_DIM);
         _policy.setZero();
-
+        
+        auto whl_qd = obs_jvel_buffer_.bottomRows(4);
         _policy << projected_gravity.cast<float>(),
             Eigen::Map<Eigen::VectorXf>(obs_jpos_buffer_.data(), 48),
-            // Eigen::Map<Eigen::VectorXf>(obs_jvel_buffer_.data(), 64).head(16),
-            Eigen::Map<Eigen::VectorXf>(prev_actions.data(), 32);
+            Eigen::Map<Eigen::VectorXf>(whl_qd.data(), 16),
+            Eigen::Map<Eigen::VectorXf>(prev_actions.data(), 32),
+            this->cum_hip_deviation_;
 
         // Copy to policy vector
         std::copy(_policy.data(), _policy.data() + POLICY_DIM, this->policy.begin());
 
-        Eigen::VectorXf _command(COMMAND_DIM);
-        _command.setZero();
-
-        Eigen::Vector3f v_des_xy = Eigen::Vector3f(v_des_x, v_des_y, 0.0);
-        this->cmd_lin_vel = this->cmd_lin_vel * 0.5 + v_des_xy * 0.5;
-
-        Eigen::Vector2f timing;
-        Eigen::Vector3f cmd_rpy;
-        cmd_rpy.setZero();
-
-        if (this->is_jumping)
-        {
-            timing << this->cmd_jump_time, 1.3 - this->cmd_jump_time;
-            this->cmd_mode << 0.0, 0.0, 1.0, 0.0;
-            bool in_air = (this->cmd_jump_time > JUMP_PREP_TIME) && (this->cmd_jump_time < 1.3 - JUMP_LAND_TIME);
-            if (in_air)
-            {
-                this->des_contact << -1.0, -1.0, -1.0, -1.0;
-                this->cmd_ang_vel << this->des_ang_vel;
-            }
-            else
-            {
-                this->des_contact << 0.0, 0.0, 0.0, 0.0;
-                this->cmd_ang_vel << 0.0, 0.0, 0.0;
-            }
-            this->cmd_jump_time += 0.02;
-            if (this->cmd_jump_time > 1.3)
-            {
-                this->is_jumping = false;
-                this->cmd_jump_time = 0.0;
-                this->cmd_rpy_(2) = rpy(2);
-            }
-        }
-        else
-        {
-            timing << 0.0, 0.0;
-            this->cmd_mode << 1.0, 0.0, 0.0, 0.0;
-            this->des_contact << 0.0, 0.0, 0.0, 0.0;
-            this->cmd_ang_vel << 0.0, 0.0, v_des_z;
-            this->cmd_rpy_(2) = rpy(2);
-        }
-
-        cmd_rpy(2) = this->cmd_rpy_(2) - rpy(2);
-        cmd_rpy(2) = std::fmod(cmd_rpy(2) + M_PI, 2 * M_PI) - M_PI;
-
-        _command << cmd_lin_vel.head(2),
-            this->cmd_ang_vel,
-            cmd_rpy,
-            timing,
-            this->cmd_mode,
-            this->des_contact;
+        step_command();
+        compute_command();
 
         // std::cout << "command: " << std::fixed << std::setprecision(2) << cmd_rpy_.transpose() << std::endl;
 
         std::vector<Ort::Value> input_tensors;
         input_tensors.push_back(Ort::Value::CreateTensor<float>(
             *this->memory_info,
-            _command.data(),
-            _command.size(),
-            command_shape.data(),
-            command_shape.size()));
+            this->command_.data(),
+            this->command_.size(),
+            this->command_shape.data(),
+            this->command_shape.size()));
         input_tensors.push_back(Ort::Value::CreateTensor<float>(
             *this->memory_info,
             policy.data(),
@@ -249,14 +282,14 @@ void FSM_State_RL::run_state()
             *this->memory_info,
             this->is_init,
             1,
-            is_init_shape.data(),
-            is_init_shape.size()));
+            this->is_init_shape.data(),
+            this->is_init_shape.size()));
         input_tensors.push_back(Ort::Value::CreateTensor<float>(
             *this->memory_info,
             hx.data(),
-            hx.size(),
-            hx_shape.data(),
-            hx_shape.size()));
+            this->hx.size(),
+            this->hx_shape.data(),
+            this->hx_shape.size()));
 
         const char *input_names[] = {"command", "policy", "is_init", "hx"};
         const char *output_names[] = {"div", "div_1", "linear_8", "sum_1", "add_3", "mish_4"};

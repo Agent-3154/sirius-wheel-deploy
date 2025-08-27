@@ -18,6 +18,7 @@ private:
     std::unique_ptr<Ort::RunOptions> run_options;
     std::unique_ptr<Ort::MemoryInfo> memory_info;
 
+    // IMU states
     Eigen::Vector4d quat;
     Eigen::Vector3d gyro;
     Eigen::Vector3d rpy;
@@ -42,12 +43,14 @@ private:
                             -1.20, 1.20, -1.20, 1.20
                             ).finished();
     
-    Eigen::Vector3f cmd_lin_vel;
+    Eigen::Vector3f cmd_lin_vel_;
+    Eigen::Vector3f des_rpy_; // global target rpy
     Eigen::Vector3f cmd_rpy_;
-    Eigen::Vector3f cmd_ang_vel;
-    Eigen::Vector3f des_ang_vel;
-    Eigen::Vector4f des_contact;
-    Eigen::Vector4f cmd_mode;
+    Eigen::Vector3f cmd_ang_vel_;
+    Eigen::Vector4f des_contact_;
+    Eigen::Vector2f cmd_mode_;
+    Eigen::Vector4f cum_hip_deviation_;
+    Eigen::VectorXf command_;
 
     const float dt = 0.002f; // Time step in seconds (assuming 1kHz control loop)
     SecondOrderLowPassFilter jvel_filter_1;
@@ -75,7 +78,8 @@ private:
     bool apply_action = true; // set to false for dry-run
     
     bool is_jumping = false;
-    float cmd_jump_time = 0.0;
+    float cmd_time_ = 0.0;
+    float cmd_duration_ = 0.0;
     
     // logging with lcm
     lcm::LCM lcm_logger_;
@@ -84,9 +88,12 @@ private:
     leg_control_data_lcmt lcm_leg_filtered_data_1{};
     leg_control_data_lcmt lcm_leg_filtered_data_2{};
     leg_control_command_lcmt lcm_leg_control_cmd{};
+
+    void step_command();
+    void compute_command();
 public:
     static constexpr int64_t COMMAND_DIM = 18;
-    static constexpr int64_t POLICY_DIM = 83; // Updated to match JSON configuration
+    static constexpr int64_t POLICY_DIM = 83 + 16 + 4; // Updated to match JSON configuration
     static constexpr int64_t ACTION_DIM = 16;
     static constexpr int64_t HIDDEN_STATE_DIM = 128; // for GRU
     static constexpr int64_t HISTORY_STEPS = 4;
