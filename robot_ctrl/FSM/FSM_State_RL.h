@@ -11,6 +11,9 @@
 #include "../../lcm-types/cpp/leg_control_command_lcmt.hpp"
 #include "./filters.h"
 
+// Forward declaration
+class Observation;
+
 class FSM_State_RL final : public FSM_State
 {
 private:
@@ -23,7 +26,6 @@ private:
     Eigen::Vector3d gyro;
     Eigen::Vector3d rpy;
     Eigen::Vector3d rpy_init;
-    Eigen::Vector3d projected_gravity;
 
     std::vector<float> policy;
     bool is_init[1]; // Use bool array instead of std::vector<bool>
@@ -31,9 +33,8 @@ private:
 
     Eigen::Matrix<float, 12, 10> raw_jpos_buffer_;
     
-    Eigen::Matrix<float, 12, 4> obs_jpos_buffer_;     // joint position history in ISAAC order
-    Eigen::Matrix<float, 16, 4> obs_jvel_buffer_;    // joint velocity history in ISAAC order
-    Eigen::Matrix<float, 16, 2> prev_actions; // previous actions
+    // joint velocity history in ISAAC order
+    Eigen::Matrix<float, 16, 2> prev_actions_; // previous actions
     Eigen::Matrix<float, 4, 3> desired_leg_jpos_;
     Eigen::Matrix<float, 4, 3> desired_leg_jpos_filtered_;
     Eigen::Vector4f desired_whl_jvel_;
@@ -49,18 +50,20 @@ private:
     Eigen::Vector3f cmd_ang_vel_;
     Eigen::Vector4f des_contact_;
     Eigen::Vector2f cmd_mode_;
-    Eigen::Vector4f cum_hip_deviation_;
-    Eigen::VectorXf command_;
-
+    
+    
     const float dt = 0.002f; // Time step in seconds (assuming 1kHz control loop)
     SecondOrderLowPassFilter jvel_filter_1;
     SecondOrderLowPassFilter jvel_filter_2;
-
-    const std::vector<int64_t> command_shape = {1, COMMAND_DIM};
-    const std::vector<int64_t> policy_shape = {1, POLICY_DIM};
+    
+    Eigen::VectorXf obs_command_;
+    Eigen::VectorXf obs_policy_;
+    const std::vector<int64_t> obs_command_shape = {1, COMMAND_DIM};
+    const std::vector<int64_t> obs_policy_shape = {1, POLICY_DIM};
     const std::vector<int64_t> is_init_shape = {1};
     const std::vector<int64_t> hx_shape = {1, HIDDEN_STATE_DIM};
-    int64_t step_count = 0;
+    int64_t loop_step_count_ = 0;
+    int64_t ctrl_step_count_ = 0;
 
     const std::array<std::string, 16> ISAAC_JORDER = {
         "LF_HAA", "LH_HAA", "RF_HAA", "RH_HAA",
@@ -91,19 +94,28 @@ private:
 
     void step_command();
     void compute_command();
+
+    std::vector<std::unique_ptr<Observation>> observations_;
 public:
-    static constexpr int64_t COMMAND_DIM = 18;
-    static constexpr int64_t POLICY_DIM = 83 + 16 + 4; // Updated to match JSON configuration
+    static constexpr int64_t COMMAND_DIM = 17;
+    static constexpr int64_t POLICY_DIM = 83 + 4; // Updated to match JSON configuration
     static constexpr int64_t ACTION_DIM = 16;
     static constexpr int64_t HIDDEN_STATE_DIM = 128; // for GRU
     static constexpr int64_t HISTORY_STEPS = 4;
 
-    static constexpr float JUMP_PREP_TIME = 0.5;
-    static constexpr float JUMP_LAND_TIME = 0.4;
-
-    static constexpr float LEG_KP = 48.0;
-    static constexpr float LEG_KD = 1.2;
+    static constexpr float JUMP_PREP_TIME = 0.8;
+    static constexpr float JUMP_LAND_TIME = 0.8;
+    
+    static constexpr float LEG_ACTION_SCALE = 1.0;
+    static constexpr float WHEEL_ACTION_SCALE = 10.0;
+    static constexpr float LEG_KP = 30.0;
+    static constexpr float LEG_KD = 1.0;
     static constexpr float WHEEL_KD = 10.0;
+    
+    Eigen::Matrix<float, 12, 4> obs_jpos_buffer_;  // joint position history in ISAAC order
+    Eigen::Matrix<float, 4, 4> obs_jvel_buffer_;   // wheels only
+    Eigen::Vector3d projected_gravity_;
+    Eigen::Vector4f cum_hip_deviation_;
 
     FSM_State_RL(
         Control_FSM_Data_t *controlfsmdata,
@@ -116,5 +128,13 @@ public:
     void run_state() override;
     bool is_busy() override;
 };
+
+
+class Observation {
+    public:
+        virtual void update(FSM_State_RL *fsm_state_rl) = 0;
+        virtual Eigen::VectorXf compute() = 0;
+};
+
 
 #endif // FSM_STATE_RL_H
