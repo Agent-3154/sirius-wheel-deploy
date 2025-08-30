@@ -14,6 +14,19 @@
 // Forward declaration
 class Observation;
 
+class ONNXPolicy {
+    private:
+        std::unique_ptr<Ort::Session> session_;
+        std::unique_ptr<Ort::RunOptions> run_options_;
+        std::unique_ptr<Ort::MemoryInfo> memory_info_;
+
+    public:
+        ONNXPolicy(const std::string &model_path);
+        ~ONNXPolicy() = default;
+
+        void runInference(std::vector<Ort::Value> &input_tensors);
+};
+
 class FSM_State_RL final : public FSM_State
 {
 private:
@@ -44,7 +57,8 @@ private:
                             -1.20, 1.20, -1.20, 1.20
                             ).finished();
     
-    Eigen::Vector3f cmd_lin_vel_;
+    Eigen::Vector3f cmd_lin_vel_b_;
+    Eigen::Vector3f cmd_lin_vel_w_;
     Eigen::Vector3f des_rpy_; // global target rpy
     Eigen::Vector3f cmd_rpy_;
     Eigen::Vector3f cmd_ang_vel_;
@@ -81,6 +95,8 @@ private:
     bool apply_action = true; // set to false for dry-run
     
     bool is_jumping = false;
+    float jump_turn_ = 0.0;
+    float jump_air_time_ = 0.0;
     float cmd_time_ = 0.0;
     float cmd_duration_ = 0.0;
     

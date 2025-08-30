@@ -78,6 +78,37 @@ class CumHipDeviation : public Observation {
 };
 
 
+ONNXPolicy::ONNXPolicy(const std::string &model_path) {
+    Ort::Env env(ORT_LOGGING_LEVEL_WARNING, "ONNXInference");
+    Ort::SessionOptions session_options;
+    session_ = std::make_unique<Ort::Session>(env, model_path.c_str(), session_options);
+    memory_info_ = std::make_unique<Ort::MemoryInfo>(Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault));
+    run_options_ = std::make_unique<Ort::RunOptions>(Ort::RunOptions(nullptr));
+
+    auto input_names_vector = session_->GetInputNames();
+    for (const auto &name : input_names_vector)
+    {
+        std::cout << GREEN << name << RESET << std::endl;
+    }
+
+    auto output_names_vector = session_->GetOutputNames();
+    for (const auto &name : output_names_vector)
+    {
+        std::cout << GREEN << name << RESET << std::endl;
+    }
+}
+
+void ONNXPolicy::runInference(std::vector<Ort::Value> &input_tensors) {
+    // auto output_tensors = session_->Run(
+    //     *run_options_,
+    //     input_names,
+    //     input_tensors.data(),
+    //     input_tensors.size(),
+    //     output_names,
+    //     output_tensors.size());
+}
+
+
 FSM_State_RL::FSM_State_RL(
     Control_FSM_Data_t *controlfsmdata,
     Control_Parameters_t *control_para) : FSM_State(controlfsmdata, control_para, RL),
@@ -104,6 +135,7 @@ FSM_State_RL::FSM_State_RL(
     if (!found) {
         throw std::runtime_error("No .onnx policy file found in ../models");
     }
+    std::cout << GREEN << "[FSM State RL]: Policy path: " << policy_path << RESET << std::endl;
 
     Ort::Env env(ORT_LOGGING_LEVEL_WARNING, "ONNXInference");
     Ort::SessionOptions session_options;
@@ -123,7 +155,8 @@ FSM_State_RL::FSM_State_RL(
     // rpy_init = fsm_data_->estimators_->shared_esti_data_.result_->rpy_;
     // std::cout << "rpy_init: " << rpy_init.transpose() << std::endl;
 
-    this->cmd_lin_vel_.setZero();
+    this->cmd_lin_vel_w_.setZero();
+    this->cmd_lin_vel_b_.setZero();
     this->cmd_ang_vel_.setZero();
 
     this->prev_actions_.setZero();
@@ -160,6 +193,7 @@ bool FSM_State_RL::state_on_enter()
     this->cmd_time_ = 0.0;
     this->hx.resize(HIDDEN_STATE_DIM, 0.0f);
     this->cmd_rpy_ << 0.0, 0.0, this->rpy(2);
+    this->des_rpy_ << 0.0, 0.0, this->rpy(2);
     this->cmd_ang_vel_.setZero();
 
     Eigen::VectorXf desired_leg_jpos = this->DEFAULT_LEG_JOINT_POS;
@@ -185,13 +219,16 @@ void FSM_State_RL::step_command()
 {
     float v_des_x = fsm_data_->rc_->rc_control_.v_des[0] * 1.2;
     float v_des_y = fsm_data_->rc_->rc_control_.v_des[1] * 0.8;
-    float v_des_z = fsm_data_->rc_->rc_control_.v_des[2];
+    v_des_y = (abs(v_des_y) > 0.1) ? v_des_y : 0.0; // discard lateral velocity less than 0.1 m/s
+    
+    float v_des_z = fsm_data_->rc_->rc_control_.v_des[2] * M_PI / 2.0;
 
     Eigen::Vector3f v_des_xy = Eigen::Vector3f(v_des_x, v_des_y, 0.0);
-    this->cmd_lin_vel_ = this->cmd_lin_vel_ * 0.5 + v_des_xy * 0.5;
+    this->cmd_lin_vel_b_ = this->cmd_lin_vel_b_ * 0.5 + v_des_xy * 0.5;
 
     if (this->is_jumping)
     {
+        this->cmd_lin_vel_b_(1) = 0.0; // lateral velocity is zero
         this->cmd_mode_ << 0.0, 1.0;
         if (this->cmd_time_ < JUMP_PREP_TIME)
         {
@@ -201,12 +238,15 @@ void FSM_State_RL::step_command()
         {
             this->des_contact_ << 0.0, 0.0, 0.0, 0.0;
             this->cmd_ang_vel_ << 0.0, 0.0, 0.0;
+            this->cmd_ang_vel_(2) = this->jump_turn_ / this->jump_air_time_;
         }
         else if (this->cmd_time_ < this->cmd_duration_ - JUMP_LAND_TIME)
         {
             this->des_contact_ << -Eigen::Vector4f::Ones();
+            this->cmd_ang_vel_(2) = this->jump_turn_ / this->jump_air_time_;
         } else if (this->cmd_time_ < this->cmd_duration_) {
             this->des_contact_ << 0.0, 0.0, 0.0, 0.0;
+            this->cmd_ang_vel_(2) = 0.0;
         } else {
             this->is_jumping = false;
             this->cmd_time_ = 0.0;
@@ -221,31 +261,35 @@ void FSM_State_RL::step_command()
             this->des_contact_(i) = cond ? -1.0 : 0.0;
         }
         this->cmd_ang_vel_ << 0.0, 0.0, v_des_z;
-        std::cout << "des_contact: " << this->des_contact_.transpose() << std::endl;
     }
     this->cmd_rpy_ += this->cmd_ang_vel_ * 0.02;
     this->cmd_time_ += 0.02;
 }
 
 void FSM_State_RL::compute_command() {
+    Eigen::Vector3f cmd_lin_vel;
     Eigen::Vector3f cmd_rpy_b = Eigen::Vector3f::Zero();
-    cmd_rpy_b(2) = 0.0;
-    cmd_rpy_b(2) = std::fmod(cmd_rpy_b(2) + M_PI, 2 * M_PI) - M_PI;
-
+    
     Eigen::Vector2f timing;
     if (this->is_jumping) {
+        Eigen::Quaternionf quat_eigen(quat(0), quat(1), quat(2), quat(3));
+        cmd_lin_vel = quat_eigen.inverse() * this->cmd_lin_vel_w_;
         timing << this->cmd_time_, this->cmd_duration_ - this->cmd_time_;
+        cmd_rpy_b(2) = this->des_rpy_(2) - this->rpy(2);
+        cmd_rpy_b(2) = std::fmod(cmd_rpy_b(2) + M_PI, 2 * M_PI) - M_PI;
     } else {
+        cmd_lin_vel = this->cmd_lin_vel_b_;
         timing << 0.0, 0.0;
+        cmd_rpy_b(2) = 0.0;
     }
     this->obs_command_ << 
-        this->cmd_lin_vel_, // 3
+        cmd_lin_vel, // 3
         this->cmd_ang_vel_, // 3
         cmd_rpy_b, // 3
         timing, // 2
         this->cmd_mode_, // 2
         this->des_contact_; // 4
-    // std::cout << cmd_rpy_b.transpose() << " " << des_yaw_b << std::endl;
+    // std::cout << "cmd_ang_vel: " << cmd_ang_vel_.transpose() << "cmd_rpy_b: " << cmd_rpy_b.transpose() << std::endl;
 }
 
 void FSM_State_RL::run_state()
@@ -260,23 +304,15 @@ void FSM_State_RL::run_state()
     if (fsm_data_->rc_->rc_map_.a && !this->is_jumping)
     {
         this->is_jumping = true;
-        float angle = 0.0;
-        float air_time = 0.5;
+        this->jump_turn_ = M_PI;
+        this->jump_air_time_ = 0.7;
         this->cmd_time_ = 0.0;
-        this->cmd_duration_ = JUMP_PREP_TIME + air_time + JUMP_LAND_TIME;
+        this->cmd_duration_ = JUMP_PREP_TIME + this->jump_air_time_ + JUMP_LAND_TIME;
 
-        // if (fsm_data_->rc_->rc_map_.lt > 0)
-        // {
-        //     angle = M_PI / 2;
-        //     std::cout << "[FSM State RL]: jump left" << std::endl;
-        // }
-        // else if (fsm_data_->rc_->rc_map_.rt > 0)
-        // {
-        //     angle = -M_PI / 2;
-        //     std::cout << "[FSM State RL]: jump right" << std::endl;
-        // }
+        Eigen::Quaternionf quat_eigen(quat(0), quat(1), quat(2), quat(3));
+        this->cmd_lin_vel_w_ = (quat_eigen * this->cmd_lin_vel_b_);
         this->cmd_rpy_ << 0.0, 0.0, this->rpy(2);
-        this->des_rpy_ << 0.0, 0.0, this->rpy(2) + angle;
+        this->des_rpy_ << 0.0, 0.0, this->rpy(2) + this->jump_turn_;
     }
 
     Eigen::Matrix<float, 4, 3> jpos_leg; // joint position in ISAAC order
