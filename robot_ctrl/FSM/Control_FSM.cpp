@@ -82,6 +82,10 @@ void ControlFSM::ControlFSM_run()
             {
                 state_next_ = state_list_.s_passive;
             }
+            else if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::DAMPING)
+            {
+                state_next_ = state_list_.s_damping;
+            }
             else if (control_data_.rc_->rc_control_.mode == usb_controller::RC_MODE::RECOVER_STAND)
             {
                 state_list_.s_standup->fold_flag_ = true;
