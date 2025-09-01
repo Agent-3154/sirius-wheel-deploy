@@ -301,7 +301,7 @@ void FSM_State_RL::run_state()
     this->rpy = fsm_data_->estimators_->shared_esti_data_.result_->rpy_;
     // std::cout << "rpy: " << rpy.transpose() << std::endl;
 
-    if (fsm_data_->rc_->rc_map_.a && !this->is_jumping)
+    if (fsm_data_->rc_->rc_map_.a && !fsm_data_->rc_->rc_map_.lb && !this->is_jumping)
     {
         this->is_jumping = true;
         this->jump_turn_ = M_PI;

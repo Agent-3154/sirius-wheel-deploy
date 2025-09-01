@@ -32,6 +32,9 @@ ControlFSM::ControlFSM(usb_controller::LogicRemoteController *rc,
     state_current_ = state_list_.s_passive;
     state_current_->state_on_enter();
     state_next_ = state_current_;
+
+    tau_danger_times_ = Eigen::VectorXi::Zero(16);
+    vel_danger_times_ = Eigen::VectorXi::Zero(16);
 }
 
 void ControlFSM::ControlFSM_run()
@@ -160,32 +163,31 @@ void ControlFSM::ControlFSM_run()
     }
 
     // safety check
-    for (auto &leg : control_data_.leg_controller_->leg_data)
+    for (int i = 0; i < 4; i++)
     {
-        for (int j = 0; j < 3; j++)
-        {
-            if (leg.qd(j) > Config::qd_danger)
-            {
-                vel_danger_times_++;
-            }
-        }
-        tau_danger_times_ += int(leg.tau(0) > 40.0);
-        tau_danger_times_ += int(leg.tau(1) > 40.0);
-        tau_danger_times_ += int(leg.tau(2) > 80.0);
+        auto &leg = control_data_.leg_controller_->leg_data[i];
+        vel_danger_times_(i * 3 + 0) += int(leg.qd(0) > Config::qd_danger);
+        vel_danger_times_(i * 3 + 1) += int(leg.qd(1) > Config::qd_danger);
+        vel_danger_times_(i * 3 + 2) += int(leg.qd(2) > Config::qd_danger);
+
+        tau_danger_times_(i * 3 + 0) += int(leg.tau(0) > 40.0);
+        tau_danger_times_(i * 3 + 1) += int(leg.tau(1) > 40.0);
+        tau_danger_times_(i * 3 + 2) += int(leg.tau(2) > 80.0);
     }
 
-    if (vel_danger_times_ > 10)
-    {
-        LOG(WARNING) << "Reach the danger velocity!";
-        state_next_ = state_list_.s_damping;
-        vel_danger_times_ = 0;
-    }
+    // if (vel_danger_times_ > 10)
+    // {
+    //     LOG(WARNING) << "Reach the danger velocity!";
+    //     state_next_ = state_list_.s_damping;
+    //     vel_danger_times_ = 0;
+    // }
 
-    if (tau_danger_times_ > 10)
+    if ((tau_danger_times_.array() > 10).any())
     {
         LOG(WARNING) << "Reach the danger torque!";
-        state_next_ = state_list_.s_damping;
-        tau_danger_times_ = 0;
+        std::cout << tau_danger_times_.transpose() << std::endl;
+        // state_next_ = state_list_.s_damping;
+        tau_danger_times_.setZero();
     }
     // if (state_current_->state_iter_ % 100 == 0) {
     //     LOG(INFO) << "Current State: " << state_current_->fsm_name_;

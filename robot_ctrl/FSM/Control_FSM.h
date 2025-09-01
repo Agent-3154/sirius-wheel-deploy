@@ -41,8 +41,8 @@ public:
 
 private:
     void Get_Settings();
-    int tau_danger_times_ = 0;
-    int vel_danger_times_ = 0;
+    Eigen::VectorXi tau_danger_times_;
+    Eigen::VectorXi vel_danger_times_;
 };
 
 #endif //MY_MUJOCO_SIMULATOR_CONTROL_FSM_H
