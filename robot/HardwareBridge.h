@@ -21,9 +21,11 @@ namespace HardwareBridge {
 
         ~My_HardwareBridge();
 
-        void setup_HardwareBridge(bool real_imu, bool real_usb2can, bool real_rc, bool unitree_);
+        void setup_HardwareBridge(bool real_imu, bool real_usb2can);
         //todo Add robot controller
         [[noreturn]] void run();
+        void setup_rc(const std::string &config_file);
+        void setup_runner();
         
     private:
         std::thread thread_usb2can_;

@@ -38,98 +38,62 @@ HardwareBridge::My_HardwareBridge::~My_HardwareBridge()
  *
  * @param real_imu: control the thread of imu
  * @param real_usb2can: control the thread of usb2can
- * @param real_rc: control the thread of rc
  */
-void HardwareBridge::My_HardwareBridge::setup_HardwareBridge(const bool real_imu, const bool real_usb2can,
-                                                             const bool real_rc, const bool unitree_)
+void HardwareBridge::My_HardwareBridge::setup_HardwareBridge(const bool real_imu, const bool real_usb2can)
 {
     t_usb_ = std::make_shared<Thread::thread_usb_hardwares>("USB Hardwares", 0);
-    if (!unitree_)
+    
+    if (real_imu)
     {
-        if (real_imu)
-        {
-            imu_handle_ = new USB_HARDWARE::USB_IMU(Config::vendor_id, Config::product_id, Config::endpoint_1, 0x0);
-            imu_handle_->usb_imu_set_rx_buffer(usb_imu_);
-            // robot runner get handle for mutex accessing
-            robot_runner_->runner_imu_ = imu_handle_;
-            usb_container_->add_usb_device(imu_handle_);
-        }
-        else
-        {
-            imu_handle_ = nullptr;
-            robot_runner_->runner_imu_ = nullptr;
-        }
+        imu_handle_ = new USB_HARDWARE::USB_IMU(Config::vendor_id, Config::product_id, Config::endpoint_1, 0x0);
+        imu_handle_->usb_imu_set_rx_buffer(usb_imu_);
+        // robot runner get handle for mutex accessing
+        robot_runner_->runner_imu_ = imu_handle_;
+        usb_container_->add_usb_device(imu_handle_);
+    }
+    else
+    {
+        imu_handle_ = nullptr;
+        robot_runner_->runner_imu_ = nullptr;
+    }
 
-        if (real_usb2can)
-        {
-            usb2can_board_handle_ = new USB_HARDWARE::Beast_USB2CAN(Config::usb2can_vendor_id,
-                                                                    Config::usb2can_product_id,
-                                                                    Config::motors_ep_in, Config::motors_ep_out);
-            usb2can_board_handle_->USB2CAN_SetBuffer(usb_cmd_, usb_data_);
-            robot_runner_->runner_usb2can_ = usb2can_board_handle_;
-            usb_container_->add_usb_device(usb2can_board_handle_);
-        }
-        else
-        {
-            usb2can_board_handle_ = nullptr;
-            robot_runner_->runner_usb2can_ = nullptr;
-        }
+    if (real_usb2can)
+    {
+        usb2can_board_handle_ = new USB_HARDWARE::Beast_USB2CAN(Config::usb2can_vendor_id,
+                                                                Config::usb2can_product_id,
+                                                                Config::motors_ep_in, Config::motors_ep_out);
+        usb2can_board_handle_->USB2CAN_SetBuffer(usb_cmd_, usb_data_);
+        robot_runner_->runner_usb2can_ = usb2can_board_handle_;
+        usb_container_->add_usb_device(usb2can_board_handle_);
+    }
+    else
+    {
+        usb2can_board_handle_ = nullptr;
+        robot_runner_->runner_usb2can_ = nullptr;
+    }
 
-        // start usb hardwares
-        if (usb_container_->usb_container_.empty())
-        {
-            std::cout << RED << "[USB Hardware Thread]:" << RESET << "No device added\n";
-        }
-        else
-        {
-            // tp_usb_->Schedule([this] { t_usb_->thread_loop(usb_container_); });
-            thread_usb2can_ = std::thread(&My_HardwareBridge::thread_usb2can_function, this);
-            thread_imu_ = std::thread(&My_HardwareBridge::thread_imu_function, this);
-        }
-        if (real_rc)
-        {
-            t_rc_ = std::make_shared<Thread::thread_rc>("RC Thread", 200);
-            // tp_rc_ = std::make_shared<Utilities::ThreadPool>(1);
-            this->rc_handle_ = new usb_controller::LogicRemoteController(
-                "/dev/input/js0",
-                false,
-                "../robot/hardwares/usb/config/BTP-KP20.yaml"
-            );
-            // tp_rc_->Schedule([this]() { t_rc_->thread_loop(rc_handle_); });
-            this->thread_rc_ = std::thread(&My_HardwareBridge::thread_rc_function, this);
-            this->robot_runner_->runner_rc_ = this->rc_handle_;
-        }
-        else
-        {
-            t_rc_ = nullptr;
-            // tp_rc_ = nullptr;
-            rc_handle_ = nullptr;
-            robot_runner_->runner_rc_ = nullptr;
-        }
-        // create robot runner thread only if all flags true
-        // TODO Robot runner thread can also be created by simulation
-        if (robot_runner_->sim_ == Config::real_usb)
-        {
-            robot_runner_->init_robotrunner();
-            t_robot_runner_ = std::make_shared<Thread::thread_robot_runner>(
-                "Robot Runner Thread", Config::real_control_thread_fre);
-            std::cout << GREEN << "[Robot Runner Thread]: " << RESET
-                      << "Start running robot runner thread!\n";
-        }
-        else if (robot_runner_->sim_ == Config::sim_mj)
-        {
-            robot_runner_->init_robotrunner();
-            t_robot_runner_ = std::make_shared<Thread::thread_robot_runner>(
-                "Robot Runner Thread", Config::sim_robot_runner_task_fre);
-        }
+    // start usb hardwares
+    if (usb_container_->usb_container_.empty())
+    {
+        std::cout << RED << "[USB Hardware Thread]:" << RESET << "No device added\n";
+    }
+    else
+    {
+        // tp_usb_->Schedule([this] { t_usb_->thread_loop(usb_container_); });
+        thread_usb2can_ = std::thread(&My_HardwareBridge::thread_usb2can_function, this);
+        thread_imu_ = std::thread(&My_HardwareBridge::thread_imu_function, this);
     }
 }
 
 [[noreturn]] void HardwareBridge::My_HardwareBridge::run()
 {
     auto last_print_time = std::chrono::steady_clock::now();
-    const auto print_interval = std::chrono::seconds(1); // Print every second
     int step_count = 0;
+
+    // assert rc_handle_ is not nullptr
+    if (rc_handle_ == nullptr) {
+        LOG(FATAL) << RED << "RC handle is nullptr" << RESET;
+    }
 
     for (;;)
     {
@@ -147,6 +111,37 @@ void HardwareBridge::My_HardwareBridge::setup_HardwareBridge(const bool real_imu
             last_print_time = current_time;
             step_count = 0; // Reset counter for next interval
         }
+    }
+}
+
+void HardwareBridge::My_HardwareBridge::setup_rc(const std::string &config_file) {
+    t_rc_ = std::make_shared<Thread::thread_rc>("RC Thread", 200);
+    // tp_rc_ = std::make_shared<Utilities::ThreadPool>(1);
+    this->rc_handle_ = new usb_controller::LogicRemoteController(
+        "/dev/input/js0",
+        false,
+        config_file
+    );
+    // tp_rc_->Schedule([this]() { t_rc_->thread_loop(rc_handle_); });
+    this->thread_rc_ = std::thread(&My_HardwareBridge::thread_rc_function, this);
+    this->robot_runner_->runner_rc_ = this->rc_handle_;
+}
+
+void HardwareBridge::My_HardwareBridge::setup_runner() {
+    std::cout << GREEN << "[Setup Runner OK]: " << RESET << "Initialize robot runner!\n";
+    if (robot_runner_->sim_ == Config::real_usb)
+    {
+        robot_runner_->init_robotrunner();
+        t_robot_runner_ = std::make_shared<Thread::thread_robot_runner>(
+            "Robot Runner Thread", Config::real_control_thread_fre);
+        std::cout << GREEN << "[Robot Runner Thread]: " << RESET
+                    << "Start running robot runner thread!\n";
+    }
+    else if (robot_runner_->sim_ == Config::sim_mj)
+    {
+        robot_runner_->init_robotrunner();
+        t_robot_runner_ = std::make_shared<Thread::thread_robot_runner>(
+            "Robot Runner Thread", Config::sim_robot_runner_task_fre);
     }
 }
 

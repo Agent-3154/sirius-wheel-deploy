@@ -24,8 +24,6 @@ int main(int argc, char **argv) {
 #endif
     bool launch_imu = false;
     bool launch_usb2can = false;
-    bool launch_rc = true;
-    bool unitree = false;
     Config::run_type type_ = Config::sim_mj;
     auto *robot_ctrl = new My_Controller();
     Eigen::setNbThreads(1);
@@ -33,7 +31,9 @@ int main(int argc, char **argv) {
     iox::runtime::PoshRuntime::initRuntime("Sim_Ctrl_Node");
 #endif
     HardwareBridge::My_HardwareBridge sim_ctrl(model_name, robot_ctrl, type_);
-    sim_ctrl.setup_HardwareBridge(launch_imu, launch_usb2can, launch_rc, unitree);
+    sim_ctrl.setup_HardwareBridge(launch_imu, launch_usb2can);
+    sim_ctrl.setup_rc("../robot/hardwares/usb/config/BTP-KP20.yaml");
+    sim_ctrl.setup_runner();
     sim_ctrl.run();
     return 0;
 }
