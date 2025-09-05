@@ -47,7 +47,6 @@ private:
     Eigen::Matrix<float, 12, 10> raw_jpos_buffer_;
     
     // joint velocity history in ISAAC order
-    Eigen::Matrix<float, 16, 2> prev_actions_; // previous actions
     Eigen::Matrix<float, 4, 3> desired_leg_jpos_;
     Eigen::Matrix<float, 4, 3> desired_leg_jpos_filtered_;
     Eigen::Vector4f desired_whl_jvel_;
@@ -111,6 +110,7 @@ private:
 
     void step_command();
     void compute_command();
+    void compute_observation();
 
     std::vector<std::unique_ptr<Observation>> observations_;
 public:
@@ -130,6 +130,7 @@ public:
     static constexpr float LEG_KD = 1.0;
     static constexpr float WHEEL_KD = 10.0;
     
+    Eigen::Matrix<float, 16, 2> prev_actions_; // previous actions
     Eigen::Matrix<float, 12, HISTORY_STEPS> obs_jpos_buffer_;  // joint position history in ISAAC order
     Eigen::Matrix<float, 4, 4> obs_jvel_buffer_;   // wheels only
     Eigen::Vector3d projected_gravity_;

@@ -78,6 +78,17 @@ class CumHipDeviation : public Observation {
         }
 };
 
+class PrevActions : public Observation {
+    private:
+        Eigen::MatrixXf prev_actions_;
+    public:
+        void update(FSM_State_RL *fsm_state_rl) {
+            this->prev_actions_ = fsm_state_rl->prev_actions_;
+        }
+        Eigen::VectorXf compute() {
+            return Eigen::Map<Eigen::VectorXf>(this->prev_actions_.data(), this->prev_actions_.size());
+        }
+};
 
 Eigen::Quaternionf yaw_quat(Eigen::Quaternionf quat) {
     auto qw = quat.w();
@@ -88,6 +99,15 @@ Eigen::Quaternionf yaw_quat(Eigen::Quaternionf quat) {
     Eigen::Quaternionf quat_yaw(std::cos(yaw / 2), 0.0, 0.0, std::sin(yaw / 2));
     quat_yaw.normalize();
     return quat_yaw;
+}
+
+
+float wrap_to_pi(float angle) {
+    auto wrapped_angle = std::fmod(angle + M_PI, 2.0 * M_PI);
+    if (angle + M_PI < 0) {
+        wrapped_angle = wrapped_angle + 2 * M_PI;
+    }
+    return wrapped_angle - M_PI;
 }
 
 
@@ -180,10 +200,9 @@ FSM_State_RL::FSM_State_RL(
     this->cum_hip_deviation_.setZero();
 
     // prepare observations
-    // this->observations_.push_back(std::make_unique<ProjectedGravity>());
-    // this->observations_.push_back(std::make_unique<JointPosMultistep>(HISTORY_STEPS));
-    // this->observations_.push_back(std::make_unique<JointVelMultistep>(HISTORY_STEPS));
-    // this->observations_.push_back(std::make_unique<CumHipDeviation>());
+    this->observations_.push_back(std::make_unique<ProjectedGravity>());
+    this->observations_.push_back(std::make_unique<JointPosMultistep>(HISTORY_STEPS));
+    this->observations_.push_back(std::make_unique<PrevActions>());
 
     std::cout << GREEN << "[FSM State RL]: Policy Loaded" << RESET << std::endl;
 
@@ -292,6 +311,7 @@ void FSM_State_RL::step_command()
         this->cmd_ang_vel_ << 0.0, 0.0, v_des_z;
     }
     this->cmd_rpy_ += this->cmd_ang_vel_ * 0.02;
+    this->cmd_rpy_(2) = std::fmod(this->cmd_rpy_(2), 2 * M_PI);
     this->cmd_time_ += 0.02;
 }
 
@@ -309,8 +329,7 @@ void FSM_State_RL::compute_command() {
         timing << 0.0, 0.0;
     }
 
-    cmd_rpy_b(2) = this->cmd_rpy_(2) - this->rpy(2);
-    cmd_rpy_b(2) = std::fmod(cmd_rpy_b(2) + M_PI, 2 * M_PI) - M_PI;
+    cmd_rpy_b(2) = wrap_to_pi(this->cmd_rpy_(2) - this->rpy(2));
 
     this->obs_command_ << 
         cmd_lin_vel, // 3
@@ -319,8 +338,17 @@ void FSM_State_RL::compute_command() {
         timing, // 2
         this->cmd_mode_; // 2
         // this->des_contact_; // 4
-    std::cout << "cmd_lin_vel: " << cmd_lin_vel.transpose() << std::endl;
-    // std::cout << "cmd_ang_vel: " << cmd_ang_vel_.transpose() << "cmd_rpy_b: " << cmd_rpy_b.transpose() << std::endl;
+    std::cout << this->rpy(2) << " " << this->cmd_rpy_(2) << " " << cmd_rpy_b(2) << std::endl;
+}
+
+void FSM_State_RL::compute_observation() {
+    Eigen::Quaterniond quat_eigen(quat[0], quat[1], quat[2], quat[3]);
+    this->projected_gravity_ = (quat_eigen.inverse() * Eigen::Vector3d(0, 0, -1));
+    
+    this->obs_policy_.setZero();
+    this->obs_policy_ << this->projected_gravity_.cast<float>(),
+        Eigen::Map<Eigen::VectorXf>(this->obs_jpos_buffer_.data(), 72),
+        Eigen::Map<Eigen::VectorXf>(this->prev_actions_.data(), 32);
 }
 
 void FSM_State_RL::run_state()
@@ -404,34 +432,23 @@ void FSM_State_RL::run_state()
             }
         }
         
-        if (this->ctrl_step_count_ % 2 == 0) {
-            // shift history
-            for (int i = HISTORY_STEPS - 1; i > 0; i--)
-            {
-                this->obs_jpos_buffer_.col(i) = this->obs_jpos_buffer_.col(i - 1);
-                this->obs_jvel_buffer_.col(i) = this->obs_jvel_buffer_.col(i - 1);
-            }
-
-            this->obs_jpos_buffer_.col(0) = jpos_leg;
-            this->obs_jvel_buffer_.col(0) << 
-                float(fsm_data_->leg_controller_->leg_data[1].whl_qd),
-                float(fsm_data_->leg_controller_->leg_data[3].whl_qd),
-                float(fsm_data_->leg_controller_->leg_data[0].whl_qd),
-                float(fsm_data_->leg_controller_->leg_data[2].whl_qd);
+        // shift history
+        for (int i = HISTORY_STEPS - 1; i > 0; i--)
+        {
+            this->obs_jpos_buffer_.col(i) = this->obs_jpos_buffer_.col(i - 1);
+            this->obs_jvel_buffer_.col(i) = this->obs_jvel_buffer_.col(i - 1);
         }
 
-        Eigen::Quaterniond quat_eigen(quat[0], quat[1], quat[2], quat[3]);
-        this->projected_gravity_ = (quat_eigen.inverse() * Eigen::Vector3d(0, 0, -1));
-        
-        auto prev_actions = this->prev_actions_.transpose().eval();
-        this->obs_policy_.setZero();
-        this->obs_policy_ << this->projected_gravity_.cast<float>(),
-            Eigen::Map<Eigen::VectorXf>(this->obs_jpos_buffer_.data(), 72),
-            // Eigen::Map<Eigen::VectorXf>(this->obs_jvel_buffer_.data(), 16),
-            Eigen::Map<Eigen::VectorXf>(prev_actions.data(), 32);
+        this->obs_jpos_buffer_.col(0) = jpos_leg;
+        this->obs_jvel_buffer_.col(0) << 
+            float(fsm_data_->leg_controller_->leg_data[1].whl_qd),
+            float(fsm_data_->leg_controller_->leg_data[3].whl_qd),
+            float(fsm_data_->leg_controller_->leg_data[0].whl_qd),
+            float(fsm_data_->leg_controller_->leg_data[2].whl_qd);
 
-        step_command();
-        compute_command();
+        this->step_command();
+        this->compute_command();
+        this->compute_observation();
         // std::cout << "command: " << std::fixed << std::setprecision(2) << this->obs_command_.transpose() << std::endl;
         // std::cout << "policy: " << std::fixed << std::setprecision(2) << this->obs_policy_.transpose() << std::endl;
 
