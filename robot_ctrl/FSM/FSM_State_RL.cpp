@@ -1,5 +1,6 @@
 #include "FSM_State_RL.h"
 #include "./filters.h"
+#include <eigen3/Eigen/src/Geometry/Quaternion.h>
 #include <iostream>
 #include <iomanip>
 #include <filesystem>
@@ -76,6 +77,18 @@ class CumHipDeviation : public Observation {
             return this->cum_hip_deviation_;
         }
 };
+
+
+Eigen::Quaternionf yaw_quat(Eigen::Quaternionf quat) {
+    auto qw = quat.w();
+    auto qx = quat.x();
+    auto qy = quat.y();
+    auto qz = quat.z();
+    auto yaw = std::atan2(2 * (qw * qz + qx * qy), 1 - 2 * (qy * qy + qz * qz));
+    Eigen::Quaternionf quat_yaw(std::cos(yaw / 2), 0.0, 0.0, std::sin(yaw / 2));
+    quat_yaw.normalize();
+    return quat_yaw;
+}
 
 
 ONNXPolicy::ONNXPolicy(const std::string &model_path) {
@@ -233,25 +246,41 @@ void FSM_State_RL::step_command()
         if (this->cmd_time_ < JUMP_PREP_TIME)
         {
             this->des_contact_  = Eigen::Vector4f::Ones() * 0.25;
+            this->ref_vel_ = 0.0;
+            this->ref_hei_ = 0.40;
+            this->cmd_ang_vel_(2) = 0.0;
         }
-        else if (this->cmd_time_ < JUMP_PREP_TIME + 0.2)
+        else if (this->cmd_time_ < JUMP_PREP_TIME + JUMP_TAKEOFF_TIME)
         {
-            this->des_contact_ << 0.0, 0.0, 0.0, 0.0;
-            this->cmd_ang_vel_ << 0.0, 0.0, 0.0;
+            double ref_acc = 0.1 + 30.0 * (this->cmd_time_ - JUMP_PREP_TIME);
+            ref_acc = std::clamp(ref_acc, 0.0, 10.0);
+            this->ref_vel_ = this->ref_vel_ + ref_acc * 0.02;
+            this->ref_hei_ = this->ref_hei_ + this->ref_vel_ * 0.02;
+
+            this->des_contact_ = Eigen::Vector4f::Zero();
             this->cmd_ang_vel_(2) = this->jump_turn_ / this->jump_air_time_;
         }
-        else if (this->cmd_time_ < this->cmd_duration_ - JUMP_LAND_TIME)
+        else if (this->cmd_time_ < JUMP_PREP_TIME + jump_air_time_)
         {
-            this->des_contact_ << -Eigen::Vector4f::Ones();
+            double ref_acc = -9.81;
+            if (this->ref_hei_ < 0.5) {
+                ref_acc = ref_acc * 0.2 + 100.0 * (0.5 - this->ref_hei_) - 20.0 * this->ref_vel_;
+            }
+            this->ref_vel_ = this->ref_vel_ + ref_acc * 0.02;
+            this->ref_hei_ = this->ref_hei_ + this->ref_vel_ * 0.02;
+
+            this->des_contact_ = -Eigen::Vector4f::Ones();
             this->cmd_ang_vel_(2) = this->jump_turn_ / this->jump_air_time_;
-        } else if (this->cmd_time_ < this->cmd_duration_) {
-            this->des_contact_ << 0.0, 0.0, 0.0, 0.0;
+        }
+        else if (this->cmd_time_ < this->cmd_duration_) {
+            this->des_contact_ = Eigen::Vector4f::Zero();
             this->cmd_ang_vel_(2) = 0.0;
         } else {
             this->is_jumping = false;
             this->cmd_time_ = 0.0;
             this->cmd_rpy_(2) = this->rpy(2);
         }
+        this->cmd_lin_vel_w_(2) = this->ref_vel_;
     }
     else
     {
@@ -273,22 +302,24 @@ void FSM_State_RL::compute_command() {
     Eigen::Vector2f timing;
     if (this->is_jumping) {
         Eigen::Quaternionf quat_eigen(quat(0), quat(1), quat(2), quat(3));
-        cmd_lin_vel = quat_eigen.inverse() * this->cmd_lin_vel_w_;
+        cmd_lin_vel = yaw_quat(quat_eigen).inverse() * this->cmd_lin_vel_w_;
         timing << this->cmd_time_, this->cmd_duration_ - this->cmd_time_;
-        cmd_rpy_b(2) = this->des_rpy_(2) - this->rpy(2);
-        cmd_rpy_b(2) = std::fmod(cmd_rpy_b(2) + M_PI, 2 * M_PI) - M_PI;
     } else {
         cmd_lin_vel = this->cmd_lin_vel_b_;
         timing << 0.0, 0.0;
-        cmd_rpy_b(2) = 0.0;
     }
+
+    cmd_rpy_b(2) = this->cmd_rpy_(2) - this->rpy(2);
+    cmd_rpy_b(2) = std::fmod(cmd_rpy_b(2) + M_PI, 2 * M_PI) - M_PI;
+
     this->obs_command_ << 
         cmd_lin_vel, // 3
         this->cmd_ang_vel_, // 3
         cmd_rpy_b, // 3
         timing, // 2
-        this->cmd_mode_, // 2
-        this->des_contact_; // 4
+        this->cmd_mode_; // 2
+        // this->des_contact_; // 4
+    std::cout << "cmd_lin_vel: " << cmd_lin_vel.transpose() << std::endl;
     // std::cout << "cmd_ang_vel: " << cmd_ang_vel_.transpose() << "cmd_rpy_b: " << cmd_rpy_b.transpose() << std::endl;
 }
 
@@ -301,16 +332,16 @@ void FSM_State_RL::run_state()
     this->rpy = fsm_data_->estimators_->shared_esti_data_.result_->rpy_;
     // std::cout << "rpy: " << rpy.transpose() << std::endl;
 
-    if (fsm_data_->rc_->rc_map_.a && !fsm_data_->rc_->rc_map_.lb && !this->is_jumping)
+    if (fsm_data_->rc_->rc_map_.b && !fsm_data_->rc_->rc_map_.lb && !this->is_jumping)
     {
         this->is_jumping = true;
         this->jump_turn_ = M_PI;
-        this->jump_air_time_ = 0.7;
+        this->jump_air_time_ = 1.0;
         this->cmd_time_ = 0.0;
         this->cmd_duration_ = JUMP_PREP_TIME + this->jump_air_time_ + JUMP_LAND_TIME;
 
         Eigen::Quaternionf quat_eigen(quat(0), quat(1), quat(2), quat(3));
-        this->cmd_lin_vel_w_ = (quat_eigen * this->cmd_lin_vel_b_);
+        this->cmd_lin_vel_w_ = (yaw_quat(quat_eigen) * this->cmd_lin_vel_b_);
         this->cmd_rpy_ << 0.0, 0.0, this->rpy(2);
         this->des_rpy_ << 0.0, 0.0, this->rpy(2) + this->jump_turn_;
     }
@@ -372,20 +403,22 @@ void FSM_State_RL::run_state()
                 this->cum_hip_deviation_(i) += hip_deviation * 0.02;
             }
         }
+        
+        if (this->ctrl_step_count_ % 2 == 0) {
+            // shift history
+            for (int i = HISTORY_STEPS - 1; i > 0; i--)
+            {
+                this->obs_jpos_buffer_.col(i) = this->obs_jpos_buffer_.col(i - 1);
+                this->obs_jvel_buffer_.col(i) = this->obs_jvel_buffer_.col(i - 1);
+            }
 
-        // shift history
-        for (int i = HISTORY_STEPS - 1; i > 0; i--)
-        {
-            this->obs_jpos_buffer_.col(i) = this->obs_jpos_buffer_.col(i - 1);
-            this->obs_jvel_buffer_.col(i) = this->obs_jvel_buffer_.col(i - 1);
+            this->obs_jpos_buffer_.col(0) = jpos_leg;
+            this->obs_jvel_buffer_.col(0) << 
+                float(fsm_data_->leg_controller_->leg_data[1].whl_qd),
+                float(fsm_data_->leg_controller_->leg_data[3].whl_qd),
+                float(fsm_data_->leg_controller_->leg_data[0].whl_qd),
+                float(fsm_data_->leg_controller_->leg_data[2].whl_qd);
         }
-
-        this->obs_jpos_buffer_.col(0) = jpos_leg;
-        this->obs_jvel_buffer_.col(0) << 
-            float(fsm_data_->leg_controller_->leg_data[1].whl_qd),
-            float(fsm_data_->leg_controller_->leg_data[3].whl_qd),
-            float(fsm_data_->leg_controller_->leg_data[0].whl_qd),
-            float(fsm_data_->leg_controller_->leg_data[2].whl_qd);
 
         Eigen::Quaterniond quat_eigen(quat[0], quat[1], quat[2], quat[3]);
         this->projected_gravity_ = (quat_eigen.inverse() * Eigen::Vector3d(0, 0, -1));
@@ -393,10 +426,9 @@ void FSM_State_RL::run_state()
         auto prev_actions = this->prev_actions_.transpose().eval();
         this->obs_policy_.setZero();
         this->obs_policy_ << this->projected_gravity_.cast<float>(),
-            Eigen::Map<Eigen::VectorXf>(this->obs_jpos_buffer_.data(), 48),
+            Eigen::Map<Eigen::VectorXf>(this->obs_jpos_buffer_.data(), 72),
             // Eigen::Map<Eigen::VectorXf>(this->obs_jvel_buffer_.data(), 16),
-            Eigen::Map<Eigen::VectorXf>(prev_actions.data(), 32),
-            this->cum_hip_deviation_;
+            Eigen::Map<Eigen::VectorXf>(prev_actions.data(), 32);
 
         step_command();
         compute_command();

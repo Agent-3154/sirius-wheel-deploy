@@ -64,7 +64,8 @@ private:
     Eigen::Vector3f cmd_ang_vel_;
     Eigen::Vector4f des_contact_;
     Eigen::Vector2f cmd_mode_;
-    
+    float ref_vel_;
+    float ref_hei_;
     
     const float dt = 0.002f; // Time step in seconds (assuming 1kHz control loop)
     SecondOrderLowPassFilter jvel_filter_1;
@@ -113,22 +114,23 @@ private:
 
     std::vector<std::unique_ptr<Observation>> observations_;
 public:
-    static constexpr int64_t COMMAND_DIM = 17;
-    static constexpr int64_t POLICY_DIM = 83 + 4; // Updated to match JSON configuration
+    static constexpr int64_t COMMAND_DIM = 13;
+    static constexpr int64_t POLICY_DIM = 107; // Updated to match JSON configuration
     static constexpr int64_t ACTION_DIM = 16;
     static constexpr int64_t HIDDEN_STATE_DIM = 128; // for GRU
-    static constexpr int64_t HISTORY_STEPS = 4;
+    static constexpr int64_t HISTORY_STEPS = 6;
 
-    static constexpr float JUMP_PREP_TIME = 0.8;
+    static constexpr float JUMP_PREP_TIME = 0.6;
+    static constexpr float JUMP_TAKEOFF_TIME = 0.36;
     static constexpr float JUMP_LAND_TIME = 0.8;
     
     static constexpr float LEG_ACTION_SCALE = 1.0;
     static constexpr float WHEEL_ACTION_SCALE = 10.0;
-    static constexpr float LEG_KP = 30.0;
+    static constexpr float LEG_KP = 32.0;
     static constexpr float LEG_KD = 1.0;
     static constexpr float WHEEL_KD = 10.0;
     
-    Eigen::Matrix<float, 12, 4> obs_jpos_buffer_;  // joint position history in ISAAC order
+    Eigen::Matrix<float, 12, HISTORY_STEPS> obs_jpos_buffer_;  // joint position history in ISAAC order
     Eigen::Matrix<float, 4, 4> obs_jvel_buffer_;   // wheels only
     Eigen::Vector3d projected_gravity_;
     Eigen::Vector4f cum_hip_deviation_;
