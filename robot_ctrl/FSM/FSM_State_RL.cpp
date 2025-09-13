@@ -11,13 +11,33 @@
 
 class ProjectedGravity : public Observation {
     private:
-        Eigen::Vector3f projected_gravity_;
+        Eigen::MatrixXf projected_gravity_buffer;
+        int steps;
+        int interval;
     public:
-        void update(FSM_State_RL *fsm_state_rl) {
-            this->projected_gravity_ = fsm_state_rl->projected_gravity_.cast<float>();
+        ProjectedGravity(int steps, int interval) : steps(steps), interval(interval) {
+            this->projected_gravity_buffer = Eigen::MatrixXf(3, steps * interval);
+            this->projected_gravity_buffer.setZero();
         }
+        void update(FSM_State_RL *fsm_state_rl) {
+            for (int i = this->projected_gravity_buffer.cols() - 1; i > 0; i--) {
+                this->projected_gravity_buffer.col(i) = this->projected_gravity_buffer.col(i - 1);
+            }
+            this->projected_gravity_buffer.col(0) = fsm_state_rl->projected_gravity_.cast<float>();
+        }
+        
+        int get_size() {
+            return 3 * this->steps;
+        }
+
         Eigen::VectorXf compute() {
-            return this->projected_gravity_;
+            // Return interleaved values similar to projected_gravity_buf[::interval]
+            Eigen::VectorXf result(3 * this->steps);
+            for (int i = 0; i < this->steps; i++) {
+                int col_idx = i * this->interval;
+                result.segment(i * 3, 3) = this->projected_gravity_buffer.col(col_idx);
+            }
+            return result;
         }
 };
 
@@ -26,20 +46,35 @@ class JointPosMultistep : public Observation {
     private:
         Eigen::MatrixXf joint_pos_buffer;
         int steps;
+        int interval;
     public:
-        JointPosMultistep(int steps) : steps(steps) {
-            this->joint_pos_buffer = Eigen::MatrixXf(12, steps);
+        const int num_joints = 12;
+
+        JointPosMultistep(int steps, int interval) : steps(steps), interval(interval) {
+            this->joint_pos_buffer = Eigen::MatrixXf(num_joints, steps * interval);
             this->joint_pos_buffer.setZero();
         }
+        
         void update(FSM_State_RL *fsm_state_rl) {
             // roll over the buffer
-            for (int i = steps - 1; i > 0; i--) {
+            for (int i = this->joint_pos_buffer.cols() - 1; i > 0; i--) {
                 this->joint_pos_buffer.col(i) = this->joint_pos_buffer.col(i - 1);
             }
             this->joint_pos_buffer.col(0) = fsm_state_rl->obs_jpos_buffer_.col(0);
         }
+        
+        int get_size() {
+            return num_joints * this->steps;
+        }
+
         Eigen::VectorXf compute() {
-            return Eigen::Map<Eigen::VectorXf>(this->joint_pos_buffer.data(), this->joint_pos_buffer.size());
+            // Return interleaved values similar to joint_pos_buf[::interval]
+            Eigen::VectorXf result(num_joints * this->steps);
+            for (int i = 0; i < this->steps; i++) {
+                int col_idx = i * this->interval;
+                result.segment(i * num_joints, num_joints) = this->joint_pos_buffer.col(col_idx);
+            }
+            return result;
         }
 };
 
@@ -48,20 +83,34 @@ class JointVelMultistep : public Observation {
     private:
         Eigen::MatrixXf joint_vel_buffer;
         int steps;
+        int interval;
     public:
-        JointVelMultistep(int steps) : steps(steps) {
-            this->joint_vel_buffer = Eigen::MatrixXf(16, steps);
+        const int num_joints = 4;
+
+        JointVelMultistep(int steps, int interval) : steps(steps), interval(interval) {
+            this->joint_vel_buffer = Eigen::MatrixXf(num_joints, steps * interval);
             this->joint_vel_buffer.setZero();
         }
         void update(FSM_State_RL *fsm_state_rl) {
             // roll over the buffer
-            for (int i = steps - 1; i > 0; i--) {
+            for (int i = this->joint_vel_buffer.cols() - 1; i > 0; i--) {
                 this->joint_vel_buffer.col(i) = this->joint_vel_buffer.col(i - 1);
             }
             this->joint_vel_buffer.col(0) = fsm_state_rl->obs_jvel_buffer_.col(0);
         }
+
+        int get_size() {
+            return num_joints * this->steps;
+        }
+
         Eigen::VectorXf compute() {
-            return Eigen::Map<Eigen::VectorXf>(this->joint_vel_buffer.data(), this->joint_vel_buffer.size());
+            // Return interleaved values similar to joint_vel_buf[::interval]
+            Eigen::VectorXf result(num_joints * this->steps);
+            for (int i = 0; i < this->steps; i++) {
+                int col_idx = i * this->interval;
+                result.segment(i * num_joints, num_joints) = this->joint_vel_buffer.col(col_idx);
+            }
+            return result;
         }
 };
 
@@ -73,6 +122,11 @@ class CumHipDeviation : public Observation {
         void update(FSM_State_RL *fsm_state_rl) {
             this->cum_hip_deviation_ = fsm_state_rl->cum_hip_deviation_;
         }
+
+        int get_size() {
+            return 4;
+        }
+
         Eigen::VectorXf compute() {
             return this->cum_hip_deviation_;
         }
@@ -85,6 +139,11 @@ class PrevActions : public Observation {
         void update(FSM_State_RL *fsm_state_rl) {
             this->prev_actions_ = fsm_state_rl->prev_actions_;
         }
+
+        int get_size() {
+            return 2 * 16;
+        }
+
         Eigen::VectorXf compute() {
             return Eigen::Map<Eigen::VectorXf>(this->prev_actions_.data(), this->prev_actions_.size());
         }
@@ -108,6 +167,10 @@ float wrap_to_pi(float angle) {
         wrapped_angle = wrapped_angle + 2 * M_PI;
     }
     return wrapped_angle - M_PI;
+}
+
+float clamp_norm(float x, float max_norm) {
+    return std::clamp(x, -max_norm, max_norm);
 }
 
 
@@ -177,32 +240,39 @@ FSM_State_RL::FSM_State_RL(
     // Initialize ONNX Runtime objects
     run_options = std::make_unique<Ort::RunOptions>(Ort::RunOptions(nullptr));
     memory_info = std::make_unique<Ort::MemoryInfo>(Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault));
-
-    // Initialize observation vector with 49 zeros
-    policy.resize(POLICY_DIM, 0.0f);
     
     this->is_init[0] = false; // Initialize the bool array
     this->hx.resize(HIDDEN_STATE_DIM, 0.0f);
     this->rpy.setZero();
     this->cmd_rpy_.setZero();
-    // rpy_init = fsm_data_->estimators_->shared_esti_data_.result_->rpy_;
-    // std::cout << "rpy_init: " << rpy_init.transpose() << std::endl;
 
     this->cmd_lin_vel_w_.setZero();
     this->cmd_lin_vel_b_.setZero();
     this->cmd_ang_vel_.setZero();
 
     this->prev_actions_.setZero();
+    
+    // prepare observations
+    this->observations_.push_back(std::make_unique<ProjectedGravity>(1, 1));
+    this->observations_.push_back(std::make_unique<JointPosMultistep>(HISTORY_STEPS, 2));
+    // this->observations_.push_back(std::make_unique<JointVelMultistep>(2, 1));
+    this->observations_.push_back(std::make_unique<PrevActions>());
+    
+    int policy_dim = 0;
+    for (auto &obs : this->observations_) {
+        int obs_size = obs->get_size();
+        std::cout << GREEN << "[FSM State RL]: Observation size: " << obs_size << RESET << std::endl;
+        policy_dim += obs_size;
+    }
+
     this->obs_command_ = Eigen::VectorXf(COMMAND_DIM);
     this->obs_command_.setZero();
-    this->obs_policy_ = Eigen::VectorXf(POLICY_DIM);
+    this->obs_policy_ = Eigen::VectorXf(policy_dim);
     this->obs_policy_.setZero();
     this->cum_hip_deviation_.setZero();
+    this->obs_policy_shape = {1, policy_dim};
 
-    // prepare observations
-    this->observations_.push_back(std::make_unique<ProjectedGravity>());
-    this->observations_.push_back(std::make_unique<JointPosMultistep>(HISTORY_STEPS));
-    this->observations_.push_back(std::make_unique<PrevActions>());
+    this->compute_observation();
 
     std::cout << GREEN << "[FSM State RL]: Policy Loaded" << RESET << std::endl;
 
@@ -256,7 +326,9 @@ void FSM_State_RL::step_command()
     float v_des_z = fsm_data_->rc_->rc_control_.v_des[2] * M_PI / 2.0;
 
     Eigen::Vector3f v_des_xy = Eigen::Vector3f(v_des_x, v_des_y, 0.0);
-    this->cmd_lin_vel_b_ = this->cmd_lin_vel_b_ * 0.5 + v_des_xy * 0.5;
+    this->cmd_lin_vel_b_(0) = this->cmd_lin_vel_b_(0) + clamp_norm(0.2 * (v_des_x - this->cmd_lin_vel_b_(0)), 0.05);
+    this->cmd_lin_vel_b_(1) = this->cmd_lin_vel_b_(1) + clamp_norm(0.2 * (v_des_y - this->cmd_lin_vel_b_(1)), 0.05);
+    this->cmd_lin_vel_b_(2) = 0.0;
 
     if (this->is_jumping)
     {
@@ -338,17 +410,25 @@ void FSM_State_RL::compute_command() {
         timing, // 2
         this->cmd_mode_; // 2
         // this->des_contact_; // 4
-    std::cout << this->rpy(2) << " " << this->cmd_rpy_(2) << " " << cmd_rpy_b(2) << std::endl;
+    // std::cout << this->rpy(2) << " " << this->cmd_rpy_(2) << " " << cmd_rpy_b(2) << std::endl;
 }
 
 void FSM_State_RL::compute_observation() {
     Eigen::Quaterniond quat_eigen(quat[0], quat[1], quat[2], quat[3]);
     this->projected_gravity_ = (quat_eigen.inverse() * Eigen::Vector3d(0, 0, -1));
-    
+
+    for (auto &obs : this->observations_) {
+        obs->update(this);
+    }
+
     this->obs_policy_.setZero();
-    this->obs_policy_ << this->projected_gravity_.cast<float>(),
-        Eigen::Map<Eigen::VectorXf>(this->obs_jpos_buffer_.data(), 72),
-        Eigen::Map<Eigen::VectorXf>(this->prev_actions_.data(), 32);
+    int current_idx = 0;
+    for (auto &obs : this->observations_) {
+        Eigen::VectorXf obs_result = obs->compute();
+        int obs_size = obs_result.size();
+        this->obs_policy_.segment(current_idx, obs_size) = obs_result;
+        current_idx += obs_size;
+    }
 }
 
 void FSM_State_RL::run_state()
@@ -363,7 +443,7 @@ void FSM_State_RL::run_state()
     if (fsm_data_->rc_->rc_map_.b && !fsm_data_->rc_->rc_map_.lb && !this->is_jumping)
     {
         this->is_jumping = true;
-        this->jump_turn_ = M_PI;
+        this->jump_turn_ = 0.0;
         this->jump_air_time_ = 1.0;
         this->cmd_time_ = 0.0;
         this->cmd_duration_ = JUMP_PREP_TIME + this->jump_air_time_ + JUMP_LAND_TIME;
@@ -397,17 +477,17 @@ void FSM_State_RL::run_state()
     raw_jpos_buffer_.col(loop_step_count_ % 10) = jpos_leg_flat;
     // raw_jvel_buffer_.col(step_count % 10) = jvel_leg_flat;
 
-    std::memcpy(lcm_leg_raw_data.q, jpos_leg_flat.data(), 12 * sizeof(float));
-    std::memcpy(lcm_leg_raw_data.qd, jvel_leg_flat.data(), 16 * sizeof(float));
-    lcm_logger_.publish("RAW_DATA_CHANNEL", &lcm_leg_raw_data);
+    // std::memcpy(lcm_leg_raw_data.q, jpos_leg_flat.data(), 12 * sizeof(float));
+    // std::memcpy(lcm_leg_raw_data.qd, jvel_leg_flat.data(), 16 * sizeof(float));
+    // lcm_logger_.publish("RAW_DATA_CHANNEL", &lcm_leg_raw_data);
     
-    auto jvel_leg_filtered_1 = this->jvel_filter_1.update(jvel_leg_flat);
-    std::memcpy(lcm_leg_filtered_data_1.qd, jvel_leg_filtered_1.data(), 16 * sizeof(float));
-    lcm_logger_.publish("FILTERED_DATA_CHANNEL_1", &lcm_leg_filtered_data_1);
+    // auto jvel_leg_filtered_1 = this->jvel_filter_1.update(jvel_leg_flat);
+    // std::memcpy(lcm_leg_filtered_data_1.qd, jvel_leg_filtered_1.data(), 16 * sizeof(float));
+    // lcm_logger_.publish("FILTERED_DATA_CHANNEL_1", &lcm_leg_filtered_data_1);
 
-    auto jvel_leg_filtered_2 = this->jvel_filter_2.update(jvel_leg_filtered_1);
-    std::memcpy(lcm_leg_filtered_data_2.qd, jvel_leg_filtered_2.data(), 16 * sizeof(float));
-    lcm_logger_.publish("FILTERED_DATA_CHANNEL_2", &lcm_leg_filtered_data_2);
+    // auto jvel_leg_filtered_2 = this->jvel_filter_2.update(jvel_leg_filtered_1);
+    // std::memcpy(lcm_leg_filtered_data_2.qd, jvel_leg_filtered_2.data(), 16 * sizeof(float));
+    // lcm_logger_.publish("FILTERED_DATA_CHANNEL_2", &lcm_leg_filtered_data_2);
 
     if ((loop_step_count_+1) % 10 == 0)
     {

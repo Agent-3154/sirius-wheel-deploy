@@ -73,9 +73,9 @@ private:
     Eigen::VectorXf obs_command_;
     Eigen::VectorXf obs_policy_;
     const std::vector<int64_t> obs_command_shape = {1, COMMAND_DIM};
-    const std::vector<int64_t> obs_policy_shape = {1, POLICY_DIM};
     const std::vector<int64_t> is_init_shape = {1};
     const std::vector<int64_t> hx_shape = {1, HIDDEN_STATE_DIM};
+    std::vector<int64_t> obs_policy_shape;
     int64_t loop_step_count_ = 0;
     int64_t ctrl_step_count_ = 0;
 
@@ -115,7 +115,6 @@ private:
     std::vector<std::unique_ptr<Observation>> observations_;
 public:
     static constexpr int64_t COMMAND_DIM = 13;
-    static constexpr int64_t POLICY_DIM = 107; // Updated to match JSON configuration
     static constexpr int64_t ACTION_DIM = 16;
     static constexpr int64_t HIDDEN_STATE_DIM = 128; // for GRU
     static constexpr int64_t HISTORY_STEPS = 6;
@@ -153,6 +152,7 @@ class Observation {
     public:
         virtual void update(FSM_State_RL *fsm_state_rl) = 0;
         virtual Eigen::VectorXf compute() = 0;
+        virtual int get_size() = 0;
 };
 
 
