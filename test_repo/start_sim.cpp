@@ -6,18 +6,7 @@
 
 int main(int argc, char **argv) {
     // print version, check compatibility
-
-#if defined BELT
-    std::string model_name = "../robot/robot_model/belt/scene.xml";
-#elif defined CHAOJI_GO
-    std::string model_name = "../robot/robot_model/chaojigou/scene.xml";
-#elif defined GO1
-    std::string model_name = "../robot/robot_model/unitree_go1/scene.xml";
-#elif defined DG_ENGINEER
-    std::string model_name = "../robot/robot_model/dg_engineer/scene.xml";
-#elif defined SIRIUS_WHEEL
-    std::string model_name = "../robot/robot_model/sirius_wheel/scene.xml";
-#endif
+    std::string model_name = "../robot/robot_model/sirius_wheel_new/scene.xml";
     bool b_sub_real_imu = false;
     bool b_sub_usb2can = false;
 
