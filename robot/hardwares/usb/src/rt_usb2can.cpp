@@ -290,9 +290,9 @@ namespace USB_HARDWARE {
                     usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[chip_motor_id].v_cmd_ =
                         chip_cmd->motor_cmds[chip_motor_id].qd_des;
                     usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[chip_motor_id].kp_ =
-                        chip_cmd->motor_cmds[chip_motor_id].kp / 4.f;
+                        chip_cmd->motor_cmds[chip_motor_id].kp / (TIMING_RATIO * TIMING_RATIO);
                     usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[chip_motor_id].kd_ =
-                        chip_cmd->motor_cmds[chip_motor_id].kd / 4.f;
+                        chip_cmd->motor_cmds[chip_motor_id].kd / (TIMING_RATIO * TIMING_RATIO);
                     usb_cmd_u->usb_cmd_.usb_chip_cmd_[chip_id].cmd_pack[chip_motor_id].t_ff_ =
                         chip_cmd->motor_cmds[chip_motor_id].tau_ff;
                     break;
