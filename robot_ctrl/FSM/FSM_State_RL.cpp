@@ -323,7 +323,7 @@ void FSM_State_RL::step_command()
     float v_des_y = fsm_data_->rc_->rc_control_.v_des[1] * 0.8;
     v_des_y = (abs(v_des_y) > 0.1) ? v_des_y : 0.0; // discard lateral velocity less than 0.1 m/s
     
-    float v_des_z = fsm_data_->rc_->rc_control_.v_des[2] * M_PI / 2.0;
+    float v_des_yaw = fsm_data_->rc_->rc_control_.v_des[2] * M_PI / 2.0;
 
     Eigen::Vector3f v_des_xy = Eigen::Vector3f(v_des_x, v_des_y, 0.0);
     this->cmd_lin_vel_b_(0) = this->cmd_lin_vel_b_(0) + clamp_norm(0.2 * (v_des_x - this->cmd_lin_vel_b_(0)), 0.05);
@@ -380,7 +380,7 @@ void FSM_State_RL::step_command()
             auto cond = (this->cum_hip_deviation_(i) > 0.6);
             this->des_contact_(i) = cond ? -1.0 : 0.0;
         }
-        this->cmd_ang_vel_ << 0.0, 0.0, v_des_z;
+        this->cmd_ang_vel_ << 0.0, 0.0, v_des_yaw;
     }
     this->cmd_rpy_ += this->cmd_ang_vel_ * 0.02;
     this->cmd_rpy_(2) = std::fmod(this->cmd_rpy_(2), 2 * M_PI);

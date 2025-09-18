@@ -50,11 +50,17 @@ private:
     Eigen::Matrix<float, 4, 3> desired_leg_jpos_;
     Eigen::Matrix<float, 4, 3> desired_leg_jpos_filtered_;
     Eigen::Vector4f desired_whl_jvel_;
-    const Eigen::VectorXf DEFAULT_LEG_JOINT_POS = (
+    const Eigen::VectorXf DEFAULT_LEG_JOINT_POS = 
+    (
         Eigen::VectorXf(12) << 0.0, 0.0, 0.0, 0.0,
-                            0.40, -0.40, 0.40, -0.40,
-                            -1.20, 1.20, -1.20, 1.20
-                            ).finished();
+                            0.95, -0.95, 0.95, -0.95,
+                            -1.60, 1.60, -1.60, 1.60
+    ).finished();
+    // (
+    //     Eigen::VectorXf(12) << 0.0, 0.0, 0.0, 0.0,
+    //                         0.40, -0.40, 0.40, -0.40,
+    //                         -1.20, 1.20, -1.20, 1.20
+    // ).finished();
     
     Eigen::Vector3f cmd_lin_vel_b_;
     Eigen::Vector3f cmd_lin_vel_w_;
@@ -120,13 +126,13 @@ public:
     static constexpr int64_t HISTORY_STEPS = 6;
 
     static constexpr float JUMP_PREP_TIME = 0.6;
-    static constexpr float JUMP_TAKEOFF_TIME = 0.36;
+    static constexpr float JUMP_TAKEOFF_TIME = 0.38;
     static constexpr float JUMP_LAND_TIME = 0.8;
     
     static constexpr float LEG_ACTION_SCALE = 1.0;
     static constexpr float WHEEL_ACTION_SCALE = 10.0;
-    static constexpr float LEG_KP = 32.0;
-    static constexpr float LEG_KD = 1.0;
+    static constexpr float LEG_KP = 40.0;
+    static constexpr float LEG_KD = 2.0;
     static constexpr float WHEEL_KD = 10.0;
     
     Eigen::Matrix<float, 16, 2> prev_actions_; // previous actions
