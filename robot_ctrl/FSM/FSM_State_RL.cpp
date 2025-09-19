@@ -417,7 +417,9 @@ void FSM_State_RL::compute_command() {
         this->cmd_ang_vel_, // 3
         ref_rpy_b, // 3
         timing, // 2
-        this->cmd_mode_; // 2
+        this->cmd_mode_,
+        abs(cmd_lin_vel(1)) < 0.1,
+        abs(this->cmd_ang_vel_(2)) < 0.1; // 2
         // this->des_contact_; // 4
     // std::cout << this->rpy(2) << " " << this->ref_rpy_(2) << " " << ref_rpy_b(2) << std::endl;
 }

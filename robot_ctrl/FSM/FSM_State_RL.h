@@ -52,7 +52,7 @@ private:
     Eigen::Vector4f desired_whl_jvel_;
     const Eigen::VectorXf DEFAULT_LEG_JOINT_POS = 
     (
-        Eigen::VectorXf(12) << 0.0, 0.0, 0.0, 0.0,
+        Eigen::VectorXf(12) << 0.1, 0.1, -0.1, -0.1,
                             0.95, -0.95, 0.95, -0.95,
                             -1.60, 1.60, -1.60, 1.60
     ).finished();
@@ -121,7 +121,7 @@ private:
 
     std::vector<std::unique_ptr<Observation>> observations_;
 public:
-    static constexpr int64_t COMMAND_DIM = 13;
+    static constexpr int64_t COMMAND_DIM = 15;
     static constexpr int64_t ACTION_DIM = 16;
     static constexpr int64_t HIDDEN_STATE_DIM = 128; // for GRU
     static constexpr int64_t HISTORY_STEPS = 6;
@@ -132,7 +132,7 @@ public:
     
     static constexpr float LEG_ACTION_SCALE = 1.0;
     static constexpr float WHEEL_ACTION_SCALE = 10.0;
-    static constexpr float LEG_KP = 40.0;
+    static constexpr float LEG_KP = 52.0;
     static constexpr float LEG_KD = 2.4;
     static constexpr float WHEEL_KD = 10.0;
     
