@@ -65,8 +65,9 @@ private:
     Eigen::Vector3f cmd_lin_vel_b_;
     Eigen::Vector3f cmd_lin_vel_w_;
     Eigen::Vector3f des_rpy_; // global target rpy
-    Eigen::Vector3f cmd_rpy_;
+    Eigen::Vector3f ref_rpy_;
     Eigen::Vector3f cmd_ang_vel_;
+    Eigen::Vector3f ref_ang_vel_;
     Eigen::Vector4f des_contact_;
     Eigen::Vector2f cmd_mode_;
     float ref_vel_;
@@ -132,7 +133,7 @@ public:
     static constexpr float LEG_ACTION_SCALE = 1.0;
     static constexpr float WHEEL_ACTION_SCALE = 10.0;
     static constexpr float LEG_KP = 40.0;
-    static constexpr float LEG_KD = 2.0;
+    static constexpr float LEG_KD = 2.4;
     static constexpr float WHEEL_KD = 10.0;
     
     Eigen::Matrix<float, 16, 2> prev_actions_; // previous actions

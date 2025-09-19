@@ -1,5 +1,6 @@
 #include "FSM_State_RL.h"
 #include "./filters.h"
+#include <cmath>
 #include <eigen3/Eigen/src/Geometry/Quaternion.h>
 #include <iostream>
 #include <iomanip>
@@ -244,11 +245,12 @@ FSM_State_RL::FSM_State_RL(
     this->is_init[0] = false; // Initialize the bool array
     this->hx.resize(HIDDEN_STATE_DIM, 0.0f);
     this->rpy.setZero();
-    this->cmd_rpy_.setZero();
+    this->ref_rpy_.setZero();
 
     this->cmd_lin_vel_w_.setZero();
     this->cmd_lin_vel_b_.setZero();
     this->cmd_ang_vel_.setZero();
+    this->ref_ang_vel_.setZero();
 
     this->prev_actions_.setZero();
     
@@ -294,7 +296,7 @@ bool FSM_State_RL::state_on_enter()
     this->is_jumping = false;
     this->cmd_time_ = 0.0;
     this->hx.resize(HIDDEN_STATE_DIM, 0.0f);
-    this->cmd_rpy_ << 0.0, 0.0, this->rpy(2);
+    this->ref_rpy_ << 0.0, 0.0, this->rpy(2);
     this->des_rpy_ << 0.0, 0.0, this->rpy(2);
     this->cmd_ang_vel_.setZero();
 
@@ -319,13 +321,18 @@ void FSM_State_RL::state_on_exit()
 
 void FSM_State_RL::step_command()
 {
-    float v_des_x = fsm_data_->rc_->rc_control_.v_des[0] * 1.2;
-    float v_des_y = fsm_data_->rc_->rc_control_.v_des[1] * 0.8;
-    v_des_y = (abs(v_des_y) > 0.1) ? v_des_y : 0.0; // discard lateral velocity less than 0.1 m/s
+    float multiplier = 1.2;
+    if ((fsm_data_->rc_->rc_map_.lt > 0) && (fsm_data_->rc_->rc_map_.rt > 0)) {
+        multiplier = 2.2;
+    }
+    float v_des_x = fsm_data_->rc_->rc_control_.v_des[0] * multiplier;
+    float v_des_y = fsm_data_->rc_->rc_control_.v_des[1] * 0.60;
+    v_des_y = (abs(v_des_y) > 0.15) ? v_des_y : 0.0; // discard lateral velocity less than 0.1 m/s
     
     float v_des_yaw = fsm_data_->rc_->rc_control_.v_des[2] * M_PI / 2.0;
-
+    
     Eigen::Vector3f v_des_xy = Eigen::Vector3f(v_des_x, v_des_y, 0.0);
+
     this->cmd_lin_vel_b_(0) = this->cmd_lin_vel_b_(0) + clamp_norm(0.2 * (v_des_x - this->cmd_lin_vel_b_(0)), 0.05);
     this->cmd_lin_vel_b_(1) = this->cmd_lin_vel_b_(1) + clamp_norm(0.2 * (v_des_y - this->cmd_lin_vel_b_(1)), 0.05);
     this->cmd_lin_vel_b_(2) = 0.0;
@@ -339,7 +346,7 @@ void FSM_State_RL::step_command()
             this->des_contact_  = Eigen::Vector4f::Ones() * 0.25;
             this->ref_vel_ = 0.0;
             this->ref_hei_ = 0.40;
-            this->cmd_ang_vel_(2) = 0.0;
+            this->ref_ang_vel_(2) = 0.0;
         }
         else if (this->cmd_time_ < JUMP_PREP_TIME + JUMP_TAKEOFF_TIME)
         {
@@ -349,7 +356,7 @@ void FSM_State_RL::step_command()
             this->ref_hei_ = this->ref_hei_ + this->ref_vel_ * 0.02;
 
             this->des_contact_ = Eigen::Vector4f::Zero();
-            this->cmd_ang_vel_(2) = this->jump_turn_ / this->jump_air_time_;
+            this->ref_ang_vel_(2) = this->jump_turn_ / this->jump_air_time_;
         }
         else if (this->cmd_time_ < JUMP_PREP_TIME + jump_air_time_)
         {
@@ -361,17 +368,18 @@ void FSM_State_RL::step_command()
             this->ref_hei_ = this->ref_hei_ + this->ref_vel_ * 0.02;
 
             this->des_contact_ = -Eigen::Vector4f::Ones();
-            this->cmd_ang_vel_(2) = this->jump_turn_ / this->jump_air_time_;
+            this->ref_ang_vel_(2) = this->jump_turn_ / this->jump_air_time_;
         }
         else if (this->cmd_time_ < this->cmd_duration_) {
             this->des_contact_ = Eigen::Vector4f::Zero();
-            this->cmd_ang_vel_(2) = 0.0;
+            this->ref_ang_vel_(2) = 0.0;
         } else {
             this->is_jumping = false;
             this->cmd_time_ = 0.0;
-            this->cmd_rpy_(2) = this->rpy(2);
+            this->ref_rpy_(2) = this->rpy(2);
         }
         this->cmd_lin_vel_w_(2) = this->ref_vel_;
+        this->cmd_ang_vel_(2) = this->ref_ang_vel_(2);
     }
     else
     {
@@ -380,16 +388,17 @@ void FSM_State_RL::step_command()
             auto cond = (this->cum_hip_deviation_(i) > 0.6);
             this->des_contact_(i) = cond ? -1.0 : 0.0;
         }
-        this->cmd_ang_vel_ << 0.0, 0.0, v_des_yaw;
+        this->ref_ang_vel_(2) = v_des_yaw;
+        this->cmd_ang_vel_(2) = this->ref_ang_vel_(2);
     }
-    this->cmd_rpy_ += this->cmd_ang_vel_ * 0.02;
-    this->cmd_rpy_(2) = std::fmod(this->cmd_rpy_(2), 2 * M_PI);
+    this->ref_rpy_ += this->ref_ang_vel_ * 0.02;
+    this->ref_rpy_(2) = std::fmod(this->ref_rpy_(2), 2 * M_PI);
     this->cmd_time_ += 0.02;
 }
 
 void FSM_State_RL::compute_command() {
     Eigen::Vector3f cmd_lin_vel;
-    Eigen::Vector3f cmd_rpy_b = Eigen::Vector3f::Zero();
+    Eigen::Vector3f ref_rpy_b = Eigen::Vector3f::Zero();
     
     Eigen::Vector2f timing;
     if (this->is_jumping) {
@@ -401,16 +410,16 @@ void FSM_State_RL::compute_command() {
         timing << 0.0, 0.0;
     }
 
-    cmd_rpy_b(2) = wrap_to_pi(this->cmd_rpy_(2) - this->rpy(2));
+    ref_rpy_b(2) = wrap_to_pi(this->ref_rpy_(2) - this->rpy(2));
 
     this->obs_command_ << 
         cmd_lin_vel, // 3
         this->cmd_ang_vel_, // 3
-        cmd_rpy_b, // 3
+        ref_rpy_b, // 3
         timing, // 2
         this->cmd_mode_; // 2
         // this->des_contact_; // 4
-    // std::cout << this->rpy(2) << " " << this->cmd_rpy_(2) << " " << cmd_rpy_b(2) << std::endl;
+    // std::cout << this->rpy(2) << " " << this->ref_rpy_(2) << " " << ref_rpy_b(2) << std::endl;
 }
 
 void FSM_State_RL::compute_observation() {
@@ -443,14 +452,14 @@ void FSM_State_RL::run_state()
     if (fsm_data_->rc_->rc_map_.b && !fsm_data_->rc_->rc_map_.lb && !this->is_jumping)
     {
         this->is_jumping = true;
-        this->jump_turn_ = 0.0;
+        this->jump_turn_ = M_PI;
         this->jump_air_time_ = 1.0;
         this->cmd_time_ = 0.0;
         this->cmd_duration_ = JUMP_PREP_TIME + this->jump_air_time_ + JUMP_LAND_TIME;
 
         Eigen::Quaternionf quat_eigen(quat(0), quat(1), quat(2), quat(3));
         this->cmd_lin_vel_w_ = (yaw_quat(quat_eigen) * this->cmd_lin_vel_b_);
-        this->cmd_rpy_ << 0.0, 0.0, this->rpy(2);
+        this->ref_rpy_ << 0.0, 0.0, this->rpy(2);
         this->des_rpy_ << 0.0, 0.0, this->rpy(2) + this->jump_turn_;
     }
 
