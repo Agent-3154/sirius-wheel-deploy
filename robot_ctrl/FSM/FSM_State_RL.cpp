@@ -544,19 +544,16 @@ void FSM_State_RL::run_state()
         float(fsm_data_->leg_controller_->leg_data[2].whl_qd);
 
     raw_jpos_buffer_.col(loop_step_count_ % 10) = jpos_leg_flat;
-    // raw_jvel_buffer_.col(step_count % 10) = jvel_leg_flat;
+    raw_jvel_buffer_.col(loop_step_count_ % 10) = jvel_leg_flat;
 
-    // std::memcpy(lcm_leg_raw_data.q, jpos_leg_flat.data(), 12 * sizeof(float));
-    // std::memcpy(lcm_leg_raw_data.qd, jvel_leg_flat.data(), 16 * sizeof(float));
-    // lcm_logger_.publish("RAW_DATA_CHANNEL", &lcm_leg_raw_data);
-    
-    // auto jvel_leg_filtered_1 = this->jvel_filter_1.update(jvel_leg_flat);
-    // std::memcpy(lcm_leg_filtered_data_1.qd, jvel_leg_filtered_1.data(), 16 * sizeof(float));
-    // lcm_logger_.publish("FILTERED_DATA_CHANNEL_1", &lcm_leg_filtered_data_1);
+    Eigen::VectorXf jpos_leg_filtered = raw_jpos_buffer_.rowwise().mean().eval();
+    Eigen::VectorXf jvel_leg_filtered = raw_jvel_buffer_.rowwise().mean().eval();
 
-    // auto jvel_leg_filtered_2 = this->jvel_filter_2.update(jvel_leg_filtered_1);
-    // std::memcpy(lcm_leg_filtered_data_2.qd, jvel_leg_filtered_2.data(), 16 * sizeof(float));
-    // lcm_logger_.publish("FILTERED_DATA_CHANNEL_2", &lcm_leg_filtered_data_2);
+    std::memcpy(this->lcm_joint_obs_data.q_raw, jpos_leg_flat.data(), 12 * sizeof(float));
+    std::memcpy(this->lcm_joint_obs_data.q_obs, jpos_leg_filtered.data(), 12 * sizeof(float));
+    std::memcpy(this->lcm_joint_obs_data.qd_raw, jvel_leg_flat.data(), 16 * sizeof(float));
+    std::memcpy(this->lcm_joint_obs_data.qd_obs, jvel_leg_filtered.data(), 16 * sizeof(float));
+    lcm_logger_.publish("JOINT_OBS_DATA", &this->lcm_joint_obs_data);
 
     if ((loop_step_count_+1) % 10 == 0)
     {

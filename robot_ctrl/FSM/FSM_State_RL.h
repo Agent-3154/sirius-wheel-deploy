@@ -46,6 +46,7 @@ private:
     std::vector<float> hx;
 
     Eigen::Matrix<float, 12, 10> raw_jpos_buffer_;
+    Eigen::Matrix<float, 16, 10> raw_jvel_buffer_;
     
     // joint velocity history in ISAAC order
     Eigen::Matrix<float, 4, 3> desired_leg_jpos_;
