@@ -1,0 +1,6 @@
+struct joint_obs_lcmt {
+    float q_raw[16];
+    float q_obs[16];
+    float qd_raw[16];
+    float qd_obs[16];
+}

@@ -65,3 +65,6 @@ stand_0625
 stand_0702
 
 third_party/
+lcm-types/cpp/
+lcm-types/python/
+models/

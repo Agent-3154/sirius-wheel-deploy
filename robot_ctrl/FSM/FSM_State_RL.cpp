@@ -283,6 +283,8 @@ FSM_State_RL::FSM_State_RL(
     {
         std::cout << GREEN << name << RESET << std::endl;
     }
+
+    this->run_inference(false);
 }
 
 bool FSM_State_RL::state_on_enter()
@@ -442,6 +444,62 @@ void FSM_State_RL::compute_observation() {
     }
 }
 
+void FSM_State_RL::run_inference(bool apply_action) {
+    std::vector<Ort::Value> input_tensors;
+    input_tensors.push_back(Ort::Value::CreateTensor<float>(
+        *this->memory_info,
+        this->obs_command_.data(),
+        this->obs_command_.size(),
+        this->obs_command_shape.data(),
+        this->obs_command_shape.size()));
+    input_tensors.push_back(Ort::Value::CreateTensor<float>(
+        *this->memory_info,
+        this->obs_policy_.data(),
+        this->obs_policy_.size(),
+        this->obs_policy_shape.data(),
+        this->obs_policy_shape.size()));
+    input_tensors.push_back(Ort::Value::CreateTensor<bool>(
+        *this->memory_info,
+        this->is_init,
+        1,
+        this->is_init_shape.data(),
+        this->is_init_shape.size()));
+    input_tensors.push_back(Ort::Value::CreateTensor<float>(
+        *this->memory_info,
+        hx.data(),
+        this->hx.size(),
+        this->hx_shape.data(),
+        this->hx_shape.size()));
+
+    const char *input_names[] = {"command", "policy", "is_init", "hx"};
+    const char *output_names[] = {"div", "div_1", "linear_8", "sum_1", "add_3", "mish_4"};
+    auto output_tensors = session->Run(
+        *run_options,
+        input_names,
+        input_tensors.data(),
+        session->GetInputCount(),
+        output_names,
+        session->GetOutputCount());
+
+    // // get action and convert to Eigen
+    auto action = output_tensors[2].GetTensorMutableData<float>();
+    Eigen::Map<const Eigen::VectorXf> action_eigen(action, ACTION_DIM);
+    auto next_hx = output_tensors[4].GetTensorMutableData<float>();
+
+    if (apply_action) {
+        this->prev_actions_.col(1) = this->prev_actions_.col(0);
+        this->prev_actions_.col(0) = action_eigen;
+    
+        Eigen::VectorXf desired_leg_jpos = action_eigen.head(12) * LEG_ACTION_SCALE + this->DEFAULT_LEG_JOINT_POS;
+    
+        this->desired_leg_jpos_ = Eigen::Map<Eigen::Matrix<float, 4, 3>>(desired_leg_jpos.data());
+        this->desired_whl_jvel_ = action_eigen.tail(4) * 10.0;
+    
+        // get next_hx and copy to hx
+        std::copy(next_hx, next_hx + HIDDEN_STATE_DIM, this->hx.begin());
+    }
+}
+
 void FSM_State_RL::run_state()
 {
     this->loop_step_count_++;
@@ -540,61 +598,8 @@ void FSM_State_RL::run_state()
         this->step_command();
         this->compute_command();
         this->compute_observation();
-        // std::cout << "command: " << std::fixed << std::setprecision(2) << this->obs_command_.transpose() << std::endl;
-        // std::cout << "policy: " << std::fixed << std::setprecision(2) << this->obs_policy_.transpose() << std::endl;
-
-        std::vector<Ort::Value> input_tensors;
-        input_tensors.push_back(Ort::Value::CreateTensor<float>(
-            *this->memory_info,
-            this->obs_command_.data(),
-            this->obs_command_.size(),
-            this->obs_command_shape.data(),
-            this->obs_command_shape.size()));
-        input_tensors.push_back(Ort::Value::CreateTensor<float>(
-            *this->memory_info,
-            this->obs_policy_.data(),
-            this->obs_policy_.size(),
-            this->obs_policy_shape.data(),
-            this->obs_policy_shape.size()));
-        input_tensors.push_back(Ort::Value::CreateTensor<bool>(
-            *this->memory_info,
-            this->is_init,
-            1,
-            this->is_init_shape.data(),
-            this->is_init_shape.size()));
-        input_tensors.push_back(Ort::Value::CreateTensor<float>(
-            *this->memory_info,
-            hx.data(),
-            this->hx.size(),
-            this->hx_shape.data(),
-            this->hx_shape.size()));
-
-        const char *input_names[] = {"command", "policy", "is_init", "hx"};
-        const char *output_names[] = {"div", "div_1", "linear_8", "sum_1", "add_3", "mish_4"};
-        auto output_tensors = session->Run(
-            *run_options,
-            input_names,
-            input_tensors.data(),
-            session->GetInputCount(),
-            output_names,
-            session->GetOutputCount());
-
-        // // get action and convert to Eigen
-        auto action = output_tensors[2].GetTensorMutableData<float>();
-        Eigen::Map<const Eigen::VectorXf> action_eigen(action, ACTION_DIM);
-
-        this->prev_actions_.col(1) = this->prev_actions_.col(0);
-        this->prev_actions_.col(0) = action_eigen;
-
-        Eigen::VectorXf desired_leg_jpos = action_eigen.head(12) * LEG_ACTION_SCALE + this->DEFAULT_LEG_JOINT_POS;
-
-        this->desired_leg_jpos_ = Eigen::Map<Eigen::Matrix<float, 4, 3>>(desired_leg_jpos.data());
-        this->desired_whl_jvel_ = action_eigen.tail(4) * 10.0;
-
-        // get next_hx and copy to hx
-        auto next_hx = output_tensors[4].GetTensorMutableData<float>();
-        std::copy(next_hx, next_hx + HIDDEN_STATE_DIM, this->hx.begin());
-
+        this->run_inference(true);
+        
         // std::memcpy(lcm_leg_obs_data.q, obs_jpos_buffer_.col(0).data(), 12 * sizeof(float));
         // std::memcpy(lcm_leg_obs_data.qd, obs_jvel_buffer_.col(0).data(), 16 * sizeof(float));
         // lcm_logger_.publish("POLICY_DATA_CHANNEL", &lcm_leg_obs_data);

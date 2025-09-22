@@ -9,6 +9,7 @@
 #include <onnxruntime_cxx_api.h>
 #include "../../lcm-types/cpp/leg_control_data_lcmt.hpp"
 #include "../../lcm-types/cpp/leg_control_command_lcmt.hpp"
+#include "../../lcm-types/cpp/joint_obs_lcmt.hpp"
 #include "./filters.h"
 
 // Forward declaration
@@ -109,15 +110,12 @@ private:
     
     // logging with lcm
     lcm::LCM lcm_logger_;
-    leg_control_data_lcmt lcm_leg_obs_data{};
-    leg_control_data_lcmt lcm_leg_raw_data{};
-    leg_control_data_lcmt lcm_leg_filtered_data_1{};
-    leg_control_data_lcmt lcm_leg_filtered_data_2{};
-    leg_control_command_lcmt lcm_leg_control_cmd{};
+    joint_obs_lcmt lcm_joint_obs_data{};
 
     void step_command();
     void compute_command();
     void compute_observation();
+    void run_inference(bool apply_action);
 
     std::vector<std::unique_ptr<Observation>> observations_;
 public:
