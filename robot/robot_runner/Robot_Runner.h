@@ -20,12 +20,11 @@
 #include "../../config/Config.h"
 
 #include "../../utilities/inc/debug_tools.h"
-#if defined(SIMULATOR)
+
 #include "iceoryx_posh/popo/publisher.hpp"
 #include "iceoryx_posh/popo/subscriber.hpp"
 #include "iceoryx_posh/runtime/posh_runtime.hpp"
 #include "iox/signal_watcher.hpp"
-#endif
 
 #include "../../utilities/inc/thread_timer.h"
 #include "../../quadruped_share_data/robot_state_protocols.h"
@@ -44,10 +43,10 @@ public:
     USB_Command_t *runner_usbcmd_ = nullptr;
     USB_Imu_t *runner_imudata_ = nullptr;
 
-    void init_robotrunner();
+    virtual void init_robotrunner();
     void run_step(int step_count);
-    void setupStep();
-    void finalStep();
+    virtual void setupStep();
+    virtual void finalStep();
 
     std::mutex sim_mtx; // for sim
 
@@ -80,17 +79,7 @@ public:
     void handleRosCMD(const lcm::ReceiveBuffer *rbuf, const std::string &chan, const ros_lowcmd_lcmt *msg);
 
 #if defined(SIMULATOR)
-    iox::popo::Subscriber<Robot_State> sim_state_subscriber;
-    iox::popo::Publisher<Robot_Control_Motor_Cmd> sim_motor_publisher;
-    std::thread thread_subscriber_;
-    std::shared_ptr<Thread::thread_timer> robot_runner_timer_;
-    void thread_subscriber_function();
-    void publishMotorCommands();
-    void copyLegMotorCommands(auto &sample);
-    void copyWheelMotorCommands(auto &sample);
-    void copyImuData(auto &sample);
-    void copyLegData(auto &sample);
-    void copyWheelData(auto &sample);
+    
 #endif
 
 private:
@@ -104,6 +93,34 @@ private:
     void sendCommandsToSimulation();
     void sendCommandsToLCM();
     void publishData();
+};
+
+class MujocoRunner : public RobotRunner {
+public:
+    explicit MujocoRunner(std::string &model_name, Robot_Controller_Base *control_base, Config::run_type sim);
+    ~MujocoRunner() = default;
+
+    void init_robotrunner() override;
+    void finalStep() override;
+    void setupStep() override;
+
+    iox::popo::Subscriber<Robot_State> sim_state_subscriber;
+    iox::popo::Publisher<Robot_Control_Motor_Cmd> sim_motor_publisher;
+    std::thread thread_subscriber_;
+    std::shared_ptr<Thread::thread_timer> robot_runner_timer_;
+    void thread_subscriber_function();
+    void publishMotorCommands();
+    void copyLegMotorCommands(auto &sample);
+    void copyWheelMotorCommands(auto &sample);
+    void copyImuData(auto &sample);
+    void copyLegData(auto &sample);
+    void copyWheelData(auto &sample);
+};
+
+class RealRobotRunner : public RobotRunner {
+public:
+    explicit RealRobotRunner(std::string &model_name, Robot_Controller_Base *control_base, Config::run_type sim);
+    ~RealRobotRunner() = default;
 };
 
 #endif // MY_MUJOCO_SIMULATOR_ROBOT_RUNNER_H

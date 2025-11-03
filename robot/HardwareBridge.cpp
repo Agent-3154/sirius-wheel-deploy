@@ -18,7 +18,13 @@ HardwareBridge::My_HardwareBridge::My_HardwareBridge(std::string &model_name, Ro
     usb_cmd_ = new USB_Command_t();
     usb_data_ = new USB_Data_t();
     usb_imu_ = new USB_Imu_t();
-    robot_runner_ = new RobotRunner(model_name, robot_controller, type_);
+    if (type_ == Config::sim_mj) {
+        robot_runner_ = new MujocoRunner(model_name, robot_controller, type_);
+    } else if (type_ == Config::real_usb) {
+        robot_runner_ = new RobotRunner(model_name, robot_controller, type_);
+    } else {
+        LOG(FATAL) << RED << "Invalid robot runner type" << RESET;
+    }
     usb_container_ = new USB_HARDWARE::USB_Hardware_Containers();
     robot_runner_->runner_imudata_ = usb_imu_;
     robot_runner_->runner_usbcmd_ = usb_cmd_;
