@@ -12,6 +12,19 @@ RobotRunner::RobotRunner(std::string &model_name, Robot_Controller_Base *control
       lcm_leg_esti_(getLcmUrl(255)), runner_timer_(0, 2000), lcm_cmd_receive_(getLcmUrl(255)),
       lcm_data_publish_(getLcmUrl(255))
 {
+    // create a mujoco model for FK and IK
+    char error[1000] = "Failed to load model";
+    model_ = mj_loadXML(model_name.c_str(), nullptr, error, 1000);
+    if (!model_) {
+        std::cerr << "Failed to load MJCF model: " << error << std::endl;
+        std::exit(1);
+    }
+    data_ = mj_makeData(model_);
+    if (!data_) {
+        std::cerr << "Failed to make data" << std::endl;
+        std::exit(1);
+    }
+    mj_forward(model_, data_);
     syn_bool_.store(false);
 }
 
@@ -51,6 +64,16 @@ void RobotRunner::run_step(int step_count) {
         estimators_->run_estimators();
     }
     setupStep();
+    std::cout << "qpos: " << this->data_->qpos << std::endl;
+    int i = 7;
+    for (int j = 0; j < 4; j++) {
+        auto q_leg = leg_controller_->leg_data[j].q;
+        this->data_->qpos[i] = q_leg(0);
+        this->data_->qpos[i+1] = q_leg(1);
+        this->data_->qpos[i+2] = q_leg(2);
+        i += 3;
+    }
+    mj_forward(model_, data_);
     robot_ctrl_->run();
     finalStep();
 }

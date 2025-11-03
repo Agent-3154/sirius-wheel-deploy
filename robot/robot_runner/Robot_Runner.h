@@ -29,6 +29,10 @@
 #include "../../utilities/inc/thread_timer.h"
 #include "../../quadruped_share_data/robot_state_protocols.h"
 
+#include <mujoco/mujoco.h>
+#include <mujoco/mjmodel.h>
+#include <mujoco/mjdata.h>
+
 class RobotRunner
 {
 public:
@@ -50,10 +54,9 @@ public:
 
     std::mutex sim_mtx; // for sim
 
-    std::array<double, 7> groud_truth_q{};
-    std::array<double, 6> ground_truth_qd_{};
-
     Robot_Controller_Base *robot_ctrl_ = nullptr;
+    mjModel *model_ = nullptr;
+    mjData *data_ = nullptr;
 
     Leg_Controller<double> *leg_controller_ = nullptr;
     StateEstimateOutput<double> state_esti_ouput_;
