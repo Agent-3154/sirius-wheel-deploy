@@ -3,7 +3,6 @@
 //
 #include "../robot/HardwareBridge.h"
 #include <iostream>
-#include "../robot_ctrl/my_controller.h"
 
 int main(int argc, char **argv) {
 #if defined DG_ENGINEER
@@ -18,10 +17,9 @@ int main(int argc, char **argv) {
     Config::run_type type_ = Config::real_usb;
 #endif
 
-    auto *robot_ctrl = new My_Controller();
     Eigen::setNbThreads(1);
     iox::runtime::PoshRuntime::initRuntime("Robot_Ctrl_Node");
-    HardwareBridge::My_HardwareBridge test_hardware(model_name, robot_ctrl, type_);
+    HardwareBridge::My_HardwareBridge test_hardware(model_name, type_);
     test_hardware.setup_HardwareBridge(launch_imu, launch_usb2can);
     test_hardware.setup_rc("");
     test_hardware.setup_runner();

@@ -8,8 +8,8 @@
 #include "../../utilities/inc/debug_tools.h"
 #include "rerun.hpp"
 
-RobotRunner::RobotRunner(std::string &model_name, Robot_Controller_Base *control_base, Config::run_type sim)
-    : robot_ctrl_(control_base), sim_(sim), lcm_leg_cmd_(getLcmUrl(255)), lcm_leg_data_(getLcmUrl(255)),
+RobotRunner::RobotRunner(std::string &model_name, Config::run_type sim)
+    : sim_(sim), lcm_leg_cmd_(getLcmUrl(255)), lcm_leg_data_(getLcmUrl(255)),
       lcm_leg_esti_(getLcmUrl(255)), runner_timer_(0, 2000), lcm_cmd_receive_(getLcmUrl(255)),
       lcm_data_publish_(getLcmUrl(255))
 #if defined(SIMULATOR)
@@ -81,18 +81,15 @@ void RobotRunner::init_robotrunner() {
     estimators_->addEstimator<Estimators::UsbImuOrientationEstimator<double> >(
         Config::path_2_config_directory + "config/Estimators.info");
 
-    // assign address to robot ctrl
-    robot_ctrl_->leg_controller_ = leg_controller_;
-    robot_ctrl_->estimators_ = estimators_;
-    robot_ctrl_->state_esti_ouput_ = &state_esti_ouput_;
-    robot_ctrl_->ctrl_rc_ = runner_rc_;
+    // // assign address to robot ctrl
+    // robot_ctrl_->leg_controller_ = leg_controller_;
+    // robot_ctrl_->estimators_ = estimators_;
+    // robot_ctrl_->state_esti_ouput_ = &state_esti_ouput_;
+    // robot_ctrl_->ctrl_rc_ = runner_rc_;
 
-    robot_ctrl_->Controller_Init();
+    // robot_ctrl_->Controller_Init();
 
-    // if (sim_ == Config::real_ros_ctrl) {
-    // std::cout << GREEN << "[LCM SUCCESS]: " << RESET << " Start subcribe upper cmd!\n";
-    // lcm_cmd_receive_.subscribe("ROS_CTRL", &RobotRunner::handleRosCMD, this);
-    // thread_ptr = std::make_unique<std::thread>(&RobotRunner::lcm_handle_func, this);
+    fsm_ = new ControlFSM(runner_rc_, leg_controller_, estimators_);
 #if defined(SIMULATOR)
     if (sim_ == Config::sim_mj) {
         thread_subscriber_ = std::thread(&RobotRunner::thread_subscriber_function, this);
@@ -153,7 +150,7 @@ void RobotRunner::run_step(int step_count) {
             );
         }
     }
-    robot_ctrl_->run();
+    fsm_->ControlFSM_run();
     finalStep();
 }
 

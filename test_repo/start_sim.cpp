@@ -1,7 +1,6 @@
 #include <new>
 #include <string>
 #include "../simulator/SimulationBridge.h"
-#include "../robot_ctrl/my_controller.h"
 #include "../config/Config.h"
 
 int main(int argc, char **argv) {

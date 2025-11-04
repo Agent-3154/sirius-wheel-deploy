@@ -17,7 +17,7 @@
 namespace HardwareBridge {
     class My_HardwareBridge {
     public:
-        explicit My_HardwareBridge(std::string &model_name, Robot_Controller_Base *robot_controller, Config::run_type type_);
+        explicit My_HardwareBridge(std::string &model_name, Config::run_type type_);
 
         ~My_HardwareBridge();
 

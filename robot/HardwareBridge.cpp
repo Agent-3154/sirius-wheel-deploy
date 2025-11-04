@@ -6,26 +6,27 @@
 #include "../config/Config.h"
 #include "../config/robots_config.h"
 #include "../utilities/inc/easylogging++.h"
+
+using namespace HardwareBridge;
 /**
  * @note components initiate in robot runner
  * @param model_name
- * @param robot_controller
  * @param type_
  */
-HardwareBridge::My_HardwareBridge::My_HardwareBridge(std::string &model_name, Robot_Controller_Base *robot_controller,
+My_HardwareBridge::My_HardwareBridge(std::string &model_name,
                                                      Config::run_type type_)
 {
     usb_cmd_ = new USB_Command_t();
     usb_data_ = new USB_Data_t();
     usb_imu_ = new USB_Imu_t();
-    robot_runner_ = new RobotRunner(model_name, robot_controller, type_);
+    robot_runner_ = new RobotRunner(model_name, type_);
     usb_container_ = new USB_HARDWARE::USB_Hardware_Containers();
     robot_runner_->runner_imudata_ = usb_imu_;
     robot_runner_->runner_usbcmd_ = usb_cmd_;
     robot_runner_->runner_usbdata_ = usb_data_;
 }
 
-HardwareBridge::My_HardwareBridge::~My_HardwareBridge()
+My_HardwareBridge::~My_HardwareBridge()
 {
     delete usb_imu_;
     delete usb_cmd_;
@@ -39,7 +40,7 @@ HardwareBridge::My_HardwareBridge::~My_HardwareBridge()
  * @param real_imu: control the thread of imu
  * @param real_usb2can: control the thread of usb2can
  */
-void HardwareBridge::My_HardwareBridge::setup_HardwareBridge(const bool real_imu, const bool real_usb2can)
+void My_HardwareBridge::setup_HardwareBridge(const bool real_imu, const bool real_usb2can)
 {
     t_usb_ = std::make_shared<Thread::thread_usb_hardwares>("USB Hardwares", 0);
     
@@ -85,7 +86,7 @@ void HardwareBridge::My_HardwareBridge::setup_HardwareBridge(const bool real_imu
     }
 }
 
-[[noreturn]] void HardwareBridge::My_HardwareBridge::run()
+[[noreturn]] void My_HardwareBridge::run()
 {
     auto last_print_time = std::chrono::steady_clock::now();
     int step_count = 0;
@@ -114,7 +115,7 @@ void HardwareBridge::My_HardwareBridge::setup_HardwareBridge(const bool real_imu
     }
 }
 
-void HardwareBridge::My_HardwareBridge::setup_rc(const std::string &config_file) {
+void My_HardwareBridge::setup_rc(const std::string &config_file) {
     t_rc_ = std::make_shared<Thread::thread_rc>("RC Thread", 200);
     // tp_rc_ = std::make_shared<Utilities::ThreadPool>(1);
     this->rc_handle_ = new usb_controller::LogicRemoteController(
@@ -127,7 +128,7 @@ void HardwareBridge::My_HardwareBridge::setup_rc(const std::string &config_file)
     this->robot_runner_->runner_rc_ = this->rc_handle_;
 }
 
-void HardwareBridge::My_HardwareBridge::setup_runner() {
+void My_HardwareBridge::setup_runner() {
     std::cout << GREEN << "[Setup Runner OK]: " << RESET << "Initialize robot runner!\n";
     robot_runner_->init_robotrunner();
     int task_frequency = 0;
@@ -144,7 +145,7 @@ void HardwareBridge::My_HardwareBridge::setup_runner() {
     t_robot_runner_ = std::make_shared<Thread::thread_robot_runner>("RobotRunner", task_frequency);
 }
 
-void HardwareBridge::My_HardwareBridge::thread_usb2can_function()
+void My_HardwareBridge::thread_usb2can_function()
 {
     struct timeval timestruc{};
     timestruc.tv_sec = 0;
@@ -159,7 +160,7 @@ void HardwareBridge::My_HardwareBridge::thread_usb2can_function()
     }
 }
 
-void HardwareBridge::My_HardwareBridge::thread_imu_function()
+void My_HardwareBridge::thread_imu_function()
 {
     struct timeval timestruc{};
     timestruc.tv_sec = 0;
@@ -173,7 +174,7 @@ void HardwareBridge::My_HardwareBridge::thread_imu_function()
     }
 }
 
-void HardwareBridge::My_HardwareBridge::thread_rc_function()
+void My_HardwareBridge::thread_rc_function()
 {
     std::cout << GREEN << "[Thread RC OK]: " << RESET << "Initialize RC thread!\n";
     bool game_pad_connecting = false;

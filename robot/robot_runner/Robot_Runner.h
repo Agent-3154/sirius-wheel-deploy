@@ -15,7 +15,8 @@
 #include "../../lcm-types/cpp/state_estimator_lcmt.hpp"
 #include "../../lcm-types/cpp/ros_lowcmd_lcmt.hpp"
 #include "../../lcm-types/cpp/ros_lowstate_lcmt.hpp"
-#include "../../robot_ctrl/robot_ctrl_base.h"
+#include "FSM/Control_FSM.h"
+
 #include <atomic>
 #include "../../config/Config.h"
 
@@ -36,7 +37,7 @@
 class RobotRunner
 {
 public:
-    explicit RobotRunner(std::string &model_name, Robot_Controller_Base *control_base, Config::run_type sim_real);
+    explicit RobotRunner(std::string &model_name, Config::run_type sim_real);
 
     ~RobotRunner() = default;
 
@@ -45,6 +46,8 @@ public:
     std::map<std::string, int> qpos_addr_; // leg_name -> qpos_addr
     std::map<std::string, int> qvel_addr_; // leg_name -> qvel_addr
     rerun::RecordingStream rec_;
+    
+    ControlFSM *fsm_ = nullptr;
 
     usb_controller::LogicRemoteController *runner_rc_ = nullptr;
     USB_HARDWARE::Beast_USB2CAN *runner_usb2can_ = nullptr;
@@ -59,8 +62,6 @@ public:
     void finalStep();
 
     std::mutex sim_mtx; // for sim
-
-    Robot_Controller_Base *robot_ctrl_ = nullptr;
 
     Leg_Controller<double> *leg_controller_ = nullptr;
     StateEstimateOutput<double> state_esti_ouput_;
