@@ -39,7 +39,7 @@ class RobotRunner
 public:
     explicit RobotRunner(std::string &model_name, Config::run_type sim_real);
 
-    ~RobotRunner() = default;
+    ~RobotRunner();
 
     mjModel *mj_model_ = nullptr;
     mjData *mj_data_ = nullptr;
@@ -62,6 +62,7 @@ public:
     void finalStep();
 
     std::mutex sim_mtx; // for sim
+    std::mutex rerun_mtx; // for rerun logging thread
 
     Leg_Controller<double> *leg_controller_ = nullptr;
     StateEstimateOutput<double> state_esti_ouput_;
@@ -94,6 +95,11 @@ public:
     void thread_subscriber_function();
     void publishMotorCommands();    
 #endif
+
+    // Rerun logging thread
+    std::thread rerun_logging_thread_;
+    std::atomic<bool> rerun_thread_running_;
+    void rerun_logging_loop();
 
 private:
     // Helper methods for data handling

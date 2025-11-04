@@ -3,20 +3,22 @@
 //
 #include "Robot_Runner.h"
 #include <memory>
+#include <chrono>
+#include <thread>
 #include "../estimators/OrientationEstimator.h"
 #include "../../utilities/inc/utilities_fun.h"
 #include "../../utilities/inc/debug_tools.h"
 #include "rerun.hpp"
 
 RobotRunner::RobotRunner(std::string &model_name, Config::run_type sim)
-    : sim_(sim), lcm_leg_cmd_(getLcmUrl(255)), lcm_leg_data_(getLcmUrl(255)),
+    : rec_("sirius-wheel", "sirius-wheel"),
+      sim_(sim), lcm_leg_cmd_(getLcmUrl(255)), lcm_leg_data_(getLcmUrl(255)),
       lcm_leg_esti_(getLcmUrl(255)), runner_timer_(0, 2000), lcm_cmd_receive_(getLcmUrl(255)),
       lcm_data_publish_(getLcmUrl(255))
 #if defined(SIMULATOR)
       , sim_state_subscriber({"Robot", "SIM", "State"}),
       sim_motor_publisher({"Robot", "SIM", "Motor"})
 #endif
-    ,rec_("sirius-wheel", "sirius-wheel")
 {
     syn_bool_.store(false);
     
@@ -57,6 +59,25 @@ RobotRunner::RobotRunner(std::string &model_name, Config::run_type sim)
     robot_runner_timer_ = std::make_shared<Thread::thread_timer>("Robot Runner", 2000);
 #endif
 
+    // Start rerun logging thread at 50Hz
+    rerun_thread_running_.store(true);
+    rerun_logging_thread_ = std::thread(&RobotRunner::rerun_logging_loop, this);
+}
+
+RobotRunner::~RobotRunner() {
+    // Stop rerun logging thread
+    rerun_thread_running_.store(false);
+    if (rerun_logging_thread_.joinable()) {
+        rerun_logging_thread_.join();
+    }
+    
+    // Clean up MuJoCo resources
+    if (mj_data_) {
+        mj_deleteData(mj_data_);
+    }
+    if (mj_model_) {
+        mj_deleteModel(mj_model_);
+    }
 }
 
 // void RobotRunner::lcm_handle_func() {
@@ -117,39 +138,20 @@ void RobotRunner::run_step(int step_count) {
     }
     setupStep();
 
-    Eigen::Map<Eigen::VectorXd> qpos_vec(mj_data_->qpos, mj_model_->nq);
-
-    qpos_vec.segment<3>(qpos_addr_["RF_HAA"]) = leg_controller_->leg_data[0].q;
-    qpos_vec.segment<3>(qpos_addr_["LF_HAA"]) = leg_controller_->leg_data[1].q;
-    qpos_vec.segment<3>(qpos_addr_["RH_HAA"]) = leg_controller_->leg_data[2].q;
-    qpos_vec.segment<3>(qpos_addr_["LH_HAA"]) = leg_controller_->leg_data[3].q;
-
-    mj_forward(mj_model_, mj_data_);
-
-    if (step_count % 10 == 0 && rec_.is_enabled()) {
-
-        for (int body = 1; body < mj_model_->nbody; body++) {
-            mjtNum xpos[3];
-            mjtNum xquat[4];
-            int adr_pos = body * 3;
-            xpos[0] = mj_data_->xpos[adr_pos];
-            xpos[1] = mj_data_->xpos[adr_pos + 1];
-            xpos[2] = mj_data_->xpos[adr_pos + 2];
-
-            int adr_quat = body * 4;
-            xquat[0] = mj_data_->xquat[adr_quat];
-            xquat[1] = mj_data_->xquat[adr_quat + 1];
-            xquat[2] = mj_data_->xquat[adr_quat + 2];
-            xquat[3] = mj_data_->xquat[adr_quat + 3];
-            rec_.log(
-                std::string("robot/") + mj_id2name(mj_model_, mjOBJ_BODY, body),
-                rerun::Transform3D(
-                    rerun::Vec3D(xpos[0], xpos[1], xpos[2]),
-                    rerun::Quaternion::from_wxyz(xquat[0], xquat[1], xquat[2], xquat[3])
-                )
-            );
-        }
+    // Lock for rerun logging thread - protect all mj_data_ modifications
+    {
+        std::lock_guard<std::mutex> lock(rerun_mtx);
+        
+        Eigen::Map<Eigen::VectorXd> qpos_vec(mj_data_->qpos, mj_model_->nq);
+        
+        qpos_vec.segment<3>(qpos_addr_["RF_HAA"]) = leg_controller_->leg_data[0].q;
+        qpos_vec.segment<3>(qpos_addr_["LF_HAA"]) = leg_controller_->leg_data[1].q;
+        qpos_vec.segment<3>(qpos_addr_["RH_HAA"]) = leg_controller_->leg_data[2].q;
+        qpos_vec.segment<3>(qpos_addr_["LH_HAA"]) = leg_controller_->leg_data[3].q;
+        
+        mj_forward(mj_model_, mj_data_);
     }
+
     fsm_->ControlFSM_run();
     finalStep();
 }
@@ -251,3 +253,49 @@ void RobotRunner::thread_subscriber_function() {
     }
 }
 #endif
+
+void RobotRunner::rerun_logging_loop() {
+    constexpr int target_hz = 50;
+    constexpr auto sleep_duration = std::chrono::milliseconds(1000 / target_hz);
+    
+    while (rerun_thread_running_.load()) {
+        auto loop_start = std::chrono::steady_clock::now();
+        
+        if (rec_.is_enabled()) {
+            // Lock to safely access mj_data_ and mj_model_
+            std::lock_guard<std::mutex> lock(rerun_mtx);
+            
+            // Log all body transforms
+            for (int body = 1; body < mj_model_->nbody; body++) {
+                mjtNum xpos[3];
+                mjtNum xquat[4];
+                
+                int adr_pos = body * 3;
+                xpos[0] = mj_data_->xpos[adr_pos];
+                xpos[1] = mj_data_->xpos[adr_pos + 1];
+                xpos[2] = mj_data_->xpos[adr_pos + 2];
+                
+                int adr_quat = body * 4;
+                xquat[0] = mj_data_->xquat[adr_quat];
+                xquat[1] = mj_data_->xquat[adr_quat + 1];
+                xquat[2] = mj_data_->xquat[adr_quat + 2];
+                xquat[3] = mj_data_->xquat[adr_quat + 3];
+                
+                rec_.log(
+                    std::string("robot/") + mj_id2name(mj_model_, mjOBJ_BODY, body),
+                    rerun::Transform3D(
+                        rerun::Vec3D(xpos[0], xpos[1], xpos[2]),
+                        rerun::Quaternion::from_wxyz(xquat[0], xquat[1], xquat[2], xquat[3])
+                    )
+                );
+            }
+        }
+        
+        // Sleep to maintain 50Hz
+        auto loop_end = std::chrono::steady_clock::now();
+        auto elapsed = loop_end - loop_start;
+        if (elapsed < sleep_duration) {
+            std::this_thread::sleep_for(sleep_duration - elapsed);
+        }
+    }
+}
