@@ -129,20 +129,19 @@ void HardwareBridge::My_HardwareBridge::setup_rc(const std::string &config_file)
 
 void HardwareBridge::My_HardwareBridge::setup_runner() {
     std::cout << GREEN << "[Setup Runner OK]: " << RESET << "Initialize robot runner!\n";
+    robot_runner_->init_robotrunner();
+    int task_frequency = 0;
+
     if (robot_runner_->sim_ == Config::real_usb)
     {
-        robot_runner_->init_robotrunner();
-        t_robot_runner_ = std::make_shared<Thread::thread_robot_runner>(
-            "Robot Runner Thread", Config::real_control_thread_fre);
-        std::cout << GREEN << "[Robot Runner Thread]: " << RESET
-                    << "Start running robot runner thread!\n";
+        task_frequency = Config::real_control_thread_fre;
     }
     else if (robot_runner_->sim_ == Config::sim_mj)
     {
-        robot_runner_->init_robotrunner();
-        t_robot_runner_ = std::make_shared<Thread::thread_robot_runner>(
-            "Robot Runner Thread", Config::sim_robot_runner_task_fre);
+        task_frequency = Config::sim_robot_runner_task_fre;
     }
+
+    t_robot_runner_ = std::make_shared<Thread::thread_robot_runner>("RobotRunner", task_frequency);
 }
 
 void HardwareBridge::My_HardwareBridge::thread_usb2can_function()

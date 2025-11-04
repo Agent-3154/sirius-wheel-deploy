@@ -143,7 +143,6 @@ void Leg_Controller<T>::Update_Data(const USB_Data_t *usb_data) {
         leg_data[leg].tau(1) = usb_data->chip_datas[index].motor_datas[3 * (leg - index_shift) + 1].tau;
         leg_data[leg].tau(2) = usb_data->chip_datas[index].motor_datas[3 * (leg - index_shift) + 2].tau;
 
-        computeLegJacobianAndPosition(leg_data[leg].q, &(leg_data[leg].J), &(leg_data[leg].p), leg);
         leg_data[leg].v = leg_data[leg].J * leg_data[leg].qd;
     }
     
@@ -200,46 +199,6 @@ void Leg_Controller<T>::setLcm(leg_control_data_lcmt *lcmData, leg_control_comma
         lcmCommand->qd_des[leg + 12] = leg_command[leg].whl_qd_des;
         lcmCommand->kp_joint[leg + 12] = leg_command[leg].whl_kp_joint;
         lcmCommand->kd_joint[leg + 12] = leg_command[leg].whl_kd_joint;
-    }
-}
-
-static int getSideSign(int leg) {
-    const int sideSign[4] = {-1, 1, -1, 1};
-    // assert(leg >= 0 && leg < 4);
-    return sideSign[leg];
-}
-
-template<typename T>
-void Leg_Controller<T>::computeLegJacobianAndPosition(Vec3<T> &q, Mat3<T> *J, Vec3<T> *p, int leg) {
-    auto sideSign = getSideSign(leg);
-    T s1 = std::sin(q(0));
-    T s2 = std::sin(q(1));
-    T s3 = std::sin(q(2));
-
-    T c1 = std::cos(q(0));
-    T c2 = std::cos(q(1));
-    T c3 = std::cos(q(2));
-    T c23 = c2 * c3 - s2 * s3;
-    T s23 = s2 * c3 + c2 * s3;
-    if (J) {
-        J->operator()(0, 0) = 0;
-        J->operator()(0, 1) = -link3_ * c23 + -link2_ * c2;
-        J->operator()(0, 2) = -link3_ * c23;
-        J->operator()(1, 0) = link3_ * c1 * c23 + link2_ * c1 * c2 - link1_ * sideSign * s1;
-        //        J->operator()(1, 0) = link3_ * c1 * c23 + link2_ * c1 * c2 - link1_ * s1;
-        J->operator()(1, 1) = -link3_ * s1 * s23 - link2_ * s1 * s2;
-        J->operator()(1, 2) = -link3_ * s1 * s23;
-        J->operator()(2, 0) = link3_ * s1 * c23 + link2_ * c2 * s1 + link1_ * sideSign * c1;
-        //        J->operator()(2, 0) = link3_ * s1 * c23 + link2_ * c2 * s1 + link1_ * c1;
-        J->operator()(2, 1) = link3_ * c1 * s23 + link2_ * c1 * s2;
-        J->operator()(2, 2) = link3_ * c1 * s23;
-    }
-    if (p) {
-        p->operator()(0) = -link3_ * s23 - link2_ * s2;
-        p->operator()(1) = link1_ * sideSign * c1 + link3_ * (s1 * c23) + link2_ * c2 * s1;
-        p->operator()(2) = link1_ * sideSign * s1 - link3_ * (c1 * c23) - link2_ * c1 * c2;
-        //        p->operator()(1) = link1_ * c1 + link3_ * (s1 * c23) + link2_ * c2 * s1;
-        //        p->operator()(2) = link1_ * s1 - link3_ * (c1 * c23) - link2_ * c1 * c2;
     }
 }
 

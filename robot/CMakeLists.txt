@@ -14,6 +14,18 @@ include_directories(${INC_DIR})
 include_directories("../utilities/types")
 include_directories("../robot_ctrl/")
 
+include_directories("../mujoco-3.1.3/include")
+link_directories("../mujoco-3.1.3/lib")
+
+set(FETCH_CONTENT_QUIET FALSE)
+include(FetchContent)
+# Pull the prebuilt C++ SDK bundle
+FetchContent_Declare(
+  rerun_sdk
+  URL https://github.com/rerun-io/rerun/releases/latest/download/rerun_cpp_sdk.zip
+)
+FetchContent_MakeAvailable(rerun_sdk)
+
 link_directories(${LINK_DIR})
 
 file(GLOB_RECURSE hardware_sources "hardwares/usb/src/*.cpp"  "../utilities/src/*.cpp" "*.cpp"
@@ -39,4 +51,4 @@ add_library(hardware_library SHARED ${hardware_sources}
 )
 
 target_link_libraries(hardware_library
-        lcm libusb-1.0.so iceoryx_posh::iceoryx_posh)
+        lcm libusb-1.0.so iceoryx_posh::iceoryx_posh mujoco rerun_sdk)

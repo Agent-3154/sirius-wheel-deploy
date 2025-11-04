@@ -6,6 +6,7 @@
 #include "../estimators/OrientationEstimator.h"
 #include "../../utilities/inc/utilities_fun.h"
 #include "../../utilities/inc/debug_tools.h"
+#include "rerun.hpp"
 
 RobotRunner::RobotRunner(std::string &model_name, Robot_Controller_Base *control_base, Config::run_type sim)
     : robot_ctrl_(control_base), sim_(sim), lcm_leg_cmd_(getLcmUrl(255)), lcm_leg_data_(getLcmUrl(255)),
@@ -15,8 +16,27 @@ RobotRunner::RobotRunner(std::string &model_name, Robot_Controller_Base *control
       , sim_state_subscriber({"Robot", "SIM", "State"}),
       sim_motor_publisher({"Robot", "SIM", "Motor"})
 #endif
+    ,rec_("sirius-wheel", "sirius-wheel")
 {
     syn_bool_.store(false);
+    
+    char error[1024];
+    mj_model_ = mj_loadXML(model_name.c_str(), nullptr, error, 1024);
+    if (!mj_model_) {
+        std::cerr << "Failed to load model: " << error << std::endl;
+        std::exit(1);
+    }
+    mj_data_ = mj_makeData(mj_model_);
+    if (!mj_data_) {
+        std::cerr << "Failed to make data: " << error << std::endl;
+        std::exit(1);
+    }
+    auto status = rec_.connect_grpc("rerun+http://127.0.0.1:9876/proxy");
+    if (!status.is_ok()) {
+        std::cerr << "Failed to connect to rerun server: " << status.description << std::endl;
+        std::exit(1);
+    }
+
 #if defined(SIMULATOR)
     robot_runner_timer_ = std::make_shared<Thread::thread_timer>("Robot Runner", 2000);
 #endif
@@ -72,23 +92,6 @@ void RobotRunner::setupStep() {
     } else if (sim_ == Config::sim_mj) {
         std::lock_guard<std::mutex> lk(sim_mtx);
         leg_controller_->Update_Data(runner_usbdata_);
-    } else {
-        // lcm_state_.handleTimeout(0);
-        // for (int i = 0; i < 4; i++) {
-        //     runner_usbdata_->q_abad[i] = lowstate_data_.q[3 * i];
-        //     runner_usbdata_->q_hip[i] = lowstate_data_.q[3 * i + 1];
-        //     runner_usbdata_->q_knee[i] = lowstate_data_.q[3 * i + 2];
-        //     runner_usbdata_->qd_abad[i] = lowstate_data_.qd[3 * i];
-        //     runner_usbdata_->qd_hip[i] = lowstate_data_.qd[3 * i + 1];
-        //     runner_usbdata_->qd_knee[i] = lowstate_data_.qd[3 * i + 2];
-        //     runner_imudata_->q[i] = lowstate_data_.quat[i];
-        // }
-        // for (int j = 0; j < 3; j++) {
-        //     runner_imudata_->gyro[j] = lowstate_data_.omegaBody[j];
-        //     runner_imudata_->accel[j] = lowstate_data_.aBody[j];
-        // }
-        std::lock_guard<std::mutex> lk(sim_mtx);
-        leg_controller_->Update_Data(runner_usbdata_);
     }
 }
 
@@ -100,6 +103,40 @@ void RobotRunner::run_step(int step_count) {
         estimators_->run_estimators();
     }
     setupStep();
+
+    Eigen::Map<Eigen::VectorXd> qpos_vec(mj_data_->qpos, mj_model_->nq);
+
+    qpos_vec.segment<3>(7) = leg_controller_->leg_data[0].q;
+    qpos_vec.segment<3>(11) = leg_controller_->leg_data[1].q;
+    qpos_vec.segment<3>(15) = leg_controller_->leg_data[2].q;
+    qpos_vec.segment<3>(19) = leg_controller_->leg_data[3].q;
+
+    mj_forward(mj_model_, mj_data_);
+
+    if (step_count % 10 == 0) {
+
+        for (int body = 1; body < mj_model_->nbody; body++) {
+            mjtNum xpos[3];
+            mjtNum xquat[4];
+            int adr_pos = body * 3;
+            xpos[0] = mj_data_->xpos[adr_pos];
+            xpos[1] = mj_data_->xpos[adr_pos + 1];
+            xpos[2] = mj_data_->xpos[adr_pos + 2];
+
+            int adr_quat = body * 4;
+            xquat[0] = mj_data_->xquat[adr_quat];
+            xquat[1] = mj_data_->xquat[adr_quat + 1];
+            xquat[2] = mj_data_->xquat[adr_quat + 2];
+            xquat[3] = mj_data_->xquat[adr_quat + 3];
+            rec_.log(
+                std::string("robot/") + mj_id2name(mj_model_, mjOBJ_BODY, body),
+                rerun::Transform3D(
+                    rerun::Vec3D(xpos[0], xpos[1], xpos[2]),
+                    rerun::Quaternion::from_wxyz(xquat[0], xquat[1], xquat[2], xquat[3])
+                )
+            );
+        }
+    }
     robot_ctrl_->run();
     finalStep();
 }

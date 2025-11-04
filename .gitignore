@@ -68,3 +68,4 @@ third_party/
 lcm-types/cpp/
 lcm-types/python/
 models/
+.cache/

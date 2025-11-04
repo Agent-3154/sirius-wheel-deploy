@@ -30,12 +30,19 @@
 #include "../../utilities/inc/thread_timer.h"
 #include "../../quadruped_share_data/robot_state_protocols.h"
 
+#include <mujoco/mujoco.h>
+#include <rerun.hpp>
+
 class RobotRunner
 {
 public:
     explicit RobotRunner(std::string &model_name, Robot_Controller_Base *control_base, Config::run_type sim_real);
 
     ~RobotRunner() = default;
+
+    mjModel *mj_model_ = nullptr;
+    mjData *mj_data_ = nullptr;
+    rerun::RecordingStream rec_;
 
     usb_controller::LogicRemoteController *runner_rc_ = nullptr;
     USB_HARDWARE::Beast_USB2CAN *runner_usb2can_ = nullptr;
@@ -85,12 +92,7 @@ public:
     std::thread thread_subscriber_;
     std::shared_ptr<Thread::thread_timer> robot_runner_timer_;
     void thread_subscriber_function();
-    void publishMotorCommands();
-    void copyLegMotorCommands(auto &sample);
-    void copyWheelMotorCommands(auto &sample);
-    void copyImuData(auto &sample);
-    void copyLegData(auto &sample);
-    void copyWheelData(auto &sample);
+    void publishMotorCommands();    
 #endif
 
 private:

@@ -17,7 +17,8 @@ int main(int argc, char **argv) {
     std::string model_name = "../robot/robot_model/sirius_wheel_new/scene.xml";
     HardwareBridge::My_HardwareBridge sim_ctrl(model_name, robot_ctrl, type_);
     sim_ctrl.setup_HardwareBridge(launch_imu, launch_usb2can);
-    sim_ctrl.setup_rc("../robot/hardwares/usb/config/BTP-KP20.yaml");
+    // sim_ctrl.setup_rc("../robot/hardwares/usb/config/BTP-KP20.yaml");
+    sim_ctrl.setup_rc("");
     sim_ctrl.setup_runner();
     sim_ctrl.run();
     return 0;
