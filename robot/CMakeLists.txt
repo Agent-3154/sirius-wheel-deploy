@@ -18,6 +18,7 @@ include_directories("../mujoco-3.1.3/include")
 link_directories("../mujoco-3.1.3/lib")
 
 set(FETCH_CONTENT_QUIET FALSE)
+set(FETCH_CONTENT_BASE_DIR ${CMAKE_SOURCE_DIR}/third_party)
 include(FetchContent)
 # Pull the prebuilt C++ SDK bundle
 FetchContent_Declare(

@@ -31,6 +31,22 @@ RobotRunner::RobotRunner(std::string &model_name, Robot_Controller_Base *control
         std::cerr << "Failed to make data: " << error << std::endl;
         std::exit(1);
     }
+    
+    const std::vector<std::string> haa_joints = {
+        "RF_HAA",
+        "LF_HAA",
+        "RH_HAA",
+        "LH_HAA"
+    };
+    
+    for (const auto& mj_name : haa_joints) {
+        auto id = mj_name2id(mj_model_, mjOBJ_JOINT, mj_name.c_str());
+        qpos_addr_[mj_name] = mj_model_->jnt_qposadr[id];
+        qvel_addr_[mj_name] = mj_model_->jnt_dofadr[id];
+        std::cout << "qpos_addr_[" << mj_name << "]: " << qpos_addr_[mj_name] << std::endl;
+        std::cout << "qvel_addr_[" << mj_name << "]: " << qvel_addr_[mj_name] << std::endl;
+    }
+
     auto status = rec_.connect_grpc("rerun+http://127.0.0.1:9876/proxy");
     if (!status.is_ok()) {
         std::cerr << "Failed to connect to rerun server: " << status.description << std::endl;
@@ -106,10 +122,10 @@ void RobotRunner::run_step(int step_count) {
 
     Eigen::Map<Eigen::VectorXd> qpos_vec(mj_data_->qpos, mj_model_->nq);
 
-    qpos_vec.segment<3>(7) = leg_controller_->leg_data[0].q;
-    qpos_vec.segment<3>(11) = leg_controller_->leg_data[1].q;
-    qpos_vec.segment<3>(15) = leg_controller_->leg_data[2].q;
-    qpos_vec.segment<3>(19) = leg_controller_->leg_data[3].q;
+    qpos_vec.segment<3>(qpos_addr_["RF_HAA"]) = leg_controller_->leg_data[0].q;
+    qpos_vec.segment<3>(qpos_addr_["LF_HAA"]) = leg_controller_->leg_data[1].q;
+    qpos_vec.segment<3>(qpos_addr_["RH_HAA"]) = leg_controller_->leg_data[2].q;
+    qpos_vec.segment<3>(qpos_addr_["LH_HAA"]) = leg_controller_->leg_data[3].q;
 
     mj_forward(mj_model_, mj_data_);
 

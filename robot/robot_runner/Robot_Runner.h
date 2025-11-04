@@ -42,6 +42,8 @@ public:
 
     mjModel *mj_model_ = nullptr;
     mjData *mj_data_ = nullptr;
+    std::map<std::string, int> qpos_addr_; // leg_name -> qpos_addr
+    std::map<std::string, int> qvel_addr_; // leg_name -> qvel_addr
     rerun::RecordingStream rec_;
 
     usb_controller::LogicRemoteController *runner_rc_ = nullptr;
@@ -57,9 +59,6 @@ public:
     void finalStep();
 
     std::mutex sim_mtx; // for sim
-
-    std::array<double, 7> groud_truth_q{};
-    std::array<double, 6> ground_truth_qd_{};
 
     Robot_Controller_Base *robot_ctrl_ = nullptr;
 

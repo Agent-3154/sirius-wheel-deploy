@@ -6,7 +6,8 @@
 
 int main(int argc, char **argv) {
     // print version, check compatibility
-    std::string model_name = "../robot/robot_model/sirius_wheel_new/scene.xml";
+    // std::string model_name = "../robot/robot_model/sirius_wheel_new/scene.xml";
+    std::string model_name = "../robot/robot_model/ly-mid-p-0916/scene.xml";
     bool b_sub_real_imu = false;
     bool b_sub_usb2can = false;
 

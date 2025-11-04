@@ -59,6 +59,10 @@ namespace Simulation {
         // model and data
         mjModel *m_ = nullptr;
         mjData *d_ = nullptr;
+        
+        std::map<std::string, int> qpos_addr_; // leg_name -> qpos_addr
+        std::map<std::string, int> qvel_addr_; // leg_name -> qvel_addr
+
         // control noise variables
         mjtNum *ctrlnoise = nullptr;
         std::unique_ptr<mj::Simulate> sim_handle_;

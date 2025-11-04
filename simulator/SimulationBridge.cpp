@@ -10,6 +10,8 @@
 #include "glfw_adapter.h"
 #include "../config/Config.h"
 #include "../utilities/inc/easylogging++.h"
+#include "mujoco/mjmodel.h"
+#include "mujoco/mujoco.h"
 
 INITIALIZE_EASYLOGGINGPP
 
@@ -67,25 +69,16 @@ mjModel *Simulation::SimulationBridge::LoadModel() {
     // load and compile
     char loadError[kErrorLength] = "";
     mjModel *mnew = 0;
-    if (mju::strlen_arr(filename) > 4 &&
-        !std::strncmp(filename + mju::strlen_arr(filename) - 4, ".mjb",
-                      mju::sizeof_arr(filename) - mju::strlen_arr(filename) + 4)) {
-        mnew = mj_loadModel(filename, nullptr);
-        if (!mnew) {
-            mju::strcpy_arr(loadError, "could not load binary model");
+    
+    mnew = mj_loadXML(filename, nullptr, loadError, kErrorLength);
+    // remove trailing newline character from loadError
+    if (loadError[0]) {
+        int error_length = mju::strlen_arr(loadError);
+        if (loadError[error_length - 1] == '\n') {
+            loadError[error_length - 1] = '\0';
         }
-    } else {
-        mnew = mj_loadXML(filename, nullptr, loadError, kErrorLength);
-        // remove trailing newline character from loadError
-        if (loadError[0]) {
-            int error_length = mju::strlen_arr(loadError);
-            if (loadError[error_length - 1] == '\n') {
-                loadError[error_length - 1] = '\0';
-            }
-        }
-
-        // add build algorithm model
     }
+
     mju::strcpy_arr(sim_handle_->load_error, loadError);
     if (!mnew) {
         std::printf("%s\n", loadError);
@@ -132,6 +125,23 @@ void Simulation::SimulationBridge::PhysicsThread() {
             std::cout << RED << "[Fail]: " << RESET << "Can not load model or model data!\n";
             sim_handle_->LoadMessageClear();
         }
+
+         // Map joint names to MuJoCo joint names (key -> mujoco_name)
+        std::vector<std::string> haa_joints = {
+            "RF_HAA",
+            "LF_HAA",
+            "RH_HAA",
+            "LH_HAA"
+        };
+        
+        for (const auto& mj_name : haa_joints) {
+            auto id = mj_name2id(m_, mjOBJ_JOINT, mj_name.c_str());
+            qpos_addr_[mj_name] = m_->jnt_qposadr[id];
+            qvel_addr_[mj_name] = m_->jnt_dofadr[id];
+            std::cout << "qpos_addr_[" << mj_name << "]: " << qpos_addr_[mj_name] << std::endl;
+            std::cout << "qvel_addr_[" << mj_name << "]: " << qvel_addr_[mj_name] << std::endl;
+        }
+
     }
     //recover to default pos:
     // model info summary
@@ -142,13 +152,6 @@ void Simulation::SimulationBridge::PhysicsThread() {
             << " Model Output File Path: ~/scripts/model_file.txt\n"
             << "//************************ End ****************************//";
     mj_printData(m_, d_, "model_file.md");
-
-    // convert full M consume 2us.
-    //    Debugging::test_timer timer(1);
-    //    timer.timer_record();
-    //    mjtNum M_test[324];
-    //    mj_fullM(m_,M_test,d_->qM);
-    //    timer.timer_exit(1);
 
     PhysicsLoop();
     // delete everything we allocated
@@ -422,77 +425,29 @@ void Simulation::SimulationBridge::sim_control() {
                     }
                 }
             );
+    
+    // qpos from 7
+    Eigen::Map<Eigen::VectorXd> qpos_vec(d_->qpos, m_->nq);
+    Eigen::Map<Eigen::VectorXd> qvel_vec(d_->qvel, m_->nv);
+    
+    // Leg configuration: (leg_name, chip_index, motor_base_index)
+    const std::array<std::tuple<std::string, int, int>, 4> leg_config = {{
+        {"RF_HAA", 0, 0},  // Right Front: chip 0, motors 0-2
+        {"LF_HAA", 0, 3},  // Left Front:  chip 0, motors 3-5
+        {"RH_HAA", 1, 0},  // Right Hind:  chip 1, motors 0-2
+        {"LH_HAA", 1, 3}   // Left Hind:   chip 1, motors 3-5
+    }};
 
-
-    // for (int i = 0; i < m_->sensor_dim[0]; i++) {
-    // usb_imu_->gyro[i] = static_cast<float>(d_->sensordata[gyro_adr + i] + dist_gyro_(generator));
-    //     usb_imu_->q[i] = static_cast<float>(noise_quat(i));
-    //     //            usb_imu_->q[i] = (float) d_->sensordata[quat_adr + i];
-    //     usb_imu_->accel[i] = static_cast<float>(d_->sensordata[acc_adr + i] + dist_acc_(generator));
-    // }
-    // // std::cout << "accel: " << usb_imu_->accel[2] << std::endl;
-    // usb_imu_->q[3] = static_cast<float>(noise_quat(3));
-    // set mocap data
-    // if (runner_started) {
-    //     Vec3<double> mocap_pw = this->robot_runner_->estimators_->get_result_world_position();
-    //     Quat<double> mocap_ori = this->robot_runner_->estimators_->get_result_quat();
-    //     for (int i = 0; i < 3; i++) {
-    //         d_->mocap_pos[3 * mocap_esti_indicator_id_ + i] = mocap_pw(i);
-    //         d_->mocap_quat[4 * mocap_esti_indicator_id_ + i] = mocap_ori(i);
-    //     }
-    //     d_->mocap_quat[4 * mocap_esti_indicator_id_ + 3] = mocap_ori(3);
-    // }
-
-    if (sim_handle_->draw_traject) {
-        sim_handle_->set_draw_traj(true);
-        plot_subscriber_.take()
-                .and_then([this](auto &sample) {
-                        for (int i = 0; i < 3; i++) {
-                            for (int j = 0; j < 4; j++) {
-                                foot_pos_last_des_[j][i] = foot_pos_des_[j][i];
-                                foot_pos_des_[j][i] = sample->foot_pos_des_[j][i];
-                                foot_pos_last_[j][i] = foot_pos_[j][i];
-                                foot_pos_[j][i] = sample->foot_pos_[j][i];
-                            }
-                            pos_last_des_[i] = pos_des_[i];
-                            pos_last_[i] = pos_[i];
-                            pos_des_[i] = sample->pos_des_[i];
-                            pos_[i] = sample->pos_[i];
-                        }
-                        // std::cout << "pos_des: " << pos_des_[0] << " | " << pos_des_[1] << " | " << pos_des_[2] << std::endl;
-                    }
-                )
-                .or_else([](auto &result) {
-                        if (result != iox::popo::ChunkReceiveResult::NO_CHUNK_AVAILABLE) {
-                            std::cout << "Error receiving chunk." << std::endl;
-                        }
-                    }
-                );
-        for (int i = 0; i < 4; i++) {
-            sim_handle_->set_foot_trajectory_des(foot_pos_last_des_[i], foot_pos_des_[i], i);
-            sim_handle_->set_foot_trajectory(foot_pos_last_[i], foot_pos_[i], i);
-            sim_handle_->set_pos_trajectory(pos_last_, pos_);
-            sim_handle_->set_pos_trajectory_des(pos_last_des_, pos_des_);
-            // sim_handle_->set_mpc_force(mpc_force[i], i);
+    // Copy joint positions and velocities for all legs
+    for (const auto& [leg_name, chip_idx, motor_base_idx] : leg_config) {
+        auto qpos = qpos_vec.segment<3>(qpos_addr_[leg_name]);
+        auto qvel = qvel_vec.segment<3>(qvel_addr_[leg_name]);
+        
+        for (int joint_idx = 0; joint_idx < 3; ++joint_idx) {
+            auto& motor = motor_data_->chip_datas[chip_idx].motor_datas[motor_base_idx + joint_idx];
+            motor.q = static_cast<float>(qpos(joint_idx));
+            motor.qd = static_cast<float>(qvel(joint_idx));
         }
-    } else {
-        sim_handle_->set_draw_traj(false);
-    }
-    /* parse joint data
-     * body: free joint: xyz | q[4]
-     * motor
-     */
-    // std::cout << "Actuator: \n" << d_->actuator_force[0] << " | " << d_->actuator_force[1] << " | "
-    //         << d_->actuator_force[2] << std::endl;
-    for (int i = 0; i < 4; i++) {
-        const int index = i / 2;
-        const int index_shift = index * 2; // (0,2)
-        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift)].q = static_cast<float>(d_->qpos[Config::abad_pos_addr_offset + 4 * i]);
-        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift) + 1].q = static_cast<float>(d_->qpos[Config::hip_pos_addr_offset + 4 * i]);
-        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift) + 2].q = static_cast<float>(d_->qpos[Config::knee_pos_addr_offset + 4 * i]);
-        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift)].qd = static_cast<float>(d_->qvel[Config::abad_vel_addr_offset + 4 * i]);
-        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift) + 1].qd = static_cast<float>(d_->qvel[Config::hip_vel_addr_offset + 4 * i]);
-        motor_data_->chip_datas[index].motor_datas[3 * (i - index_shift) + 2].qd = static_cast<float>(d_->qvel[Config::knee_vel_addr_offset + 4 * i]);
     }
 
     //for wheel control
