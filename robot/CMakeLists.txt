@@ -51,4 +51,4 @@ add_library(hardware_library SHARED ${hardware_sources}
 )
 
 target_link_libraries(hardware_library
-        lcm libusb-1.0.so iceoryx_posh::iceoryx_posh mujoco rerun_sdk)
+lcm libusb-1.0.so iceoryx_posh::iceoryx_posh mujoco rerun_sdk yaml-cpp)

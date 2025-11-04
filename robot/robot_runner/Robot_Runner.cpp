@@ -113,7 +113,7 @@ void RobotRunner::run_step(int step_count) {
 
     mj_forward(mj_model_, mj_data_);
 
-    if (step_count % 10 == 0) {
+    if (step_count % 10 == 0 && rec_.is_enabled()) {
 
         for (int body = 1; body < mj_model_->nbody; body++) {
             mjtNum xpos[3];
@@ -187,28 +187,7 @@ void RobotRunner::finalStep() {
             std::cerr << "Unable to loan sample, error: " << result << std::endl;
         });
 #endif
-    } else if (sim_ == Config::sim_lcm) {
-        std::lock_guard<std::mutex> lk(sim_mtx);
-        leg_controller_->Setup_Command(runner_usbcmd_);
-        // for (int i = 0; i < 4; i++) {
-        //     lowcmd_.q[3 * i] = runner_usbcmd_->q_des_abad[i];
-        //     lowcmd_.q[3 * i + 1] = runner_usbcmd_->q_des_hip[i];
-        //     lowcmd_.q[3 * i + 2] = runner_usbcmd_->q_des_knee[i];
-        //     lowcmd_.qd[3 * i] = runner_usbcmd_->qd_des_abad[i];
-        //     lowcmd_.qd[3 * i + 1] = runner_usbcmd_->qd_des_hip[i];
-        //     lowcmd_.qd[3 * i + 2] = runner_usbcmd_->qd_des_knee[i];
-        //     lowcmd_.tau_ff[3 * i] = runner_usbcmd_->tau_abad_ff[i];
-        //     lowcmd_.tau_ff[3 * i + 1] = runner_usbcmd_->tau_hip_ff[i];
-        //     lowcmd_.tau_ff[3 * i + 2] = runner_usbcmd_->tau_knee_ff[i];
-        // }
-        // lowcmd_.start = 1;
-        // lowcmd_.kp = runner_usbcmd_->kp_abad[0];
-        // lowcmd_.kd = runner_usbcmd_->kd_abad[0];
-        // lcm_cmd_.publish("ROS2cheetah", &lowcmd_);
     }
-    // runner_timer_.timer_exit(4);
-    // std::cout << "Robot Runner:Finish!\n";
-    // runner_timer_.timer_record();
     if (sim_ == Config::real_ros_ctrl) {
         // std::lock_guard<std::mutex> lk(runner_usb2can_->usb_out_mutex);
         // leg_controller_->Setup_Command(runner_usbcmd_);
@@ -222,34 +201,6 @@ void RobotRunner::finalStep() {
     }
     // runner_timer_.timer_exit(5);
 }
-
-// void RobotRunner::handleRosCMD(const lcm::ReceiveBuffer *rbuf, const std::string &chan,
-// const ros_lowcmd_lcmt *msg) {
-// (void) rbuf;
-// (void) chan;
-// memcpy(&low_cmd_, msg, sizeof(low_cmd_));
-// for (int i = 0; i < 4; i++) {
-// leg_controller_->leg_command[i].q_des(0) = static_cast<double>(low_cmd_.q_des[3 * i]);
-// leg_controller_->leg_command[i].q_des(1) = static_cast<double>(low_cmd_.q_des[3 * i + 1]);
-// leg_controller_->leg_command[i].q_des(2) = static_cast<double>(low_cmd_.q_des[3 * i + 2]);
-
-// leg_controller_->leg_command[i].qd_des(0) = static_cast<double>(low_cmd_.qd_des[3 * i]);
-// leg_controller_->leg_command[i].qd_des(1) = static_cast<double>(low_cmd_.qd_des[3 * i + 1]);
-// leg_controller_->leg_command[i].qd_des(2) = static_cast<double>(low_cmd_.qd_des[3 * i + 2]);
-
-// leg_controller_->leg_command[i].tau_ff(0) = static_cast<double>(low_cmd_.tau_ff[3 * i]);
-// leg_controller_->leg_command[i].tau_ff(1) = static_cast<double>(low_cmd_.tau_ff[3 * i + 1]);
-// leg_controller_->leg_command[i].tau_ff(2) = static_cast<double>(low_cmd_.tau_ff[3 * i + 2]);
-
-// leg_controller_->leg_command[i].kp_joint(0, 0) = static_cast<double>(low_cmd_.kp_joint[3 * i]);
-// leg_controller_->leg_command[i].kp_joint(1, 1) = static_cast<double>(low_cmd_.kp_joint[3 * i + 1]);
-// leg_controller_->leg_command[i].kp_joint(2, 2) = static_cast<double>(low_cmd_.kp_joint[3 * i + 2]);
-
-// leg_controller_->leg_command[i].kd_joint(0, 0) = static_cast<double>(low_cmd_.kd_joint[3 * i]);
-// leg_controller_->leg_command[i].kd_joint(1, 1) = static_cast<double>(low_cmd_.kd_joint[3 * i + 1]);
-// leg_controller_->leg_command[i].kd_joint(2, 2) = static_cast<double>(low_cmd_.kd_joint[3 * i + 2]);
-// }
-// }
 
 #if defined(SIMULATOR)
 void RobotRunner::thread_subscriber_function() {

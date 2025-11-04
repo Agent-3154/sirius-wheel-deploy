@@ -7,9 +7,6 @@
 #include <array>
 #include <string>
 #include <onnxruntime_cxx_api.h>
-#include "../../lcm-types/cpp/leg_control_data_lcmt.hpp"
-#include "../../lcm-types/cpp/leg_control_command_lcmt.hpp"
-#include "../../lcm-types/cpp/joint_obs_lcmt.hpp"
 #include "./filters.h"
 
 // Forward declaration
@@ -109,10 +106,6 @@ private:
     float cmd_time_ = 0.0;
     float cmd_duration_ = 0.0;
     
-    // logging with lcm
-    lcm::LCM lcm_logger_;
-    joint_obs_lcmt lcm_joint_obs_data{};
-
     void step_command();
     void compute_command();
     void compute_observation();
@@ -151,14 +144,6 @@ public:
     void state_on_exit() override;
     void run_state() override;
     bool is_busy() override;
-};
-
-
-class Observation {
-    public:
-        virtual void update(FSM_State_RL *fsm_state_rl) = 0;
-        virtual Eigen::VectorXf compute() = 0;
-        virtual int get_size() = 0;
 };
 
 

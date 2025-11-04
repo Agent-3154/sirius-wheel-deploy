@@ -3,152 +3,10 @@
 #include <cmath>
 #include <eigen3/Eigen/src/Geometry/Quaternion.h>
 #include <iostream>
-#include <iomanip>
 #include <filesystem>
-// #include <onnxruntime_cxx_api.h>
-// #include <eigen3/Eigen/Dense>
-// #include "../../utilities/types/std_cout_colors.h"
+#include "../mdp/observation.h"
+#include "../mdp/observation.cpp"
 
-
-class ProjectedGravity : public Observation {
-    private:
-        Eigen::MatrixXf projected_gravity_buffer;
-        int steps;
-        int interval;
-    public:
-        ProjectedGravity(int steps, int interval) : steps(steps), interval(interval) {
-            this->projected_gravity_buffer = Eigen::MatrixXf(3, steps * interval);
-            this->projected_gravity_buffer.setZero();
-        }
-        void update(FSM_State_RL *fsm_state_rl) {
-            for (int i = this->projected_gravity_buffer.cols() - 1; i > 0; i--) {
-                this->projected_gravity_buffer.col(i) = this->projected_gravity_buffer.col(i - 1);
-            }
-            this->projected_gravity_buffer.col(0) = fsm_state_rl->projected_gravity_.cast<float>();
-        }
-        
-        int get_size() {
-            return 3 * this->steps;
-        }
-
-        Eigen::VectorXf compute() {
-            // Return interleaved values similar to projected_gravity_buf[::interval]
-            Eigen::VectorXf result(3 * this->steps);
-            for (int i = 0; i < this->steps; i++) {
-                int col_idx = i * this->interval;
-                result.segment(i * 3, 3) = this->projected_gravity_buffer.col(col_idx);
-            }
-            return result;
-        }
-};
-
-
-class JointPosMultistep : public Observation {
-    private:
-        Eigen::MatrixXf joint_pos_buffer;
-        int steps;
-        int interval;
-    public:
-        const int num_joints = 12;
-
-        JointPosMultistep(int steps, int interval) : steps(steps), interval(interval) {
-            this->joint_pos_buffer = Eigen::MatrixXf(num_joints, steps * interval);
-            this->joint_pos_buffer.setZero();
-        }
-        
-        void update(FSM_State_RL *fsm_state_rl) {
-            // roll over the buffer
-            for (int i = this->joint_pos_buffer.cols() - 1; i > 0; i--) {
-                this->joint_pos_buffer.col(i) = this->joint_pos_buffer.col(i - 1);
-            }
-            this->joint_pos_buffer.col(0) = fsm_state_rl->obs_jpos_buffer_.col(0);
-        }
-        
-        int get_size() {
-            return num_joints * this->steps;
-        }
-
-        Eigen::VectorXf compute() {
-            // Return interleaved values similar to joint_pos_buf[::interval]
-            Eigen::VectorXf result(num_joints * this->steps);
-            for (int i = 0; i < this->steps; i++) {
-                int col_idx = i * this->interval;
-                result.segment(i * num_joints, num_joints) = this->joint_pos_buffer.col(col_idx);
-            }
-            return result;
-        }
-};
-
-
-class JointVelMultistep : public Observation {
-    private:
-        Eigen::MatrixXf joint_vel_buffer;
-        int steps;
-        int interval;
-    public:
-        const int num_joints = 4;
-
-        JointVelMultistep(int steps, int interval) : steps(steps), interval(interval) {
-            this->joint_vel_buffer = Eigen::MatrixXf(num_joints, steps * interval);
-            this->joint_vel_buffer.setZero();
-        }
-        void update(FSM_State_RL *fsm_state_rl) {
-            // roll over the buffer
-            for (int i = this->joint_vel_buffer.cols() - 1; i > 0; i--) {
-                this->joint_vel_buffer.col(i) = this->joint_vel_buffer.col(i - 1);
-            }
-            this->joint_vel_buffer.col(0) = fsm_state_rl->obs_jvel_buffer_.col(0);
-        }
-
-        int get_size() {
-            return num_joints * this->steps;
-        }
-
-        Eigen::VectorXf compute() {
-            // Return interleaved values similar to joint_vel_buf[::interval]
-            Eigen::VectorXf result(num_joints * this->steps);
-            for (int i = 0; i < this->steps; i++) {
-                int col_idx = i * this->interval;
-                result.segment(i * num_joints, num_joints) = this->joint_vel_buffer.col(col_idx);
-            }
-            return result;
-        }
-};
-
-
-class CumHipDeviation : public Observation {
-    private:
-        Eigen::VectorXf cum_hip_deviation_;
-    public:
-        void update(FSM_State_RL *fsm_state_rl) {
-            this->cum_hip_deviation_ = fsm_state_rl->cum_hip_deviation_;
-        }
-
-        int get_size() {
-            return 4;
-        }
-
-        Eigen::VectorXf compute() {
-            return this->cum_hip_deviation_;
-        }
-};
-
-class PrevActions : public Observation {
-    private:
-        Eigen::MatrixXf prev_actions_;
-    public:
-        void update(FSM_State_RL *fsm_state_rl) {
-            this->prev_actions_ = fsm_state_rl->prev_actions_;
-        }
-
-        int get_size() {
-            return 2 * 16;
-        }
-
-        Eigen::VectorXf compute() {
-            return Eigen::Map<Eigen::VectorXf>(this->prev_actions_.data(), this->prev_actions_.size());
-        }
-};
 
 Eigen::Quaternionf yaw_quat(Eigen::Quaternionf quat) {
     auto qw = quat.w();
@@ -160,7 +18,6 @@ Eigen::Quaternionf yaw_quat(Eigen::Quaternionf quat) {
     quat_yaw.normalize();
     return quat_yaw;
 }
-
 
 float wrap_to_pi(float angle) {
     auto wrapped_angle = std::fmod(angle + M_PI, 2.0 * M_PI);
@@ -209,7 +66,6 @@ void ONNXPolicy::runInference(std::vector<Ort::Value> &input_tensors) {
 FSM_State_RL::FSM_State_RL(
     Control_FSM_Data_t *controlfsmdata,
     Control_Parameters_t *control_para) : FSM_State(controlfsmdata, control_para, RL),
-                                          lcm_logger_("udpm://239.255.76.67:7667?ttl=255"),
                                           jvel_filter_1(0.01f, 0.001f),
                                           jvel_filter_2(0.01f, 0.002f)
 {
@@ -549,12 +405,6 @@ void FSM_State_RL::run_state()
     Eigen::VectorXf jpos_leg_filtered = raw_jpos_buffer_.rowwise().mean().eval();
     Eigen::VectorXf jvel_leg_filtered = raw_jvel_buffer_.rowwise().mean().eval();
 
-    std::memcpy(this->lcm_joint_obs_data.q_raw, jpos_leg_flat.data(), 12 * sizeof(float));
-    std::memcpy(this->lcm_joint_obs_data.q_obs, jpos_leg_filtered.data(), 12 * sizeof(float));
-    std::memcpy(this->lcm_joint_obs_data.qd_raw, jvel_leg_flat.data(), 16 * sizeof(float));
-    std::memcpy(this->lcm_joint_obs_data.qd_obs, jvel_leg_filtered.data(), 16 * sizeof(float));
-    lcm_logger_.publish("JOINT_OBS_DATA", &this->lcm_joint_obs_data);
-
     if ((loop_step_count_+1) % 10 == 0)
     {
         this->ctrl_step_count_++;
@@ -564,19 +414,6 @@ void FSM_State_RL::run_state()
 
         // auto jpos_leg = raw_jpos_buffer_.rowwise().mean();
         auto jpos_leg = jpos_leg_flat;
-
-        for (int i = 0; i < 4; i++)
-        {
-            auto hip_deviation = abs(jpos_leg(i));
-            if (hip_deviation < 0.2)
-            {
-                this->cum_hip_deviation_(i) = 0.0;
-            }
-            else
-            {
-                this->cum_hip_deviation_(i) += hip_deviation * 0.02;
-            }
-        }
         
         // shift history
         for (int i = HISTORY_STEPS - 1; i > 0; i--)
@@ -597,9 +434,6 @@ void FSM_State_RL::run_state()
         this->compute_observation();
         this->run_inference(true);
         
-        // std::memcpy(lcm_leg_obs_data.q, obs_jpos_buffer_.col(0).data(), 12 * sizeof(float));
-        // std::memcpy(lcm_leg_obs_data.qd, obs_jvel_buffer_.col(0).data(), 16 * sizeof(float));
-        // lcm_logger_.publish("POLICY_DATA_CHANNEL", &lcm_leg_obs_data);
     }
     // only update if desired_leg_jpos does not contain nan
     if (!this->desired_leg_jpos_.hasNaN())
@@ -634,12 +468,3 @@ bool FSM_State_RL::is_busy()
     // wait until the jump is finished
     return this->is_jumping;
 };
-
-//policy:  0.04 -0.02 -1.00  
-// 0.27  0.28 -0.30 -0.21  0.24 -0.36  0.21 -0.16 -2.10  2.04 -2.08  1.98  
-// 0.27  0.28 -0.30 -0.21  0.24 -0.36  0.21 -0.16 -2.10  2.04 -2.08  1.98 
-// 0.27  0.28 -0.30 -0.21  0.24 -0.36  0.21 -0.16 -2.10  2.04 -2.08  1.98 
-// 0.27  0.28 -0.30 -0.21  0.24 -0.37  0.21 -0.16 -2.10  2.03 -2.08  1.98 
-// 0.81 -0.03 -0.25 -0.86  2.58 -1.96  2.56 -0.62 -1.58  1.58 -1.43  0.17 0.93 -1.44  0.10 -1.12  
-// 0.81 -0.03 -0.25 -0.87  2.58 -1.96  2.56 -0.62 -1.58  1.58 -1.43  0.17  0.93 -1.44  0.10 -1.12
-// 13.69 12.32 13.33  7.89
