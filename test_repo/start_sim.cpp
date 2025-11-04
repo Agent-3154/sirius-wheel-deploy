@@ -1,12 +1,23 @@
-#include <new>
 #include <string>
+#include <cstdlib>
+#include <iostream>
 #include "../simulator/SimulationBridge.h"
 #include "../config/Config.h"
 
 int main(int argc, char **argv) {
-    // print version, check compatibility
-    // std::string model_name = "../robot/robot_model/sirius_wheel_new/scene.xml";
-    std::string model_name = "../robot/robot_model/ly-mid-p-0916/scene.xml";
+    // Select model based on environment variable
+    // Usage: export SIRIUS_MODEL=new (or leave unset for default)
+    const char* env_model = std::getenv("SIRIUS_MODEL");
+    std::string model_name;
+    
+    if (env_model != nullptr && std::string(env_model) == "wheel") {
+        model_name = "../robot/robot_model/sirius_wheel_new/scene.xml";
+        std::cout << "Using Wheel model: " << model_name << std::endl;
+    } else {
+        model_name = "../robot/robot_model/ly-mid-p-0916/scene.xml";
+        std::cout << "Using Point-Foot model: " << model_name << std::endl;
+    }
+    
     bool b_sub_real_imu = false;
     bool b_sub_usb2can = false;
 

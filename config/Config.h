@@ -48,7 +48,7 @@ namespace Config {
     // Task frequency
     constexpr int sim_remote_controller_task_fre = 200;
     constexpr int sim_robot_runner_task_fre = 500;
-    constexpr int sim_task_fre = 1000;
+    constexpr int sim_task_fre = 500;
     constexpr bool mj_sim_time_spy = true;
     constexpr int real_control_thread_fre = 500;
     constexpr double bs_rpy_filter = 0.1;
