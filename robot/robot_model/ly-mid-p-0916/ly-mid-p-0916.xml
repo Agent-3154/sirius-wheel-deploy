@@ -121,17 +121,17 @@
   </worldbody>
 
   <actuator>
-    <motor name="LF_HAA" joint="LF_HAA" ctrllimited="true" ctrlrange="-40 40" gear="1" />
-    <motor name="LF_HFE" joint="LF_HFE" ctrllimited="true" ctrlrange="-40 40" gear="1" />
-    <motor name="LF_KNEE" joint="LF_KNEE" ctrllimited="true" ctrlrange="-80 80" gear="1" />
     <motor name="RF_HAA" joint="RF_HAA" ctrllimited="true" ctrlrange="-40 40" gear="1" />
     <motor name="RF_HFE" joint="RF_HFE" ctrllimited="true" ctrlrange="-40 40" gear="1" />
     <motor name="RF_KNEE" joint="RF_KNEE" ctrllimited="true" ctrlrange="-80 80" gear="1" />
-    <motor name="LH_HAA" joint="LH_HAA" ctrllimited="true" ctrlrange="-40 40" gear="1" />
-    <motor name="LH_HFE" joint="LH_HFE" ctrllimited="true" ctrlrange="-40 40" gear="1" />
-    <motor name="LH_KNEE" joint="LH_KNEE" ctrllimited="true" ctrlrange="-80 80" gear="1" />
+    <motor name="LF_HAA" joint="LF_HAA" ctrllimited="true" ctrlrange="-40 40" gear="1" />
+    <motor name="LF_HFE" joint="LF_HFE" ctrllimited="true" ctrlrange="-40 40" gear="1" />
+    <motor name="LF_KNEE" joint="LF_KNEE" ctrllimited="true" ctrlrange="-80 80" gear="1" />
     <motor name="RH_HAA" joint="RH_HAA" ctrllimited="true" ctrlrange="-40 40" gear="1" />
     <motor name="RH_HFE" joint="RH_HFE" ctrllimited="true" ctrlrange="-40 40" gear="1" />
     <motor name="RH_KNEE" joint="RH_KNEE" ctrllimited="true" ctrlrange="-80 80" gear="1" />
+    <motor name="LH_HAA" joint="LH_HAA" ctrllimited="true" ctrlrange="-40 40" gear="1" />
+    <motor name="LH_HFE" joint="LH_HFE" ctrllimited="true" ctrlrange="-40 40" gear="1" />
+    <motor name="LH_KNEE" joint="LH_KNEE" ctrllimited="true" ctrlrange="-80 80" gear="1" />
   </actuator>
 </mujoco>

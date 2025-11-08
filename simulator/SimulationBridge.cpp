@@ -488,14 +488,20 @@ void Simulation::SimulationBridge::sim_control() {
             .or_else([](auto &result) {
                 std::cerr << "Unable to loan sample, error: " << result << std::endl;
             });
-    //        std::cout << "torque: ";
-    for (int i = 0; i < m_->nu; i++) {
-        d_->ctrl[i] = motors_->get_torque(i);
-        // std::cout << "d_->ctrl[i]: " << d_->ctrl[i] << std::endl;
-        // d_->ctrl[i] = 0.0;
-        //            std::cout << d_->ctrl[i] << " | ";
+    
+    for (int i  = 0; i < 4; i++) {
+        if (m_->nu == 16) {
+            d_->ctrl[i * 4] = motors_->get_torque(i * 4);
+            d_->ctrl[i * 4 + 1] = motors_->get_torque(i * 4 + 1);
+            d_->ctrl[i * 4 + 2] = motors_->get_torque(i * 4 + 2);
+            d_->ctrl[i * 4 + 3] = motors_->get_torque(i * 4 + 3);
+        } 
+        else if (m_->nu == 12) {
+            d_->ctrl[i * 3] = motors_->get_torque(i * 3);
+            d_->ctrl[i * 3 + 1] = motors_->get_torque(i * 3 + 1);
+            d_->ctrl[i * 3 + 2] = motors_->get_torque(i * 3 + 2);
+        }
     }
-        //    std::cout << std::endl;
 }
 
 
