@@ -192,10 +192,11 @@ void FSM_State_RL::state_on_exit()
 void FSM_State_RL::computeCommand() {
     this->cmd_lin_vel_b_(0) = this->fsm_data_->rc_->rc_control_.v_des[0];
     this->cmd_lin_vel_b_(1) = this->fsm_data_->rc_->rc_control_.v_des[1];
+    this->cmd_ang_vel_(2) = this->fsm_data_->rc_->rc_control_.v_des[2];
     
     this->obs_command_(0) = this->cmd_lin_vel_b_(0);
     this->obs_command_(1) = this->cmd_lin_vel_b_(1);
-    this->obs_command_(2) = this->cmd_ang_vel_(0);
+    this->obs_command_(2) = this->cmd_ang_vel_(2);
     this->obs_command_(3) = 0.3;
 }
 
@@ -333,8 +334,8 @@ void FSM_State_RL::run_state()
     
         for (auto &leg : fsm_data_->leg_controller_->leg_command)
         {
-            leg.kp_joint = Vec3<double>(LEG_KP, LEG_KP, LEG_KP).asDiagonal();
-            leg.kd_joint = Vec3<double>(LEG_KD, LEG_KD, LEG_KD).asDiagonal();
+            leg.kp_joint = Vec3<double>(50.0, 50.0, 50.0).asDiagonal();
+            leg.kd_joint = Vec3<double>(2.0, 2.0, 2.0).asDiagonal();
             // leg.whl_kp_joint = 0;
             // leg.whl_kd_joint = WHEEL_KD;
         }

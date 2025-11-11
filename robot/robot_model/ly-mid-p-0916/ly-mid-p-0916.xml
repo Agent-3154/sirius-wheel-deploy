@@ -25,6 +25,8 @@
       <geom type="mesh" conaffinity="0" rgba="0.69804 0.69804 0.69804 1" mesh="base_link"/>
       <geom size="0.0005 0.0005 0.0005" pos="0.0043 -0.02 0.0414" type="box" contype="0" conaffinity="0" group="1" density="0"/>
       <geom size="0.0005 0.0005 0.0005" pos="0.0043 -0.02 0.0414" type="box" conaffinity="0"/>
+      <site name="imu" pos="0.0043 -0.02 0.0414"/>
+      
       <body name="RF_hip" pos="0.3154 -0.05 0">
         <inertial pos="-2.0194e-06 -0.012 -3.7868e-06" quat="0.000596588 0.707104 0.000520862 0.707109" mass="0.77865" diaginertia="0.0012113 0.000960299 0.00087971"/>
         <joint name="RF_HAA" pos="0 0 0" axis="1 0 0" range="-1.57 1.57" actuatorfrcrange="-40 40"/>
@@ -134,4 +136,11 @@
     <motor name="LH_HFE" joint="LH_HFE" ctrllimited="true" ctrlrange="-40 40" gear="1" />
     <motor name="LH_KNEE" joint="LH_KNEE" ctrllimited="true" ctrlrange="-80 80" gear="1" />
   </actuator>
+
+  <sensor>
+      <gyro name="body_gyro" site="imu"/>
+      <framequat name="body_quat" objtype="site" objname="imu"/>
+      <accelerometer name="body_acc" site="imu"/>
+  </sensor>
+
 </mujoco>

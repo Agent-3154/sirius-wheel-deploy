@@ -9,6 +9,15 @@ link_directories("../utilities/src/")
 include_directories("../utilities/inc/")
 include_directories("../robot_ctrl")
 
+# Fetch cxxopts for command-line argument parsing
+include(FetchContent)
+FetchContent_Declare(
+    cxxopts
+    GIT_REPOSITORY https://github.com/jarro2783/cxxopts.git
+    GIT_TAG v3.1.1
+)
+FetchContent_MakeAvailable(cxxopts)
+
 if (REAL_ROBOT)
     message(WARNING "\nBuild in Real Robot, Exclude Simulation Library")
     add_executable(run_real run_real.cpp)
@@ -21,6 +30,7 @@ else()
     add_executable(sim_ctrl run_sim_ctrl.cpp)
     target_link_libraries(sim_ctrl hardware_library robot_ctrl_library)
     target_link_libraries(sim_ctrl yaml-cpp ${ONNX_LIBRARY})
+    target_link_libraries(sim_ctrl cxxopts::cxxopts)
 endif ()
 
 #add_executable(test_ros run_robot_ros.cpp)
