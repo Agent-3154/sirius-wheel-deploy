@@ -53,7 +53,7 @@ public:
 
     ~Leg_Controller() = default;
 
-    void Setup_Command(USB_Command_t *usb_cmd);
+    void WriteToCommand(USB_Command_t *usb_cmd);
 
     void Update_Data(const USB_Data_t *usb_data);
 

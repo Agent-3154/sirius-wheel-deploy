@@ -27,6 +27,7 @@ const char* env_model = std::getenv("SIRIUS_MODEL");
     // sim_ctrl.setup_rc("../robot/hardwares/usb/config/BTP-KP20.yaml");
     sim_ctrl.setup_rc("");
     sim_ctrl.setup_runner();
+    sim_ctrl.robot_runner_->fsm_->state_list_.s_rl->load_policy("/home/btx0424/lab50/active-adaptation/scripts/exports/SiriusATEC/policy-11-11_19-06.onnx");
     sim_ctrl.run();
     return 0;
 }

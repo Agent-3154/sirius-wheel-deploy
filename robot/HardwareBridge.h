@@ -27,6 +27,7 @@ namespace HardwareBridge {
         void setup_rc(const std::string &config_file);
         void setup_runner();
         
+        RobotRunner* robot_runner_ = nullptr;
     private:
         std::thread thread_usb2can_;
         std::thread thread_imu_;
@@ -45,7 +46,6 @@ namespace HardwareBridge {
         std::shared_ptr<Thread::thread_rc> t_rc_;
         std::shared_ptr<Thread::thread_robot_runner> t_robot_runner_;
 
-        RobotRunner* robot_runner_ = nullptr;
         USB_HARDWARE::Beast_USB2CAN *usb2can_board_handle_ = nullptr;
         USB_HARDWARE::USB_IMU *imu_handle_ = nullptr;
         USB_HARDWARE::USB_Hardware_Containers* usb_container_;

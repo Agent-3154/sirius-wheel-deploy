@@ -160,11 +160,11 @@ void RobotRunner::finalStep() {
     // runner_timer_.timer_record();
     if (sim_ == Config::real_usb) {
         std::unique_lock<std::shared_mutex> lk(runner_usb2can_->usb_shared_out_mutex);
-        leg_controller_->Setup_Command(runner_usbcmd_);
+        leg_controller_->WriteToCommand(runner_usbcmd_);
         lk.unlock();
     } else if (sim_ == Config::sim_mj) {
         std::lock_guard<std::mutex> lk(sim_mtx);
-        leg_controller_->Setup_Command(runner_usbcmd_);
+        leg_controller_->WriteToCommand(runner_usbcmd_);
 #if defined(SIMULATOR)
         sim_motor_publisher.loan().and_then([this](auto &sample) {
             for (int i = 0; i < 4; i++) {
@@ -205,7 +205,7 @@ void RobotRunner::finalStep() {
     }
     if (sim_ == Config::real_ros_ctrl) {
         // std::lock_guard<std::mutex> lk(runner_usb2can_->usb_out_mutex);
-        // leg_controller_->Setup_Command(runner_usbcmd_);
+        // leg_controller_->WriteToCommand(runner_usbcmd_);
     } else {
         syn_bool_.store(true);
         leg_controller_->setLcm(&lcm_leg_control_data, &lcm_leg_control_cmd);
@@ -258,6 +258,7 @@ void RobotRunner::rerun_logging_loop() {
     constexpr int target_hz = 50;
     constexpr auto sleep_duration = std::chrono::milliseconds(1000 / target_hz);
     
+    int frame_count = 0;
     while (rerun_thread_running_.load()) {
         auto loop_start = std::chrono::steady_clock::now();
         
@@ -265,6 +266,7 @@ void RobotRunner::rerun_logging_loop() {
             // Lock to safely access mj_data_ and mj_model_
             std::lock_guard<std::mutex> lock(rerun_mtx);
             
+            rec_.set_time_sequence("frame_count", frame_count);
             // Log all body transforms
             for (int body = 1; body < mj_model_->nbody; body++) {
                 mjtNum xpos[3];
@@ -289,6 +291,7 @@ void RobotRunner::rerun_logging_loop() {
                     )
                 );
             }
+            frame_count++;
         }
         
         // Sleep to maintain 50Hz

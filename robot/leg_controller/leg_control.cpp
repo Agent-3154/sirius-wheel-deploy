@@ -60,45 +60,31 @@ void Leg_Controller<T>::Zero_Data() {
 }
 
 template<typename T>
-void Leg_Controller<T>::Setup_Command(USB_Command_t *usb_cmd) {
+void Leg_Controller<T>::WriteToCommand(USB_Command_t *usb_cmd) {
     for (int leg_id = 0; leg_id < nlegs_; leg_id++) {
-        Vec3<T> leg_motor_torques = leg_command[leg_id].tau_ff;
-        Vec3<T> leg_foot_force = leg_command[leg_id].foot_force;
-        // kp_cartisian, 直接算力
-        leg_foot_force += leg_command[leg_id].kp_cartisian * (leg_command[leg_id].p_des - leg_data[leg_id].p);
-        leg_foot_force += leg_command[leg_id].kd_cartisian * (leg_command[leg_id].v_des - leg_data[leg_id].v);
-        // std::cout << "leg_foot_force: id" << leg_id << "| " << leg_foot_force <<"\n";
-        leg_motor_torques += leg_data[leg_id].J.transpose() * leg_foot_force;
-
-        if (leg_motor_torques.array().isNaN().any()) {
-            leg_motor_torques.setZero();
-            Zero_Command();
-            // std::cout << RED << "[ERROR]: " << RESET << " leg_motor_torques is NaN\n" << std::endl;
-        }
         // set command
-        const int index = leg_id / 2;
-        const int index_shift = index * 2;
-        usb_cmd->chip_cmds[index].motor_cmds[3 * (leg_id - index_shift)].tau_ff = leg_motor_torques(0);
-        usb_cmd->chip_cmds[index].motor_cmds[3 * (leg_id - index_shift) + 1].tau_ff = leg_motor_torques(1);
-        usb_cmd->chip_cmds[index].motor_cmds[3 * (leg_id - index_shift) + 2].tau_ff = leg_motor_torques(2);
+        const int index = leg_id / 2; // 0, 0, 1, 1
+        const int index_shift = index * 2; // 0, 0, 2, 2
+        const int motor_idx_base = 3 * (leg_id - index_shift); // 0, 3, 0, 3
+        // usb_cmd->chip_cmds[index].motor_cmds[motor_idx_base].tau_ff = leg_motor_torques(0);
+        // usb_cmd->chip_cmds[index].motor_cmds[motor_idx_base + 1].tau_ff = leg_motor_torques(1);
+        // usb_cmd->chip_cmds[index].motor_cmds[motor_idx_base + 2].tau_ff = leg_motor_torques(2);
 
-        usb_cmd->chip_cmds[index].motor_cmds[3 * (leg_id - index_shift)].kd = leg_command[leg_id].kd_joint(0, 0);
-        usb_cmd->chip_cmds[index].motor_cmds[3 * (leg_id - index_shift) + 1].kd = leg_command[leg_id].kd_joint(1, 1);
-        usb_cmd->chip_cmds[index].motor_cmds[3 * (leg_id - index_shift) + 2].kd = leg_command[leg_id].kd_joint(2, 2);
+        usb_cmd->chip_cmds[index].motor_cmds[motor_idx_base].kd = leg_command[leg_id].kd_joint(0, 0);
+        usb_cmd->chip_cmds[index].motor_cmds[motor_idx_base + 1].kd = leg_command[leg_id].kd_joint(1, 1);
+        usb_cmd->chip_cmds[index].motor_cmds[motor_idx_base + 2].kd = leg_command[leg_id].kd_joint(2, 2);
 
-        usb_cmd->chip_cmds[index].motor_cmds[3 * (leg_id - index_shift)].kp = leg_command[leg_id].kp_joint(0, 0);
-        usb_cmd->chip_cmds[index].motor_cmds[3 * (leg_id - index_shift) + 1].kp = leg_command[leg_id].kp_joint(1, 1);
-        usb_cmd->chip_cmds[index].motor_cmds[3 * (leg_id - index_shift) + 2].kp = leg_command[leg_id].kp_joint(2, 2);
+        usb_cmd->chip_cmds[index].motor_cmds[motor_idx_base].kp = leg_command[leg_id].kp_joint(0, 0);
+        usb_cmd->chip_cmds[index].motor_cmds[motor_idx_base + 1].kp = leg_command[leg_id].kp_joint(1, 1);
+        usb_cmd->chip_cmds[index].motor_cmds[motor_idx_base + 2].kp = leg_command[leg_id].kp_joint(2, 2);
 
-        usb_cmd->chip_cmds[index].motor_cmds[3 * (leg_id - index_shift)].q_des = leg_command[leg_id].q_des(0);
-        usb_cmd->chip_cmds[index].motor_cmds[3 * (leg_id - index_shift) + 1].q_des = leg_command[leg_id].q_des(1);
-        usb_cmd->chip_cmds[index].motor_cmds[3 * (leg_id - index_shift) + 2].q_des = leg_command[leg_id].q_des(2);
+        usb_cmd->chip_cmds[index].motor_cmds[motor_idx_base].q_des = leg_command[leg_id].q_des(0);
+        usb_cmd->chip_cmds[index].motor_cmds[motor_idx_base + 1].q_des = leg_command[leg_id].q_des(1);
+        usb_cmd->chip_cmds[index].motor_cmds[motor_idx_base + 2].q_des = leg_command[leg_id].q_des(2);
 
-        usb_cmd->chip_cmds[index].motor_cmds[3 * (leg_id - index_shift)].qd_des = leg_command[leg_id].qd_des(0);
-        usb_cmd->chip_cmds[index].motor_cmds[3 * (leg_id - index_shift) + 1].qd_des = leg_command[leg_id].qd_des(1);
-        usb_cmd->chip_cmds[index].motor_cmds[3 * (leg_id - index_shift) + 2].qd_des = leg_command[leg_id].qd_des(2);
-
-        //TODO add enable and disable flags
+        usb_cmd->chip_cmds[index].motor_cmds[motor_idx_base].qd_des = leg_command[leg_id].qd_des(0);
+        usb_cmd->chip_cmds[index].motor_cmds[motor_idx_base + 1].qd_des = leg_command[leg_id].qd_des(1);
+        usb_cmd->chip_cmds[index].motor_cmds[motor_idx_base + 2].qd_des = leg_command[leg_id].qd_des(2);
     }
     
     //for wheel control

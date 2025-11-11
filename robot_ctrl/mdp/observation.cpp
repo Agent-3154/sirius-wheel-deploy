@@ -15,7 +15,10 @@ class ProjectedGravity : public Observation {
             for (int i = this->projected_gravity_buffer.cols() - 1; i > 0; i--) {
                 this->projected_gravity_buffer.col(i) = this->projected_gravity_buffer.col(i - 1);
             }
-            this->projected_gravity_buffer.col(0) = fsm_state_rl->projected_gravity_.cast<float>();
+            auto quat = fsm_state_rl->quat_;
+            Eigen::Quaterniond quat_eigen(quat[0], quat[1], quat[2], quat[3]);
+            auto projected_gravity = (quat_eigen.inverse() * Eigen::Vector3d(0, 0, -1));
+            this->projected_gravity_buffer.col(0) = projected_gravity.cast<float>();
         }
         
         int get_size() {
@@ -52,7 +55,8 @@ class JointPosMultistep : public Observation {
             for (int i = this->joint_pos_buffer.cols() - 1; i > 0; i--) {
                 this->joint_pos_buffer.col(i) = this->joint_pos_buffer.col(i - 1);
             }
-            this->joint_pos_buffer.col(0) = fsm_state_rl->obs_jpos_buffer_.col(0);
+            Eigen::VectorXf jpos_leg_filtered = fsm_state_rl->raw_jpos_buffer_.rowwise().mean().eval();
+            this->joint_pos_buffer.col(0) = jpos_leg_filtered;
         }
         
         int get_size() {
@@ -77,7 +81,7 @@ class JointVelMultistep : public Observation {
         int steps;
         int interval;
     public:
-        const int num_joints = 4;
+        const int num_joints = 12;
 
         JointVelMultistep(int steps, int interval) : steps(steps), interval(interval) {
             this->joint_vel_buffer = Eigen::MatrixXf(num_joints, steps * interval);
@@ -88,7 +92,8 @@ class JointVelMultistep : public Observation {
             for (int i = this->joint_vel_buffer.cols() - 1; i > 0; i--) {
                 this->joint_vel_buffer.col(i) = this->joint_vel_buffer.col(i - 1);
             }
-            this->joint_vel_buffer.col(0) = fsm_state_rl->obs_jvel_buffer_.col(0);
+            Eigen::VectorXf jvel_leg_filtered = fsm_state_rl->raw_jvel_buffer_.rowwise().mean().eval();
+            this->joint_vel_buffer.col(0) = jvel_leg_filtered;
         }
 
         int get_size() {
@@ -110,13 +115,18 @@ class JointVelMultistep : public Observation {
 class PrevActions : public Observation {
     private:
         Eigen::MatrixXf prev_actions_;
+        int steps_;
     public:
+        const int num_joints = 12;
+        PrevActions(int steps) : steps_(steps) {
+        
+        }
         void update(FSM_State_RL *fsm_state_rl) {
-            this->prev_actions_ = fsm_state_rl->prev_actions_;
+            this->prev_actions_ = fsm_state_rl->prev_actions_.leftCols(this->steps_).eval();
         }
 
         int get_size() {
-            return 2 * 16;
+            return num_joints * this->steps_;
         }
 
         Eigen::VectorXf compute() {
