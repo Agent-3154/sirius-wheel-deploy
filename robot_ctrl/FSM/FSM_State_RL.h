@@ -80,13 +80,13 @@ private:
 
     bool apply_action = true; // set to false for dry-run
     
-    void step_command();
+    void computeCommand();
     void computeObservation();
     void runInference(bool apply_action);
 
     std::vector<std::unique_ptr<Observation>> observations_;
 public:
-    static constexpr int64_t ACTION_DIM = 16;
+    static constexpr int64_t ACTION_DIM = 12;
     static constexpr int64_t HIDDEN_STATE_DIM = 128; // for GRU
     
     static constexpr float LEG_ACTION_SCALE = 1.0;
@@ -103,8 +103,8 @@ public:
     Eigen::Vector3d rpy_init_;
 
     Eigen::Matrix<float, 12, 10> raw_jpos_buffer_;
-    Eigen::Matrix<float, 16, 10> raw_jvel_buffer_;
-    Eigen::Matrix<float, 16, 3> prev_actions_; // previous actions
+    Eigen::Matrix<float, 12, 10> raw_jvel_buffer_;
+    Eigen::Matrix<float, 12, 3> prev_actions_; // previous actions
 
     FSM_State_RL(
         Control_FSM_Data_t *controlfsmdata,

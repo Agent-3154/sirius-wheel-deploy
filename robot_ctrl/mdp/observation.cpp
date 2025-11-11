@@ -1,5 +1,5 @@
 #include "observation.h"
-
+#include <iostream>
 
 class ProjectedGravity : public Observation {
     private:
@@ -130,7 +130,7 @@ class PrevActions : public Observation {
         }
 
         Eigen::VectorXf compute() {
-            return Eigen::Map<Eigen::VectorXf>(this->prev_actions_.data(), this->prev_actions_.size());
+            return Eigen::Map<Eigen::VectorXf>(this->prev_actions_.data(), this->num_joints * this->steps_);
         }
 };
 

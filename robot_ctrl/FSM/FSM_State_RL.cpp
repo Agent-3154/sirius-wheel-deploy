@@ -107,6 +107,8 @@ void FSM_State_RL::load_policy(const std::string &policy_path) {
     this->cmd_lin_vel_w_.setZero();
     this->cmd_lin_vel_b_.setZero();
     this->cmd_ang_vel_.setZero();
+    this->raw_jpos_buffer_.setZero();
+    this->raw_jvel_buffer_.setZero();
     this->prev_actions_.setZero();
     
     // prepare observations
@@ -187,6 +189,16 @@ void FSM_State_RL::state_on_exit()
     return;
 };
 
+void FSM_State_RL::computeCommand() {
+    this->cmd_lin_vel_b_(0) = this->fsm_data_->rc_->rc_control_.v_des[0];
+    this->cmd_lin_vel_b_(1) = this->fsm_data_->rc_->rc_control_.v_des[1];
+    
+    this->obs_command_(0) = this->cmd_lin_vel_b_(0);
+    this->obs_command_(1) = this->cmd_lin_vel_b_(1);
+    this->obs_command_(2) = this->cmd_ang_vel_(0);
+    this->obs_command_(3) = 0.3;
+}
+
 void FSM_State_RL::computeObservation() {
     for (auto &obs : this->observations_) {
         obs->update(this);
@@ -202,7 +214,13 @@ void FSM_State_RL::computeObservation() {
 }
 
 void FSM_State_RL::runInference(bool apply_action) {
+    // std::cout << GREEN << "[FSM State RL]: runInference" << RESET << std::endl;
+    // std::cout << GREEN << "[FSM State RL]: obs_command_: " << this->obs_command_.transpose() << RESET << std::endl;
+    // std::cout << GREEN << "[FSM State RL]: obs_policy_: " << this->obs_policy_.transpose() << RESET << std::endl;
+    // std::cout << GREEN << "[FSM State RL]: hx: " << Eigen::Map<Eigen::VectorXf>(this->hx.data(), HIDDEN_STATE_DIM).transpose() << RESET << std::endl;
+
     std::vector<Ort::Value> input_tensors;
+
     input_tensors.push_back(Ort::Value::CreateTensor<float>(
         *this->memory_info_,
         this->obs_command_.data(),
@@ -237,17 +255,18 @@ void FSM_State_RL::runInference(bool apply_action) {
         this->output_names_cstr_.size());
 
     // // get action and convert to Eigen
-    auto action = output_tensors[2].GetTensorMutableData<float>();
+    auto action = output_tensors[0].GetTensorMutableData<float>();
     Eigen::Map<const Eigen::VectorXf> action_eigen(action, ACTION_DIM);
     auto next_hx = output_tensors[4].GetTensorMutableData<float>();
+    std::cout << GREEN << "[FSM State RL]: action: " << action_eigen.transpose() << RESET << std::endl;
 
     if (apply_action) {
-        for (int i = 3; i > 0; i--) {
+        for (int i = this->prev_actions_.cols() - 1; i > 0; i--) {
             this->prev_actions_.col(i) = this->prev_actions_.col(i - 1);
         }
         this->prev_actions_.col(0) = action_eigen;
     
-        Eigen::VectorXf desired_leg_jpos = action_eigen.head(12) * LEG_ACTION_SCALE + this->default_leg_jpos_;
+        Eigen::VectorXf desired_leg_jpos = action_eigen.head(12) * 0.6 + this->default_leg_jpos_;
     
         this->desired_leg_jpos_ = Eigen::Map<Eigen::Matrix<float, 4, 3>>(desired_leg_jpos.data());
         // this->desired_whl_jvel_ = action_eigen.tail(4) * 10.0;
@@ -279,12 +298,7 @@ void FSM_State_RL::run_state()
     jvel_leg.row(3) = fsm_data_->leg_controller_->leg_data[2].qd.cast<float>(); // RG
 
     auto jpos_leg_flat = Eigen::Map<Eigen::VectorXf>(jpos_leg.data(), 12);
-    auto jvel_leg_flat = Eigen::VectorXf(16);
-    jvel_leg_flat << Eigen::Map<Eigen::VectorXf>(jvel_leg.data(), 12),
-        float(fsm_data_->leg_controller_->leg_data[1].whl_qd),
-        float(fsm_data_->leg_controller_->leg_data[3].whl_qd),
-        float(fsm_data_->leg_controller_->leg_data[0].whl_qd),
-        float(fsm_data_->leg_controller_->leg_data[2].whl_qd);
+    auto jvel_leg_flat = Eigen::Map<Eigen::VectorXf>(jvel_leg.data(), 12);
 
     raw_jpos_buffer_.col(loop_step_count_ % 10) = jpos_leg_flat;
     raw_jvel_buffer_.col(loop_step_count_ % 10) = jvel_leg_flat;
@@ -295,6 +309,7 @@ void FSM_State_RL::run_state()
         if (this->ctrl_step_count_ > 4) {
             this->apply_action = true;
         }
+        this->computeCommand();
         this->computeObservation();
         this->runInference(true);
     }
