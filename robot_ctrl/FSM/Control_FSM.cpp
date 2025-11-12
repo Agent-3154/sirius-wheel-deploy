@@ -6,6 +6,7 @@
 #include <easylogging++.h>
 #include <boost/property_tree/info_parser.hpp>
 #include <boost/property_tree/ptree.hpp>
+#include <exception>
 #include "../../utilities/inc/LoadData.h"
 
 INITIALIZE_EASYLOGGINGPP
@@ -207,7 +208,17 @@ void ControlFSM::ControlFSM_run()
             }
         }
     }
-    state_current_->run_state();
+    try {
+        state_current_->run_state();
+    } catch (const std::exception& e) {
+        LOG(ERROR) << "Error in run_state(): " << e.what() << ". Falling back to damping mode.";
+        state_next_ = state_list_.s_damping;
+        control_data_.rc_->rc_control_.mode = usb_controller::RC_MODE::DAMPING;
+    } catch (...) {
+        LOG(ERROR) << "Unknown error in run_state(). Falling back to damping mode.";
+        state_next_ = state_list_.s_damping;
+        control_data_.rc_->rc_control_.mode = usb_controller::RC_MODE::DAMPING;
+    }
 }
 
 void ControlFSM::Get_Settings()

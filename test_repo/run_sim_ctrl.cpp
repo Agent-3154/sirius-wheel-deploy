@@ -45,7 +45,7 @@ int main(int argc, char **argv) {
     iox::runtime::PoshRuntime::initRuntime("Sim_Ctrl_Node");
 #endif
     
-const char* env_model = std::getenv("SIRIUS_MODEL");
+    const char* env_model = std::getenv("SIRIUS_MODEL");
     std::string model_name;
     
     if (env_model != nullptr && std::string(env_model) == "wheel") {

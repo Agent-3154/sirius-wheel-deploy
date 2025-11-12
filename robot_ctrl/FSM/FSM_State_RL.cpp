@@ -2,6 +2,7 @@
 #include <cmath>
 #include <eigen3/Eigen/src/Geometry/Quaternion.h>
 #include <iostream>
+#include <stdexcept>
 #include "../mdp/observation.h"
 #include "../mdp/observation.cpp"
 #include "./filters.h"
@@ -315,8 +316,10 @@ void FSM_State_RL::run_state()
         this->runInference(true);
     }
     // only update if desired_leg_jpos does not contain nan
-    if (!this->desired_leg_jpos_.hasNaN())
-    {
+    if (this->desired_leg_jpos_.hasNaN()) {
+        throw std::runtime_error("NaN detected in desired_leg_jpos_ in RL state");
+    }
+    else {
         this->desired_leg_jpos_filtered_ = 0.8 * this->desired_leg_jpos_ + 0.2 * this->desired_leg_jpos_filtered_;
     }
 
