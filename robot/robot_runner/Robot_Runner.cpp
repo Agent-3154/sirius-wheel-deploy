@@ -143,11 +143,18 @@ void RobotRunner::run_step(int step_count) {
         std::lock_guard<std::mutex> lock(rerun_mtx);
         
         Eigen::Map<Eigen::VectorXd> qpos_vec(mj_data_->qpos, mj_model_->nq);
+        Eigen::Map<Eigen::VectorXd> qvel_vec(mj_data_->qvel, mj_model_->nv);
         
+        qpos_vec.segment<4>(3) = estimators_->get_result_quat();
         qpos_vec.segment<3>(qpos_addr_["RF_HAA"]) = leg_controller_->leg_data[0].q;
         qpos_vec.segment<3>(qpos_addr_["LF_HAA"]) = leg_controller_->leg_data[1].q;
         qpos_vec.segment<3>(qpos_addr_["RH_HAA"]) = leg_controller_->leg_data[2].q;
         qpos_vec.segment<3>(qpos_addr_["LH_HAA"]) = leg_controller_->leg_data[3].q;
+
+        qvel_vec.segment<3>(qvel_addr_["RF_HAA"]) = leg_controller_->leg_data[0].qd;
+        qvel_vec.segment<3>(qvel_addr_["LF_HAA"]) = leg_controller_->leg_data[1].qd;
+        qvel_vec.segment<3>(qvel_addr_["RH_HAA"]) = leg_controller_->leg_data[2].qd;
+        qvel_vec.segment<3>(qvel_addr_["LH_HAA"]) = leg_controller_->leg_data[3].qd;
         
         mj_forward(mj_model_, mj_data_);
     }
@@ -265,7 +272,9 @@ void RobotRunner::rerun_logging_loop() {
         if (rec_.is_enabled()) {
             // Lock to safely access mj_data_ and mj_model_
             std::lock_guard<std::mutex> lock(rerun_mtx);
-            
+            Eigen::Map<Eigen::VectorXd> qpos_vec(mj_data_->qpos, mj_model_->nq);
+            Eigen::Map<Eigen::VectorXd> qvel_vec(mj_data_->qvel, mj_model_->nv);
+
             rec_.set_time_sequence("frame_count", frame_count);
             // Log all body transforms
             for (int body = 1; body < mj_model_->nbody; body++) {
@@ -291,6 +300,14 @@ void RobotRunner::rerun_logging_loop() {
                     )
                 );
             }
+            rec_.log(
+                std::string("robot/qpos"),
+                rerun::Scalars(qpos_vec.tail(mj_model_->nq - 7))
+            );
+            rec_.log(
+                std::string("robot/qvel"),
+                rerun::Scalars(qvel_vec.tail(mj_model_->nv - 7))
+            );
             frame_count++;
         }
         

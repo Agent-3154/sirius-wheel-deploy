@@ -23,10 +23,11 @@ namespace USB_HARDWARE {
     //todo: Check the size of remote controllers
     // only used for actual robot
 
-#define KNEE_OFFSET_POS (M_PI - 0.18f - 0.28f) //note pos_offset from the motor perspective
-#define HIP_OFFSET_POS (M_PI / 2.f - 0.411f)
+// #define KNEE_OFFSET_POS (M_PI - 0.18f) //note pos_offset from the motor perspective 0.14
+#define KNEE_OFFSET_POS (M_PI - 0.41f) //note pos_offset from the motor perspective 0.14
+#define HIP_OFFSET_POS (M_PI / 2.f - 0.385) //0.385
 // #define HIP_OFFSET_POS (M_PI / 2.f)
-#define ABAD_OFFSET_POS (-0.39f-0.1f)
+#define ABAD_OFFSET_POS (-0.313f)
 // #define ABAD_OFFSET_POS (-0.0f)
 #define NUM_LEG_MOTORS 12
 #define NUM_WHEEL_MOTORS 4
